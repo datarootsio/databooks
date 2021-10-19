@@ -95,5 +95,11 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
             "kernelspec": {"display_name": "kernel_display_name", "name": "kernel_name"}
         }
         assert all(cell.metadata == CellMetadata() for cell in notebook.cells)
-        assert all(cell.outputs == [] for cell in notebook.cells if cell.cell_type == 'code')
-        assert all(cell.execution_count is None for cell in notebook.cells if cell.cell_type == 'code')
+        assert all(
+            cell.outputs == [] for cell in notebook.cells if cell.cell_type == "code"
+        )
+        assert all(
+            cell.execution_count is None
+            for cell in notebook.cells
+            if cell.cell_type == "code"
+        )
