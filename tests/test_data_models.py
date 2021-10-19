@@ -84,7 +84,7 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
 
     def test_clear_metadata(self):
         notebook = self.jupyter_notebook
-        notebook.clear_metadata(notebook=True, cells=True)
+        notebook.clear_metadata(notebook=True, cells=True, outputs=True)
         assert notebook.metadata == NotebookMetadata(
             field_to_remove=None,
             kernelspec=KernelSpec(
