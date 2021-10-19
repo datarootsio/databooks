@@ -75,6 +75,7 @@ class Cell(BaseModel):
         if values["cell_type"] == "code" and not isinstance(v, list):
             raise ValueError("All code cells must have a list output property.")
         return v
+#     TODO: do all code cells have an output? (could be an empty list)
 
 
 class JupyterNotebook(BaseModel):
