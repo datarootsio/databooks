@@ -1,8 +1,8 @@
 """Data models - Pydantic models for Jupyter notebook components"""
+from copy import copy
 from typing import List, Optional, Union
 
 from pydantic import BaseModel, Extra, PositiveInt, validator
-from copy import copy
 
 
 class BaseModelWithRemoveExtras(BaseModel):
@@ -86,26 +86,10 @@ class JupyterNotebook(BaseModel):
     def clear_metadata(self, notebook=True, cells=True, **kwargs):
         """Clear notebook and cell metadata"""
         if notebook:
-            _nb_metadata = self.metadata
-            _nb_metadata.remove_extra_fields()
-            self.metadata = _nb_metadata
+            self.metadata.remove_extra_fields()
         if cells:
             _nb_cells = []
             for cell in self.cells:
                 cell.clear(**kwargs)
                 _nb_cells.append(cell)
             self.cells = _nb_cells
-
-    def clean_dict(self, **kwargs):
-        """Return a clean dictionary"""
-        _notebook = copy(self)
-        _notebook.clear_metadata(**kwargs)
-        _notebook_cells = []
-        # TODO: Pass tests
-        # for cell in _notebook.cells:
-        #     _cell = cell.clean_dict()
-        # if _cell.cell_type == "code":
-        #     # Pydantic methods do not allow to export some empty lists or `None`s
-        #     return
-        # else:
-        #     return _cell.dict(exclude_none=True)
