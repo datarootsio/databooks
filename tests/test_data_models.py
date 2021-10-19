@@ -1,5 +1,5 @@
 """Test data models and methods"""
-from nbhelp.data_models import (
+from databooks.data_models import (
     Cell,
     CellMetadata,
     JupyterNotebook,
