@@ -58,7 +58,7 @@ class Cell(BaseModel):
             self.metadata = CellMetadata()
         if outputs and self.cell_type == "code":
             self.outputs = []
-        if execution_count:
+        if execution_count and self.cell_type == "code":
             self.execution_count = None
 
     @validator("cell_type")
