@@ -19,7 +19,7 @@ class KernelSpec(BaseModel):
 
 
 class NotebookMetadata(BaseModelWithRemoveExtras, extra=Extra.allow):
-    kernelspec: KernelSpec
+    kernelspec: Optional[KernelSpec]
 
 
 class CellMetadata(BaseModelWithRemoveExtras, extra=Extra.allow):
@@ -40,7 +40,7 @@ class Cell(BaseModel):
     def clean_dict(self, **kwargs):
         """Return a clean dictionary"""
         _cell = copy(self)
-        _cell.clear(**kwargs)
+        _cell.clear_metadata(**kwargs)
         if _cell.cell_type == "code":
             # Pydantic methods do not allow to export some empty lists or `None`s
             return {
@@ -50,7 +50,7 @@ class Cell(BaseModel):
         else:
             return _cell.dict(exclude_none=True)
 
-    def clear(
+    def clear_metadata(
         self, metadata: bool = True, execution_count: bool = True, outputs: bool = False
     ):
         """Clear cell metadata, execution count and outputs"""
@@ -88,9 +88,10 @@ class JupyterNotebook(BaseModel):
         """Clear notebook and cell metadata"""
         if notebook:
             self.metadata.remove_extra_fields()
+            self.metadata.kernelspec = None
         if cells:
             _nb_cells = []
             for cell in self.cells:
-                cell.clear(**kwargs)
+                cell.clear_metadata(**kwargs)
                 _nb_cells.append(cell)
             self.cells = _nb_cells

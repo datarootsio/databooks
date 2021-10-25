@@ -52,7 +52,7 @@ class TestCell:
     def test_clear(self):
         cell = self.cell
         assert cell.metadata is not None
-        cell.clear(metadata=True, execution_count=True, outputs=True)
+        cell.clear_metadata(metadata=True, execution_count=True, outputs=True)
         assert cell == Cell(
             cell_type="code",
             metadata=CellMetadata(),
@@ -85,15 +85,8 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
     def test_clear_metadata(self):
         notebook = self.jupyter_notebook
         notebook.clear_metadata(notebook=True, cells=True, outputs=True)
-        assert notebook.metadata == NotebookMetadata(
-            field_to_remove=None,
-            kernelspec=KernelSpec(
-                display_name="kernel_display_name", name="kernel_name"
-            ),
-        )
-        assert notebook.metadata.dict(exclude_none=True) == {
-            "kernelspec": {"display_name": "kernel_display_name", "name": "kernel_name"}
-        }
+
+        assert notebook.metadata.kernelspec is None
         assert all(cell.metadata == CellMetadata() for cell in notebook.cells)
         assert all(
             cell.outputs == [] for cell in notebook.cells if cell.cell_type == "code"
