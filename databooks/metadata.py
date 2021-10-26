@@ -15,9 +15,6 @@ def clear(
         write_path = read_path
     nb = JupyterNotebook.parse_file(read_path, content_type="json")
     nb.clear_metadata(notebook=notebook, cells=cells, **cell_kwargs)
-    clean_nb = nb.dict(
-        # include={"metadata", "nbformat", "nbformat_minor", "cells"},
-        exclude_none=True
-    )
+    clean_nb = nb.dict(exclude_none=True)
     with open(write_path, "w") as out_file:
         json.dump(clean_nb, fp=out_file, indent=2)

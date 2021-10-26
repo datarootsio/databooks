@@ -35,6 +35,7 @@ class TestCell:
 
     @property
     def cell(self):
+        # TODO: how does this not throw an error? code cells should have ooutputs no?
         return Cell(
             cell_type="code",
             metadata=self.cell_metadata,
@@ -60,16 +61,6 @@ class TestCell:
             source="test_source",
             execution_count=None,
         )
-
-    def test_clean_dict(self):
-        cell = self.cell
-        assert cell.clean_dict() == {
-            "cell_type": "code",
-            "metadata": {},
-            "outputs": [],
-            "source": "test_source",
-            "execution_count": None,
-        }
 
 
 class TestJupyterNotebook(TestNotebookMetadata, TestCell):
