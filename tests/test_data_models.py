@@ -35,7 +35,6 @@ class TestCell:
 
     @property
     def cell(self):
-        # TODO: how does this not throw an error? code cells should have ooutputs no?
         return Cell(
             cell_type="code",
             metadata=self.cell_metadata,
