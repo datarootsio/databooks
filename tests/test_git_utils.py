@@ -1,6 +1,8 @@
-from databooks.git_utils import get_repo
 from pathlib import Path
+
 from git import Repo
+
+from databooks.git_utils import get_repo
 
 
 def test_get_repo():

@@ -5,11 +5,13 @@ from pydantic import BaseModel, Extra, PositiveInt, validator
 
 
 class BaseModelWithRemoveExtras(BaseModel):
-    def remove_extra_fields(self):
+    def remove_extra_fields(self) -> None:
         """Remove extra fields"""
-        for field_name, field_value in self:
-            if field_name not in self.__fields__:
-                setattr(self, field_name, None)
+        fields_to_remove = tuple(
+            field for field, _ in self if field not in self.__fields__
+        )
+        for field in fields_to_remove:
+            delattr(self, field)
 
 
 class KernelSpec(BaseModel):

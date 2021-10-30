@@ -1,5 +1,7 @@
-from git import Repo, InvalidGitRepositoryError
 from pathlib import Path
+
+from git import InvalidGitRepositoryError, Repo
+
 from .common import FilePath, get_logger
 
 logger = get_logger(name=__file__)

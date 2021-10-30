@@ -23,9 +23,7 @@ class TestNotebookMetadata:
         metadata = self.notebook_metadata
         assert hasattr(metadata, "field_to_remove")
         metadata.remove_extra_fields()
-        assert metadata == NotebookMetadata(
-            kernelspec=self.kernel_spec, field_to_remove=None
-        )
+        assert metadata == NotebookMetadata(kernelspec=self.kernel_spec)
 
 
 class TestCell:
@@ -45,9 +43,8 @@ class TestCell:
     def test_cell_metadata(self):
         metadata = self.cell_metadata
         metadata.remove_extra_fields()
-        assert metadata.dict(exclude_none=True) == {}
-        assert metadata.dict(exclude_none=False) == {"field_to_remove": None}
-        assert metadata == CellMetadata(field_to_remove=None)
+        assert metadata.dict() == {}
+        assert metadata == CellMetadata()
 
     def test_clear(self):
         cell = self.cell
