@@ -91,13 +91,24 @@ class JupyterNotebook(BaseModel):
     nbformat_minor: int
     cells: List[Cell]
 
-    def clear_metadata(self, notebook_metadata=True, **kwargs):
-        """Clear notebook and cell metadata"""
-        if notebook_metadata:
+    def clear_metadata(
+        self, notebook_metadata: Union[Sequence[str], bool] = True, **cell_kwargs
+    ):
+        """
+        Clear notebook and cell metadata
+        :param notebook_metadata: Either a sequence of metadata fields to remove or
+         `True` to remove all fields
+        :param cell_kwargs: keyword arguments to pass to clear cell metadata
+        :return:
+        """
+        if isinstance(notebook_metadata, abc.Sequence):
+            self.metadata.remove_fields(notebook_metadata)
+        elif notebook_metadata:
             self.metadata.remove_extra_fields()
-        if len(kwargs) > 0:
+
+        if len(cell_kwargs) > 0:
             _nb_cells = []
             for cell in self.cells:
-                cell.clear_metadata(**kwargs)
+                cell.clear_metadata(**cell_kwargs)
                 _nb_cells.append(cell)
             self.cells = _nb_cells
