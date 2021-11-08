@@ -84,6 +84,19 @@ class Cell(BaseModelWithExtras):
             )
         return v
 
+    # TODO: Pydantic will fill in the missing optional attrbutes as `None`s,
+    #  so we cannot test this. Maybe `attrs` will give us better support here
+    # @validator("cell_type")
+    # def only_code_cells_have_outputs_and_execution_count(cls, v, values):
+    #     """Check that only code cells have outputs and execution count"""
+    #     if v != "code" and (
+    #         ("outputs" not in values) or ("execution_count" not in values)
+    #     ):
+    #         raise ValueError(
+    #             f"Found `outputs` or `execution_count` for cell of type `{v}`"
+    #         )
+    #     return v
+
 
 class JupyterNotebook(BaseModel):
     metadata: NotebookMetadata
