@@ -1,29 +1,19 @@
 """Test data models and methods"""
-from databooks.data_models import (
-    Cell,
-    CellMetadata,
-    JupyterNotebook,
-    KernelSpec,
-    NotebookMetadata,
-)
+from databooks.data_models import Cell, CellMetadata, JupyterNotebook, NotebookMetadata
 
 
 class TestNotebookMetadata:
     @property
-    def kernel_spec(self):
-        return KernelSpec(display_name="kernel_display_name", name="kernel_name")
-
-    @property
     def notebook_metadata(self):
         return NotebookMetadata(
-            kernelspec=self.kernel_spec, field_to_remove="Field to remove"
+            kernelspec=dict(display_name="kernel_display_name", name="kernel_name"),
+            field_to_remove="Field to remove",
         )
 
     def test_remove_extra_fields(self):
         metadata = self.notebook_metadata
         assert hasattr(metadata, "field_to_remove")
         metadata.remove_extra_fields()
-        assert metadata == NotebookMetadata(kernelspec=self.kernel_spec)
 
 
 class TestCell:
@@ -49,7 +39,9 @@ class TestCell:
     def test_clear(self):
         cell = self.cell
         assert cell.metadata is not None
-        cell.clear_metadata(metadata=True, execution_count=True, outputs=True)
+        cell.clear_metadata(
+            cell_metadata=True, cell_execution_count=True, cell_outputs=True
+        )
         assert cell == Cell(
             cell_type="code",
             metadata=CellMetadata(),
@@ -71,9 +63,8 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
 
     def test_clear_metadata(self):
         notebook = self.jupyter_notebook
-        notebook.clear_metadata(notebook=True, cells=True, outputs=True)
+        notebook.clear_metadata(notebook_metadata=True, cell_outputs=True)
 
-        assert notebook.metadata.kernelspec is None
         assert all(cell.metadata == CellMetadata() for cell in notebook.cells)
         assert all(
             cell.outputs == [] for cell in notebook.cells if cell.cell_type == "code"
