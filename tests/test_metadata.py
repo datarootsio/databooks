@@ -12,7 +12,6 @@ def test_metadata_clear():
     clear(
         read_path=read_path,
         write_path=write_path,
-        cell_metadata_keep=[],
         cell_outputs=True,
     )
 
