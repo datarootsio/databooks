@@ -1,5 +1,4 @@
 """Data models - Pydantic models for Jupyter notebook components"""
-from collections import abc
 from typing import Iterable, List, Sequence, Union
 
 from pydantic import BaseModel, Extra, validator
@@ -51,7 +50,8 @@ class Cell(BaseModel, extra=Extra.allow):
     ):
         """
         Clear cell metadata, execution count and outputs
-        :param cell_metadata_keep: Metadata values to keep
+        :param cell_metadata_keep: Metadata values to keep - simply pass an empty
+         sequence (i.e.: `()`) to remove all extra fields.
         :param cell_metadata_remove: Metadata values to remove
         :param cell_execution_count: Whether or not to keep the execution count
         :param cell_outputs: whether or not to keep the cell outputs
@@ -111,20 +111,36 @@ class JupyterNotebook(BaseModel):
     cells: List[Cell]
 
     def clear_metadata(
-        self, notebook_metadata: Union[Sequence[str], bool] = True, **cell_kwargs
+        self,
+        notebook_metadata_keep: Sequence[str] = None,
+        notebook_metadata_remove: Sequence[str] = None,
+        **cell_kwargs,
     ):
         """
         Clear notebook and cell metadata
-        :param notebook_metadata: Either a sequence of metadata fields to remove or
-         `True` to remove all fields
+        :param notebook_metadata_keep: Metadata values to keep - simply pass an empty
+         sequence (i.e.: `()`) to remove all extra fields.
+        :param notebook_metadata_remove: Metadata values to remove
         :param cell_kwargs: keyword arguments to be passed to each cell's
          `clear_metadata`
         :return:
         """
-        if isinstance(notebook_metadata, abc.Sequence):
-            self.metadata.remove_fields(notebook_metadata)
-        elif notebook_metadata:
-            self.metadata.remove_extra_fields()
+
+        nargs = sum(
+            (notebook_metadata_keep is not None, notebook_metadata_remove is not None)
+        )
+        if nargs != 1:
+            raise ValueError(
+                "Exactly one of `notebook_metadata_keep` or `notebook_metadata_remove`"
+                f" must be passed, got {nargs} arguments."
+            )
+        if notebook_metadata_keep is not None:
+            notebook_metadata_remove = tuple(
+                field
+                for field, _ in self.metadata
+                if field not in notebook_metadata_keep
+            )
+        self.metadata.remove_fields(notebook_metadata_remove)  # type: ignore
 
         if len(cell_kwargs) > 0:
             _nb_cells = []
