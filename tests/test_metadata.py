@@ -19,12 +19,11 @@ def test_metadata_clear():
     assert all(
         cell.execution_count is None for cell in nb.cells if cell.cell_type == "code"
     )
-
-    # TODO: see comment on `Cell`s `cell_type` validator
-    # assert all(
-    #     not hasattr(cell, "outputs") for cell in nb.cells if cell.cell_type != "code"
-    # )
-    # assert all(
-    #     not hasattr(cell, "execution_count") for cell in nb.cells if cell.cell_type
-    #     != "code"
-    # )
+    assert all(
+        not hasattr(cell, "outputs") for cell in nb.cells if cell.cell_type != "code"
+    )
+    assert all(
+        not hasattr(cell, "execution_count")
+        for cell in nb.cells
+        if cell.cell_type != "code"
+    )
