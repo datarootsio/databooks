@@ -9,7 +9,12 @@ def test_metadata_clear():
     read_path = Path("notebooks/small.ipynb")
     write_path = Path("notebooks/clean_small.ipynb")
 
-    clear(read_path=read_path, write_path=write_path, cell_outputs=True)
+    clear(
+        read_path=read_path,
+        write_path=write_path,
+        cell_metadata_keep=[],
+        cell_outputs=True,
+    )
 
     nb = JupyterNotebook.parse_file(path=write_path, content_type="json")
 

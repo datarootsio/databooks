@@ -41,7 +41,7 @@ class TestCell:
         cell = self.cell
         assert cell.metadata is not None
         cell.clear_metadata(
-            cell_metadata=True, cell_execution_count=True, cell_outputs=True
+            cell_metadata_keep=[], cell_execution_count=True, cell_outputs=True
         )
         assert cell == Cell(
             cell_type="code",
@@ -64,7 +64,9 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
 
     def test_clear_metadata(self):
         notebook = self.jupyter_notebook
-        notebook.clear_metadata(notebook_metadata=True, cell_outputs=True)
+        notebook.clear_metadata(
+            notebook_metadata=True, cell_metadata_keep=[], cell_outputs=True
+        )
 
         assert all(cell.metadata == CellMetadata() for cell in notebook.cells)
         assert all(

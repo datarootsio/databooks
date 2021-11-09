@@ -52,22 +52,30 @@ class Cell(BaseModelWithExtras):
 
     def clear_metadata(
         self,
-        cell_metadata: Union[Sequence[str], bool] = True,
+        cell_metadata_keep: Sequence[str] = None,
+        cell_metadata_remove: Sequence[str] = None,
         cell_execution_count: bool = True,
         cell_outputs: bool = False,
     ):
         """
         Clear cell metadata, execution count and outputs
-        :param cell_metadata: Either a sequence of metadata fields to remove or `True`
-         to remove all fields
+        :param cell_metadata_keep: Metadata values to keep
+        :param cell_metadata_remove: Metadata values to remove
         :param cell_execution_count: Whether or not to keep the execution count
         :param cell_outputs: whether or not to keep the cell outputs
         :return:
         """
-        if isinstance(cell_metadata, abc.Sequence):
-            self.metadata.remove_fields(cell_metadata)
-        elif cell_metadata:
-            self.metadata.remove_extra_fields()
+        nargs = sum((cell_metadata_keep is not None, cell_metadata_remove is not None))
+        if nargs != 1:
+            raise ValueError(
+                "Exactly one of `cell_metadata_keep` or `cell_metadata_remove` must"
+                f" be passed, got {nargs} arguments."
+            )
+        if cell_metadata_keep is not None:
+            cell_metadata_remove = tuple(
+                field for field, _ in self.metadata if field not in cell_metadata_keep
+            )
+        self.metadata.remove_fields(cell_metadata_remove)  # type: ignore
 
         if self.cell_type == "code":
             if cell_outputs:
