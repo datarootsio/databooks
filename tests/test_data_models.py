@@ -28,6 +28,7 @@ class TestCell:
             metadata=self.cell_metadata,
             source="test_source",
             execution_count=1,
+            outputs=["example output\n"],
         )
 
     def test_cell_metadata(self):

@@ -1,12 +1,12 @@
 """Data models - Pydantic models for Jupyter notebook components"""
 from collections import abc
-from typing import Iterable, List, Optional, Sequence, Union
+from typing import Iterable, List, Sequence, Union
 
-from pydantic import BaseModel, Extra, PositiveInt, validator
+from pydantic import BaseModel, Extra, validator
 
 
 class BaseModelWithExtras(BaseModel):
-    """Base Pydantic class with extras on managing different fields."""
+    """Base Pydantic class with extras on managing fields."""
 
     def remove_fields(self, fields: Iterable[str]):
         """Remove selected fields."""
@@ -20,25 +20,35 @@ class BaseModelWithExtras(BaseModel):
         )
         self.remove_fields(fields_to_remove)
 
+    class Config:
+        extra = Extra.allow
 
-class NotebookMetadata(BaseModelWithExtras, extra=Extra.allow):
+
+class NotebookMetadata(BaseModelWithExtras):
     ...
 
 
-class CellMetadata(BaseModelWithExtras, extra=Extra.allow):
+class CellMetadata(BaseModelWithExtras):
     ...
 
 
-class CellOutputs(BaseModelWithExtras, extra=Extra.allow):
-    ...
+class CellOutputs(BaseModel):
+    name: str
+    output_type: str
 
 
 class Cell(BaseModelWithExtras):
-    cell_type: str
+    """
+    Jupyter notebook cells. `outputs` and `execution_count` not included since
+    they should only be present in code cells - thus they are treated as extra
+    fields.
+    """
+
     metadata: CellMetadata
     source: Union[List[str], str]
-    outputs: Optional[List[CellOutputs]]
-    execution_count: Optional[PositiveInt]
+    cell_type: str
+    # outputs: Optional[List[CellOutputs]]
+    # execution_count: Optional[PositiveInt]
 
     def clear_metadata(
         self,
@@ -61,11 +71,9 @@ class Cell(BaseModelWithExtras):
 
         if self.cell_type == "code":
             if cell_outputs:
-                self.outputs = []
+                self.outputs: List[CellOutputs] = []
             if cell_execution_count:
                 self.execution_count = None
-        else:
-            self.remove_fields(("outputs", "execution_count"))
 
     @validator("cell_type")
     def cell_has_valid_type(cls, v):
@@ -75,27 +83,25 @@ class Cell(BaseModelWithExtras):
             raise ValueError(f"Invalid cell type. Must be one of {valid_cell_types}")
         return v
 
-    @validator("outputs")
-    def must_not_be_list_for_code_cells(cls, v, values):
-        """Check that code cells have list-type outputs"""
-        if values["cell_type"] == "code" and not isinstance(v, list):
-            raise ValueError(
-                f"All code cells must have a list output property, got {type(v)}"
-            )
-        return v
-
-    # TODO: Pydantic will fill in the missing optional attrbutes as `None`s,
-    #  so we cannot test this. Maybe `attrs` will give us better support here
+    # TODO: Pydantic does not allow validation of extra fields (yet) - this could be
+    #  done in `attrs`. Check https://github.com/samuelcolvin/pydantic/issues/515
     # @validator("cell_type")
-    # def only_code_cells_have_outputs_and_execution_count(cls, v, values):
-    #     """Check that only code cells have outputs and execution count"""
-    #     if v != "code" and (
-    #         ("outputs" not in values) or ("execution_count" not in values)
-    #     ):
+    # def must_not_be_list_for_code_cells(cls, v, values):
+    #     """Check that code cells have list-type outputs"""
+    #     if v == "code" and not isinstance(values["outputs"], list):
     #         raise ValueError(
-    #             f"Found `outputs` or `execution_count` for cell of type `{v}`"
+    #             f"All code cells must have a list output property, got {type(v)}"
     #         )
     #     return v
+
+    @validator("cell_type")
+    def only_code_cells_have_outputs_and_execution_count(cls, v, values):
+        """Check that only code cells have outputs and execution count"""
+        if v != "code" and (("outputs" in values) or ("execution_count" in values)):
+            raise ValueError(
+                f"Found `outputs` or `execution_count` for cell of type `{v}`"
+            )
+        return v
 
 
 class JupyterNotebook(BaseModel):
@@ -111,7 +117,8 @@ class JupyterNotebook(BaseModel):
         Clear notebook and cell metadata
         :param notebook_metadata: Either a sequence of metadata fields to remove or
          `True` to remove all fields
-        :param cell_kwargs: keyword arguments to pass to clear cell metadata
+        :param cell_kwargs: keyword arguments to be passed to each cell's
+         `clear_metadata`
         :return:
         """
         if isinstance(notebook_metadata, abc.Sequence):
