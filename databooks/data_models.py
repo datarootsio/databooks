@@ -122,7 +122,7 @@ class JupyterNotebook(BaseModel):
          sequence (i.e.: `()`) to remove all extra fields.
         :param notebook_metadata_remove: Metadata values to remove
         :param cell_kwargs: keyword arguments to be passed to each cell's
-         `clear_metadata`
+         `databooks.data_models.Cell.clear_metadata`
         :return:
         """
 
