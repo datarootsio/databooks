@@ -1,7 +1,7 @@
 """Data models - Pydantic models for Jupyter notebook components"""
 from typing import Iterable, List, Sequence, Union
 
-from pydantic import BaseModel, Extra, validator
+from pydantic import BaseModel, Extra, root_validator, validator
 
 
 class BaseModelWithExtras(BaseModel):
@@ -83,25 +83,24 @@ class Cell(BaseModel, extra=Extra.allow):
             raise ValueError(f"Invalid cell type. Must be one of {valid_cell_types}")
         return v
 
-    # TODO: Pydantic does not allow validation of extra fields (yet) - this could be
-    #  done in `attrs`. Check https://github.com/samuelcolvin/pydantic/issues/515
-    # @validator("cell_type")
-    # def must_not_be_list_for_code_cells(cls, v, values):
-    #     """Check that code cells have list-type outputs"""
-    #     if v == "code" and not isinstance(values["outputs"], list):
-    #         raise ValueError(
-    #             f"All code cells must have a list output property, got {type(v)}"
-    #         )
-    #     return v
-
-    @validator("cell_type")
-    def only_code_cells_have_outputs_and_execution_count(cls, v, values):
-        """Check that only code cells have outputs and execution count"""
-        if v != "code" and (("outputs" in values) or ("execution_count" in values)):
+    @root_validator
+    def must_not_be_list_for_code_cells(cls, values):
+        """Check that code cells have list-type outputs"""
+        if values["cell_type"] == "code" and not isinstance(values["outputs"], list):
             raise ValueError(
-                f"Found `outputs` or `execution_count` for cell of type `{v}`"
+                "All code cells must have a list output property, got"
+                f" {values.get('outputs')}"
             )
-        return v
+        return values
+
+    @root_validator
+    def only_code_cells_have_outputs_and_execution_count(cls, values):
+        """Check that only code cells have outputs and execution count"""
+        if values["cell_type"] != "code" and (("outputs" in values) or ("execution_count" in values)):
+            raise ValueError(
+                f"Found `outputs` or `execution_count` for cell of type `{values['cell_type']}`"
+            )
+        return values
 
 
 class JupyterNotebook(BaseModel):
