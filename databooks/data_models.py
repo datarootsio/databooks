@@ -13,13 +13,6 @@ class BaseModelWithExtras(BaseModel):
         for field in fields:
             delattr(self, field)
 
-    def remove_extra_fields(self) -> None:
-        """Remove extra fields"""
-        fields_to_remove = tuple(
-            field for field, _ in self if field not in self.__fields__
-        )
-        self.remove_fields(fields_to_remove)
-
     class Config:
         extra = Extra.allow
 
@@ -32,16 +25,15 @@ class CellMetadata(BaseModelWithExtras):
     ...
 
 
-class CellOutputs(BaseModel):
+class CellOutputs(BaseModel, extra=Extra.allow):
     name: str
     output_type: str
 
 
-class Cell(BaseModelWithExtras):
+class Cell(BaseModel, extra=Extra.allow):
     """
-    Jupyter notebook cells. `outputs` and `execution_count` not included since
-    they should only be present in code cells - thus they are treated as extra
-    fields.
+    Jupyter notebook cells. `outputs` and `execution_count` not included since they
+     should only be present in code cells - thus are treated as extra fields.
     """
 
     metadata: CellMetadata

@@ -10,10 +10,14 @@ class TestNotebookMetadata:
             field_to_remove="Field to remove",
         )
 
-    def test_remove_extra_fields(self):
+    def test_remove_fields(self):
         metadata = self.notebook_metadata
         assert hasattr(metadata, "field_to_remove")
-        metadata.remove_extra_fields()
+        extra_fields = [
+            field for field, _ in metadata if field not in metadata.__fields__
+        ]
+        metadata.remove_fields(extra_fields)
+        assert not hasattr(metadata, "field_to_remove")
 
 
 class TestCell:
@@ -33,7 +37,10 @@ class TestCell:
 
     def test_cell_metadata(self):
         metadata = self.cell_metadata
-        metadata.remove_extra_fields()
+        extra_fields = [
+            field for field, _ in metadata if field not in metadata.__fields__
+        ]
+        metadata.remove_fields(extra_fields)
         assert metadata.dict() == {}
         assert metadata == CellMetadata()
 
