@@ -1,5 +1,5 @@
 """Data models - Pydantic models for Jupyter Notebooks and components"""
-from typing import Any, Dict, Iterable, List, Sequence, Union
+from typing import Any, Dict, Iterable, List, Sequence, Type, Union
 
 from pydantic import BaseModel, Extra, root_validator, validator
 
@@ -7,10 +7,12 @@ from pydantic import BaseModel, Extra, root_validator, validator
 class BaseModelWithExtras(BaseModel):
     """Base Pydantic class with extras on managing fields."""
 
-    def remove_fields(self, fields: Iterable[str]):
+    def remove_fields(self, fields: Iterable[str]) -> None:
         """Remove selected fields."""
         for field in fields:
             delattr(self, field)
+
+    # def __sub__(self, other: Type[self])
 
     class Config:
         extra = Extra.allow
@@ -22,6 +24,7 @@ class NotebookMetadata(BaseModelWithExtras):
 
 class CellMetadata(BaseModelWithExtras):
     ...
+
 
 class Cell(BaseModel, extra=Extra.allow):
     """
@@ -39,7 +42,7 @@ class Cell(BaseModel, extra=Extra.allow):
         cell_metadata_remove: Sequence[str] = None,
         cell_execution_count: bool = True,
         cell_outputs: bool = False,
-    ):
+    ) -> None:
         """
         Clear cell metadata, execution count and outputs
         :param cell_metadata_keep: Metadata values to keep - simply pass an empty
@@ -63,12 +66,12 @@ class Cell(BaseModel, extra=Extra.allow):
 
         if self.cell_type == "code":
             if cell_outputs:
-                self.outputs = []
+                self.outputs: List[Dict[str, Any]] = []
             if cell_execution_count:
                 self.execution_count = None
 
     @validator("cell_type")
-    def cell_has_valid_type(cls, v: str):
+    def cell_has_valid_type(cls, v: str) -> str:
         """Check if cell has one of the three predefined types"""
         valid_cell_types = ("raw", "markdown", "code")
         if v not in valid_cell_types:
@@ -76,7 +79,7 @@ class Cell(BaseModel, extra=Extra.allow):
         return v
 
     @root_validator
-    def must_not_be_list_for_code_cells(cls, values: Dict[str, Any]):
+    def must_not_be_list_for_code_cells(cls, values: Dict[str, Any]) -> Dict[str, Any]:
         """Check that code cells have list-type outputs"""
         if values["cell_type"] == "code" and not isinstance(values["outputs"], list):
             raise ValueError(
@@ -86,7 +89,9 @@ class Cell(BaseModel, extra=Extra.allow):
         return values
 
     @root_validator
-    def only_code_cells_have_outputs_and_execution_count(cls, values: Dict[str, Any]):
+    def only_code_cells_have_outputs_and_execution_count(
+        cls, values: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Check that only code cells have outputs and execution count"""
         if values["cell_type"] != "code" and (
             ("outputs" in values) or ("execution_count" in values)
@@ -108,8 +113,8 @@ class JupyterNotebook(BaseModel):
         self,
         notebook_metadata_keep: Sequence[str] = None,
         notebook_metadata_remove: Sequence[str] = None,
-        **cell_kwargs,
-    ):
+        **cell_kwargs: Any,
+    ) -> None:
         """
         Clear notebook and cell metadata
         :param notebook_metadata_keep: Metadata values to keep - simply pass an empty

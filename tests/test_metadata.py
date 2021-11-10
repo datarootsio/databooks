@@ -5,7 +5,7 @@ from databooks.data_models import CellMetadata, JupyterNotebook
 from databooks.metadata import clear
 
 
-def test_metadata_clear():
+def test_metadata_clear() -> None:
     """Clear metadata from a notebook and write clean notebook"""
     read_path = Path("notebooks/small.ipynb")
     write_path = Path("notebooks/clean_small.ipynb")

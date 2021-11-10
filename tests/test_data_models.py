@@ -4,13 +4,13 @@ from databooks.data_models import Cell, CellMetadata, JupyterNotebook, NotebookM
 
 class TestNotebookMetadata:
     @property
-    def notebook_metadata(self):
+    def notebook_metadata(self) -> NotebookMetadata:
         return NotebookMetadata(
             kernelspec=dict(display_name="kernel_display_name", name="kernel_name"),
             field_to_remove="Field to remove",
         )
 
-    def test_remove_fields(self):
+    def test_remove_fields(self) -> None:
         """Remove fields specified from NotebookMetadata model"""
         metadata = self.notebook_metadata
         assert hasattr(metadata, "field_to_remove")
@@ -23,11 +23,11 @@ class TestNotebookMetadata:
 
 class TestCell:
     @property
-    def cell_metadata(self):
+    def cell_metadata(self) -> CellMetadata:
         return CellMetadata(field_to_remove="Field to remove")
 
     @property
-    def cell(self):
+    def cell(self) -> Cell:
         return Cell(
             cell_type="code",
             metadata=self.cell_metadata,
@@ -36,7 +36,7 @@ class TestCell:
             outputs=["example output\n"],
         )
 
-    def test_cell_metadata(self):
+    def test_cell_metadata(self) -> None:
         """Remove fields specified from CellMetadata model"""
         metadata = self.cell_metadata
         extra_fields = [
@@ -46,7 +46,7 @@ class TestCell:
         assert metadata.dict() == {}
         assert metadata == CellMetadata()
 
-    def test_clear(self):
+    def test_clear(self) -> None:
         """Remove metadata specified from notebook Cell"""
         cell = self.cell
         assert cell.metadata is not None
@@ -64,7 +64,7 @@ class TestCell:
 
 class TestJupyterNotebook(TestNotebookMetadata, TestCell):
     @property
-    def jupyter_notebook(self):
+    def jupyter_notebook(self) -> JupyterNotebook:
         return JupyterNotebook(
             metadata=self.notebook_metadata,
             nbformat=4,
@@ -72,7 +72,7 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
             cells=[self.cell] * 2,
         )
 
-    def test_clear_metadata(self):
+    def test_clear_metadata(self) -> None:
         """Remove metadata specified from JupyterNotebook - cells and notebook levels"""
         notebook = self.jupyter_notebook
         notebook.clear_metadata(

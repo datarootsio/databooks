@@ -1,5 +1,6 @@
 """Metadata wrapper functions for cleaning notebook metadata"""
 import json
+from typing import Any, Sequence
 
 from databooks.common import FilePath
 from databooks.data_models import JupyterNotebook
@@ -8,9 +9,9 @@ from databooks.data_models import JupyterNotebook
 def clear(
     read_path: FilePath,
     write_path: FilePath = None,
-    notebook_metadata_keep=(),
-    cell_metadata_keep=(),
-    **kwargs
+    notebook_metadata_keep: Sequence[str] = (),
+    cell_metadata_keep: Sequence[str] = (),
+    **kwargs: Any
 ) -> None:
     """
     Clear Jupyter Notebook metadata (at notebook and cell level) and write clean
