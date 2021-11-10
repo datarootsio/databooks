@@ -1,5 +1,5 @@
-"""Data models - Pydantic models for Jupyter notebook components"""
-from typing import Iterable, List, Sequence, Union
+"""Data models - Pydantic models for Jupyter Notebooks and components"""
+from typing import Any, Dict, Iterable, List, Sequence, Union
 
 from pydantic import BaseModel, Extra, root_validator, validator
 
@@ -76,7 +76,7 @@ class Cell(BaseModel, extra=Extra.allow):
                 self.execution_count = None
 
     @validator("cell_type")
-    def cell_has_valid_type(cls, v):
+    def cell_has_valid_type(cls, v: str):
         """Check if cell has one of the three predefined types"""
         valid_cell_types = ("raw", "markdown", "code")
         if v not in valid_cell_types:
@@ -84,7 +84,7 @@ class Cell(BaseModel, extra=Extra.allow):
         return v
 
     @root_validator
-    def must_not_be_list_for_code_cells(cls, values):
+    def must_not_be_list_for_code_cells(cls, values: Dict[str, Any]):
         """Check that code cells have list-type outputs"""
         if values["cell_type"] == "code" and not isinstance(values["outputs"], list):
             raise ValueError(
@@ -94,11 +94,14 @@ class Cell(BaseModel, extra=Extra.allow):
         return values
 
     @root_validator
-    def only_code_cells_have_outputs_and_execution_count(cls, values):
+    def only_code_cells_have_outputs_and_execution_count(cls, values: Dict[str, Any]):
         """Check that only code cells have outputs and execution count"""
-        if values["cell_type"] != "code" and (("outputs" in values) or ("execution_count" in values)):
+        if values["cell_type"] != "code" and (
+            ("outputs" in values) or ("execution_count" in values)
+        ):
             raise ValueError(
-                f"Found `outputs` or `execution_count` for cell of type `{values['cell_type']}`"
+                "Found `outputs` or `execution_count` for cell of type"
+                f" `{values['cell_type']}`"
             )
         return values
 

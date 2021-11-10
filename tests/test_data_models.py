@@ -11,6 +11,7 @@ class TestNotebookMetadata:
         )
 
     def test_remove_fields(self):
+        """Remove fields specified from NotebookMetadata model"""
         metadata = self.notebook_metadata
         assert hasattr(metadata, "field_to_remove")
         extra_fields = [
@@ -36,6 +37,7 @@ class TestCell:
         )
 
     def test_cell_metadata(self):
+        """Remove fields specified from CellMetadata model"""
         metadata = self.cell_metadata
         extra_fields = [
             field for field, _ in metadata if field not in metadata.__fields__
@@ -45,6 +47,7 @@ class TestCell:
         assert metadata == CellMetadata()
 
     def test_clear(self):
+        """Remove metadata specified from notebook Cell"""
         cell = self.cell
         assert cell.metadata is not None
         cell.clear_metadata(
@@ -70,6 +73,7 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
         )
 
     def test_clear_metadata(self):
+        """Remove metadata specified from JupyterNotebook - cells and notebook levels"""
         notebook = self.jupyter_notebook
         notebook.clear_metadata(
             notebook_metadata_keep=[], cell_metadata_keep=[], cell_outputs=True

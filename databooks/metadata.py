@@ -1,3 +1,4 @@
+"""Metadata wrapper functions for cleaning notebook metadata"""
 import json
 
 from databooks.common import FilePath
