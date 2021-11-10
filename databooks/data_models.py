@@ -23,12 +23,6 @@ class NotebookMetadata(BaseModelWithExtras):
 class CellMetadata(BaseModelWithExtras):
     ...
 
-
-class CellOutputs(BaseModel, extra=Extra.allow):
-    name: str
-    output_type: str
-
-
 class Cell(BaseModel, extra=Extra.allow):
     """
     Jupyter notebook cells. `outputs` and `execution_count` not included since they
@@ -38,8 +32,6 @@ class Cell(BaseModel, extra=Extra.allow):
     metadata: CellMetadata
     source: Union[List[str], str]
     cell_type: str
-    # outputs: Optional[List[CellOutputs]]
-    # execution_count: Optional[PositiveInt]
 
     def clear_metadata(
         self,
@@ -71,7 +63,7 @@ class Cell(BaseModel, extra=Extra.allow):
 
         if self.cell_type == "code":
             if cell_outputs:
-                self.outputs: List[CellOutputs] = []
+                self.outputs = []
             if cell_execution_count:
                 self.execution_count = None
 
