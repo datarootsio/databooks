@@ -174,7 +174,7 @@ class Cell(BaseModel, extra=Extra.allow):
         return values
 
 
-class JupyterNotebook(BaseModel):
+class JupyterNotebook(BaseModelWithExtras, extra=Extra.forbid):
     metadata: NotebookMetadata
     nbformat: int
     nbformat_minor: int
