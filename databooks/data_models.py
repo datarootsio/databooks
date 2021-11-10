@@ -81,7 +81,7 @@ class Cell(BaseModel, extra=Extra.allow):
         if values["cell_type"] == "code" and not isinstance(values["outputs"], list):
             raise ValueError(
                 "All code cells must have a list output property, got"
-                f" {values.get('outputs')}"
+                f" {type(values.get('outputs'))}"
             )
         return values
 
