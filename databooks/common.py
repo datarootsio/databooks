@@ -16,6 +16,4 @@ def get_logger(name: str, level: str = "INFO") -> logging.Logger:
         datefmt="[%X]",
         handlers=[RichHandler(rich_tracebacks=True)],
     )
-
-    logger = logging.getLogger(name)
-    return logger
+    return logging.getLogger(name)
