@@ -108,6 +108,7 @@ class Cell(BaseModel, extra=Extra.allow):
 
     def clear_metadata(
         self,
+        *,
         cell_metadata_keep: Sequence[str] = None,
         cell_metadata_remove: Sequence[str] = None,
         cell_execution_count: bool = True,
@@ -181,6 +182,7 @@ class JupyterNotebook(BaseModel):
 
     def clear_metadata(
         self,
+        *,
         notebook_metadata_keep: Sequence[str] = None,
         notebook_metadata_remove: Sequence[str] = None,
         **cell_kwargs: Any,
