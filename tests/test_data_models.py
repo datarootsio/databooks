@@ -1,5 +1,11 @@
 """Test data models and methods"""
-from databooks.data_models import Cell, CellMetadata, JupyterNotebook, NotebookMetadata
+from databooks.data_models import (
+    BaseModelWithExtras,
+    Cell,
+    CellMetadata,
+    JupyterNotebook,
+    NotebookMetadata,
+)
 
 
 class TestNotebookMetadata:
@@ -88,3 +94,22 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
             for cell in notebook.cells
             if cell.cell_type == "code"
         )
+
+
+def test_base_sub() -> None:
+    """Test using the `-` operator and resolving the diffs for the base model"""
+    model_1 = BaseModelWithExtras(test=0, foo=1, bar="2")
+    model_2 = BaseModelWithExtras(bar=4, foo=2, baz=2.3, test=0)
+    diff = model_1 - model_2
+    assert diff.__class__.__name__ == "DiffBaseModelWithExtras"
+    assert diff.dict() == {
+        "is_diff": True,
+        "test": (0, 0),
+        "foo": (1, 2),
+        "baz": (None, 2.3),
+        "bar": ("2", 4),
+    }
+
+    assert diff.resolve(keep_first=True) == BaseModelWithExtras(
+        is_diff=False, test=0, foo=1, bar="2", baz=2.3
+    )
