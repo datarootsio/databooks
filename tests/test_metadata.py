@@ -1,7 +1,7 @@
 """Test metadata wrapper functions"""
 from pathlib import Path
 
-from databooks.data_models import CellMetadata, JupyterNotebook
+from databooks.data_models.notebook import CellMetadata, JupyterNotebook
 from databooks.metadata import clear
 
 

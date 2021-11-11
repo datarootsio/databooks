@@ -4,7 +4,7 @@ from typing import Any, Sequence
 
 from pydantic import FilePath
 
-from databooks.data_models import JupyterNotebook
+from databooks.data_models.notebook import JupyterNotebook
 
 
 def clear(

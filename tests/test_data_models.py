@@ -1,6 +1,6 @@
 """Test data models and methods"""
-from databooks.data_models import (
-    BaseModelWithExtras,
+from databooks.data_models.base import BaseModelWithExtras
+from databooks.data_models.notebook import (
     Cell,
     CellMetadata,
     JupyterNotebook,
