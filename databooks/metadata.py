@@ -2,7 +2,8 @@
 import json
 from typing import Any, Sequence
 
-from databooks.common import FilePath
+from pydantic import FilePath
+
 from databooks.data_models import JupyterNotebook
 
 

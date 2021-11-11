@@ -5,8 +5,6 @@ from typing import Union
 
 from rich.logging import RichHandler
 
-FilePath = Union[Path, str]
-
 
 def get_logger(name: str, level: str = "INFO") -> logging.Logger:
     """Get logger with rich configuration."""

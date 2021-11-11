@@ -1,8 +1,9 @@
 from pathlib import Path
 
 from git import Repo
+from pydantic import FilePath
 
-from .common import FilePath, get_logger
+from .common import get_logger
 
 logger = get_logger(name=__file__)
 
