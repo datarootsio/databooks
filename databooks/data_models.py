@@ -12,10 +12,19 @@ class BaseModelWithExtras(BaseModel):
     class Config:
         extra = Extra.allow
 
-    def remove_fields(self, fields: Iterable[str]) -> None:
-        """Remove selected fields."""
+    def remove_fields(self, fields: Iterable[str], *, recursive:bool = False) -> None:
+        """
+        Remove selected fields
+        :param fields: Fields to remove
+        :param recursive: Whether or not to remove the fields recursively in case of
+         nested models
+        :return:
+        """
         for field in fields:
-            delattr(self, field)
+            if recursive and isinstance(getattr(self, field),BaseModelWithExtras):
+                getattr(self, field).remove_fields(fields)
+            else:
+                delattr(self, field)
 
     def resolve(
         self, *, keep_first: bool = True, ignore_none: bool = True
