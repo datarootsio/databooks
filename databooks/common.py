@@ -1,7 +1,5 @@
 """Common set of miscellaneous functions"""
 import logging
-from pathlib import Path
-from typing import Union
 
 from rich.logging import RichHandler
 
