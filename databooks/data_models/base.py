@@ -4,6 +4,43 @@ from __future__ import annotations
 from typing import Iterable, Tuple
 
 from pydantic import BaseModel, Extra, create_model
+from pydantic.generics import GenericModel
+
+T = TypeVar("T")
+
+
+class DiffModel(Protocol, Iterable):
+    """Protocol for mypy static type checking"""
+
+    is_diff: bool
+
+
+def resolve(
+    model: DiffModel, *, keep_first: bool = True, ignore_none: bool = True
+) -> BaseModelWithExtras:
+    """
+    Resolve differences for 'diff models' into one similar to the parent class
+     ``databooks.data_models.Cell.BaseModelWithExtras`
+    :param keep_first: Whether to keep the information from the prior in the
+     'diff model' or the later
+    :param ignore_none: Whether or not to ignore `None` values if encountered, and
+     use the other field value
+    :return: Model with selected fields from the differences
+    """
+    if not (hasattr(model, "is_diff") and model.is_diff):
+        raise TypeError("Can only resolve 'diff models' (when `is_diff=True`).")
+
+    field_vals = {
+        field: value[not keep_first]
+        if value[not keep_first] is not None and ignore_none
+        else value[keep_first]
+        for field, value in model
+        if field != "is_diff"
+    }
+
+    field_vals["is_diff"] = False
+
+    return model.__class__.__bases__[0](**field_vals)
 
 
 class BaseModelWithExtras(BaseModel):
@@ -25,33 +62,6 @@ class BaseModelWithExtras(BaseModel):
                 getattr(self, field).remove_fields(fields)
             else:
                 delattr(self, field)
-
-    def resolve(
-        self, *, keep_first: bool = True, ignore_none: bool = True
-    ) -> BaseModelWithExtras:
-        """
-        Resolve differences for 'diff models' into one similar to the parent class
-         ``databooks.data_models.Cell.BaseModelWithExtras`
-        :param keep_first: Whether to keep the information from the prior in the
-         'diff model' or the later
-        :param ignore_none: Whether or not to ignore `None` values if encountered, and
-         use the other field value
-        :return: Model with selected fields from the differences
-        """
-        if not (hasattr(self, "is_diff") and self.is_diff):  # type: ignore
-            raise TypeError("Can only resolve 'diff models' (when `is_diff=True`).")
-
-        field_vals = {
-            field: value[not keep_first]
-            if value[not keep_first] is not None and ignore_none
-            else value[keep_first]
-            for field, value in self
-            if field != "is_diff"
-        }
-
-        field_vals["is_diff"] = False
-
-        return self.__class__.__bases__[0](**field_vals)
 
     def __str__(self) -> str:
         """Equivalent to __repr__"""
