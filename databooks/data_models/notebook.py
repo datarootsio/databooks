@@ -1,7 +1,8 @@
 """Data models - Jupyter Notebooks and components"""
 from __future__ import annotations
 
-from typing import Any, Dict, List, Sequence, Union
+from collections.abc import Sequence
+from typing import Any, Union
 
 from pydantic import BaseModel, Extra, root_validator, validator
 
@@ -23,7 +24,7 @@ class Cell(BaseModel, extra=Extra.allow):
     """
 
     metadata: CellMetadata
-    source: Union[List[str], str]
+    source: Union[list[str], str]
     cell_type: str
 
     def clear_metadata(
@@ -57,7 +58,7 @@ class Cell(BaseModel, extra=Extra.allow):
 
         if self.cell_type == "code":
             if cell_outputs:
-                self.outputs: List[Dict[str, Any]] = []
+                self.outputs: list[dict[str, Any]] = []
             if cell_execution_count:
                 self.execution_count = None
 
@@ -70,7 +71,7 @@ class Cell(BaseModel, extra=Extra.allow):
         return v
 
     @root_validator
-    def must_not_be_list_for_code_cells(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+    def must_not_be_list_for_code_cells(cls, values: dict[str, Any]) -> dict[str, Any]:
         """Check that code cells have list-type outputs"""
         if values["cell_type"] == "code" and not isinstance(values["outputs"], list):
             raise ValueError(
@@ -81,8 +82,8 @@ class Cell(BaseModel, extra=Extra.allow):
 
     @root_validator
     def only_code_cells_have_outputs_and_execution_count(
-        cls, values: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        cls, values: dict[str, Any]
+    ) -> dict[str, Any]:
         """Check that only code cells have outputs and execution count"""
         if values["cell_type"] != "code" and (
             ("outputs" in values) or ("execution_count" in values)

@@ -1,24 +1,10 @@
 """Data models - Base Pydantic model with custom methods"""
 from __future__ import annotations
 
-from collections import UserList
+from collections import MutableSequence, Sequence, UserList
+from collections.abc import Generator, Iterable
 from difflib import SequenceMatcher
-from typing import (
-    Any,
-    Callable,
-    Dict,
-    Generator,
-    Generic,
-    Iterable,
-    List,
-    MutableSequence,
-    Optional,
-    Protocol,
-    Sequence,
-    Tuple,
-    TypeVar,
-    cast,
-)
+from typing import Any, Callable, Generic, Optional, Protocol, TypeVar, cast
 
 from pydantic import BaseModel, Extra, create_model
 from pydantic.generics import GenericModel
@@ -119,22 +105,22 @@ class BaseModelWithExtras(BaseModel):
             __base__=self.__class__,
             resolve=resolve,
             is_diff=True,
-            **cast(Dict[str, Any], fields_d),
+            **cast(dict[str, Any], fields_d),
         )
         return DiffModel()
 
 
-class DiffList(GenericModel, UserList, Generic[T]):
+class DiffList(GenericModel, UserList[T], Generic[T]):
     """Similar to `list`, with `-` operator using `difflib.SequenceMatcher`"""
 
-    __root__: List[T] = []
+    __root__: list[T] = []
 
     def __init__(self, elements: Sequence[T] = ()) -> None:
         """Allow passing data as a positional argument when instantiating class"""
         super(DiffList, self).__init__(__root__=elements)
 
     @property
-    def data(self) -> List[T]:  # type: ignore
+    def data(self) -> list[T]:  # type: ignore
         """Define property `data` required for `collections.UserList` class"""
         return self.__root__
 
@@ -144,7 +130,7 @@ class DiffList(GenericModel, UserList, Generic[T]):
 
     def __sub__(
         self, other: UserList[Any]
-    ) -> List[Tuple[Optional[MutableSequence[Any]], ...]]:
+    ) -> list[tuple[Optional[MutableSequence[Any]], ...]]:
         """Return the difference using `difflib.SequenceMatcher`"""
         if type(self) != type(other):
             raise TypeError(
@@ -160,7 +146,7 @@ class DiffList(GenericModel, UserList, Generic[T]):
         yield cls.validate
 
     @classmethod
-    def validate(cls, v: List[T]) -> DiffList[T]:
+    def validate(cls, v: list[T]) -> DiffList[T]:
         if not isinstance(v, cls):
             return cls(v)
         else:

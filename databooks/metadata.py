@@ -1,6 +1,7 @@
 """Metadata wrapper functions for cleaning notebook metadata"""
 import json
-from typing import Any, Sequence
+from collections.abc import Sequence
+from typing import Any, Optional
 
 from pydantic import FilePath
 
@@ -9,7 +10,7 @@ from databooks.data_models.notebook import JupyterNotebook
 
 def clear(
     read_path: FilePath,
-    write_path: FilePath = None,
+    write_path: Optional[FilePath] = None,
     notebook_metadata_keep: Sequence[str] = (),
     cell_metadata_keep: Sequence[str] = (),
     **kwargs: Any
