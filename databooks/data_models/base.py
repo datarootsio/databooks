@@ -107,7 +107,7 @@ class BaseModelWithExtras(BaseModel):
             is_diff=True,
             **cast(dict[str, Any], fields_d),
         )
-        return DiffModel()
+        return DiffModel()  # it'll be filled in with the defaults
 
 
 class DiffList(GenericModel, UserList[T], Generic[T]):
