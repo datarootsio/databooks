@@ -36,7 +36,7 @@ class TestCell:
         return Cell(
             cell_type="code",
             metadata=self.cell_metadata,
-            source="test_source",
+            source=["test_source"],
             execution_count=1,
             outputs=["example output\n"],
         )
@@ -62,7 +62,7 @@ class TestCell:
             cell_type="code",
             metadata=CellMetadata(),
             outputs=[],
-            source="test_source",
+            source=["test_source"],
             execution_count=None,
         )
 
@@ -99,12 +99,27 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
         Use the `-` operator and resolve the diffs from the child classes with nested
          models
         """
-        notebook_1 = notebook_2 = self.jupyter_notebook
+        from copy import deepcopy
+
+        notebook_1 = deepcopy(self.jupyter_notebook)
+        notebook_2 = deepcopy(self.jupyter_notebook)
+        notebook_1.metadata = NotebookMetadata(
+            kernelspec=dict(
+                display_name="different_kernel_display_name", name="kernel_name"
+            ),
+            field_to_remove=["Field to remove"],
+            another_field_to_remove="another field to remove",
+        )
         notebook_2.cells = notebook_2.cells + [
-            Cell(cell_type="raw", metadata=CellMetadata(), source="extra")
+            Cell(
+                cell_type="raw",
+                metadata=CellMetadata(random_meta=["meta"]),
+                source="extra",
+            )
         ]
 
         diff = notebook_1 - notebook_2
-        print(diff)
+        print(diff.cells)
+        # print(diff.metadata)
 
         raise NotImplementedError
