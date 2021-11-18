@@ -27,6 +27,13 @@ class Cell(BaseModel, extra=Extra.allow):
     source: Union[list[str], str]
     cell_type: str
 
+    def __hash__(self) -> int:
+        """Cells must be hashable for `difflib.SequenceMatcher`"""
+        return hash(
+            (type(self),) + tuple(v) if isinstance(v, list) else v
+            for v in self.__dict__.values()
+        )
+
     def clear_metadata(
         self,
         *,
