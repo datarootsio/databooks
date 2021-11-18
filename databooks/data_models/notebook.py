@@ -5,7 +5,7 @@ from typing import Any, Dict, List, Sequence, Union
 
 from pydantic import BaseModel, Extra, root_validator, validator
 
-from databooks.data_models.base import BaseModelWithExtras
+from databooks.data_models.base import BaseModelWithExtras, DiffList
 
 
 class NotebookMetadata(BaseModelWithExtras):
@@ -95,10 +95,10 @@ class Cell(BaseModel, extra=Extra.allow):
 
 
 class JupyterNotebook(BaseModelWithExtras, extra=Extra.forbid):
-    metadata: NotebookMetadata
     nbformat: int
     nbformat_minor: int
-    cells: List[Cell]
+    metadata: NotebookMetadata
+    cells: DiffList[Cell]
 
     def clear_metadata(
         self,
@@ -134,7 +134,7 @@ class JupyterNotebook(BaseModelWithExtras, extra=Extra.forbid):
         self.metadata.remove_fields(notebook_metadata_remove)  # type: ignore
 
         if len(cell_kwargs) > 0:
-            _nb_cells = []
+            _nb_cells: DiffList[Cell] = DiffList()
             for cell in self.cells:
                 cell.clear_metadata(**cell_kwargs)
                 _nb_cells.append(cell)

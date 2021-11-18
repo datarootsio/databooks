@@ -1,7 +1,24 @@
 """Data models - Base Pydantic model with custom methods"""
 from __future__ import annotations
 
-from typing import Iterable, Tuple
+from collections import UserList
+from difflib import SequenceMatcher
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Generator,
+    Generic,
+    Iterable,
+    List,
+    MutableSequence,
+    Optional,
+    Protocol,
+    Sequence,
+    Tuple,
+    TypeVar,
+    cast,
+)
 
 from pydantic import BaseModel, Extra, create_model
 from pydantic.generics import GenericModel
@@ -73,7 +90,6 @@ class BaseModelWithExtras(BaseModel):
          where for each field we have `field = (self_value, other_value)`
         """
         if type(self) != type(other):
-            # Ensure we are comparing models of same type
             raise TypeError(
                 f"Unsupported operand types for `-`: `{type(self).__name__}` and"
                 f" `{type(other).__name__}`"
@@ -82,26 +98,70 @@ class BaseModelWithExtras(BaseModel):
         # Get field and values for each instance
         self_d = dict(self)
         other_d = dict(other)
-        field_keys = set(list(self_d.keys()) + list(other_d.keys()))  # find common keys
 
-        # Build dictionary for the field types and values
-        field_pairs = [(self_d.get(field), other_d.get(field)) for field in field_keys]
-        field_vals = (
-            pairs[0] - pairs[-1]  # type: ignore
-            if all(isinstance(el, BaseModelWithExtras) for el in pairs)
-            else pairs
-            for pairs in field_pairs
-        )
-        field_types = (
-            (Tuple[type(self_val), type(other_val)], ...)
-            for self_val, other_val in field_pairs
-        )
+        # Build dict with {field: (type, value)} for each field
+        fields_d = {}
+        for name in self_d.keys() | other_d.keys():
+            self_val = self_d.get(name)
+            other_val = other_d.get(name)
+            if type(self_val) is type(other_val) and all(
+                isinstance(val, (BaseModelWithExtras, DiffList))
+                for val in (self_val, other_val)
+            ):
+                # Recursively get the diffs for nested models
+                fields_d[name] = (Any, self_val - other_val)  # type: ignore
+            else:
+                fields_d[name] = (tuple, (self_val, other_val))
 
         # Build Pydantic models dynamically
         DiffModel = create_model(
             "Diff" + self.__class__.__name__,
             __base__=self.__class__,
+            resolve=resolve,
             is_diff=True,
-            **dict(zip(field_keys, field_types)),  # type: ignore
+            **cast(Dict[str, Any], fields_d),
         )
-        return DiffModel(**dict(zip(field_keys, field_vals)))
+        return DiffModel()
+
+
+class DiffList(GenericModel, UserList, Generic[T]):
+    """Similar to `list`, with `-` operator using `difflib.SequenceMatcher`"""
+
+    __root__: List[T] = []
+
+    def __init__(self, elements: Sequence[T] = ()) -> None:
+        """Allow passing data as a positional argument when instantiating class"""
+        super(DiffList, self).__init__(__root__=elements)
+
+    @property
+    def data(self) -> List[T]:  # type: ignore
+        """Define property `data` required for `collections.UserList` class"""
+        return self.__root__
+
+    def __iter__(self) -> Generator[Any, None, None]:
+        """Use list property as iterable"""
+        return (el for el in self.data)
+
+    def __sub__(
+        self, other: UserList[Any]
+    ) -> List[Tuple[Optional[MutableSequence[Any]], ...]]:
+        """Return the difference using `difflib.SequenceMatcher`"""
+        if type(self) != type(other):
+            raise TypeError(
+                f"Unsupported operand types for `-`: `{type(self).__name__}` and"
+                f" `{type(other).__name__}`"
+            )
+        s = SequenceMatcher(isjunk=None, a=self, b=other)
+        pairs = [(self[i1:j1], other[i2:j2]) for _, i1, j1, i2, j2 in s.get_opcodes()]
+        return [tuple(el if len(el) > 0 else None for el in pair) for pair in pairs]
+
+    @classmethod
+    def __get_validators__(cls) -> Generator[Callable[..., Any], None, None]:
+        yield cls.validate
+
+    @classmethod
+    def validate(cls, v: List[T]) -> DiffList[T]:
+        if not isinstance(v, cls):
+            return cls(v)
+        else:
+            return v
