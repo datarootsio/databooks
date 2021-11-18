@@ -24,6 +24,8 @@ def resolve(
     """
     Resolve differences for 'diff models' into one similar to the parent class
      ``databooks.data_models.Cell.BaseModelWithExtras`
+    :param model: DiffModel that is to be resolved (self when added as a method to a
+     class
     :param keep_first: Whether to keep the information from the prior in the
      'diff model' or the later
     :param ignore_none: Whether or not to ignore `None` values if encountered, and
