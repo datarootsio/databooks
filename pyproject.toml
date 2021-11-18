@@ -13,7 +13,7 @@ description = ""
 authors = ["Murilo Cunha <murilo@dataroots.io>"]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.9"
 typer = "^0.3.2"
 rich = "^10.6.0"
 pydantic = "^1.8.2"
