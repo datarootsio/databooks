@@ -1,8 +1,8 @@
 """Data models - Base Pydantic model with custom methods"""
 from __future__ import annotations
 
-from collections import MutableSequence, Sequence, UserList
-from collections.abc import Generator, Iterable
+from collections import UserList
+from collections.abc import Generator, Iterable, MutableSequence, Sequence
 from difflib import SequenceMatcher
 from typing import Any, Callable, Generic, Optional, Protocol, TypeVar, cast
 
