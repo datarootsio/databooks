@@ -1,26 +1,47 @@
 """Data models - Base Pydantic model with custom methods"""
 from __future__ import annotations
 
+from abc import abstractmethod
 from collections import UserList
-from collections.abc import Generator, Iterable, MutableSequence, Sequence
-from difflib import SequenceMatcher
-from typing import Any, Callable, Generic, Optional, Protocol, TypeVar, cast
+from collections.abc import Iterable
+from typing import Any, Generic, Protocol, TypeVar, cast, overload, runtime_checkable
 
 from pydantic import BaseModel, Extra, create_model
-from pydantic.generics import GenericModel
 
 T = TypeVar("T")
 
 
+@runtime_checkable
 class DiffModel(Protocol, Iterable):
     """Protocol for mypy static type checking"""
 
     is_diff: bool
 
+    def resolve(self, *args: Any, **kwargs: Any) -> BaseModelWithExtras:
+        ...
 
 def resolve(
-    model: DiffModel, *, keep_first: bool = True, ignore_none: bool = True
+    model: DiffModel,
+    **kwargs: Any,
 ) -> BaseModelWithExtras:
+    ...
+
+
+@overload
+def resolve(
+    model: BaseCells,
+    **kwargs: Any,
+) -> list[T]:
+    ...
+
+
+def resolve(
+    model: DiffModel | BaseCells,
+    *,
+    keep_first: bool = True,
+    ignore_none: bool = True,
+    **kwargs: Any,
+) -> BaseModelWithExtras | list[T]:
     """
     Resolve differences for 'diff models' into one similar to the parent class
      ``databooks.data_models.Cell.BaseModelWithExtras`

@@ -1,12 +1,14 @@
 """Data models - Jupyter Notebooks and components"""
 from __future__ import annotations
 
-from collections.abc import Sequence
-from typing import Any, Union
+from difflib import SequenceMatcher
+from itertools import chain
+from typing import Any, Callable, Generator, Optional, Sequence, TypeVar, Union
 
 from pydantic import BaseModel, Extra, root_validator, validator
+from pydantic.generics import GenericModel
 
-from databooks.data_models.base import BaseModelWithExtras, DiffList
+from databooks.data_models.base import BaseCells, BaseModelWithExtras
 
 
 class NotebookMetadata(BaseModelWithExtras):
