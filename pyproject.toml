@@ -1,6 +1,7 @@
 [tool.mypy]
 disallow_untyped_calls = true
 disallow_untyped_defs = true
+exclude = "tests/"
 
 [tool.isort]
 profile = "black"
