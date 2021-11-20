@@ -1,8 +1,5 @@
 """Test base data models and components"""
-from typing import cast
-
 from databooks.data_models.base import BaseModelWithExtras
-from databooks.data_models.notebook import Cells
 
 
 def test_base_sub() -> None:
