@@ -20,6 +20,16 @@ class DiffModel(Protocol, Iterable):
     def resolve(self, *args: Any, **kwargs: Any) -> BaseModelWithExtras:
         ...
 
+
+class BaseCells(UserList[T], Generic[T]):
+    @abstractmethod
+    def resolve(self, **kwargs: Any) -> list:
+        raise NotImplementedError
+
+    ...
+
+
+@overload
 def resolve(
     model: DiffModel,
     **kwargs: Any,
@@ -53,20 +63,27 @@ def resolve(
      use the other field value
     :return: Model with selected fields from the differences
     """
-    if not (hasattr(model, "is_diff") and model.is_diff):
-        raise TypeError("Can only resolve 'diff models' (when `is_diff=True`).")
+    field_d = dict(model)
+    is_diff = field_d.pop("is_diff")
+    if not is_diff:
+        raise TypeError("Can only resolve dynamic 'diff models' (when `is_diff=True`).")
 
-    field_vals = {
-        field: value[not keep_first]
-        if value[not keep_first] is not None and ignore_none
-        else value[keep_first]
-        for field, value in model
-        if field != "is_diff"
-    }
+    res_vals = cast(dict[str, Any], {})
+    for name, value in field_d.items():
+        if isinstance(value, (DiffModel, BaseCells)):
+            res_vals[name] = value.resolve(
+                keep_first=keep_first, ignore_none=ignore_none, **kwargs
+            )
+        else:
+            res_vals[name] = (
+                value[keep_first]
+                if value[not keep_first] is None and ignore_none
+                else value[not keep_first]
+            )
 
-    field_vals["is_diff"] = False
+    res_vals["is_diff"] = False
 
-    return model.__class__.__bases__[0](**field_vals)
+    return model.__class__.__bases__[0](**res_vals)
 
 
 class BaseModelWithExtras(BaseModel):
@@ -114,7 +131,7 @@ class BaseModelWithExtras(BaseModel):
             self_val = self_d.get(name)
             other_val = other_d.get(name)
             if type(self_val) is type(other_val) and all(
-                isinstance(val, (BaseModelWithExtras, DiffList))
+                isinstance(val, (BaseModelWithExtras, BaseCells))
                 for val in (self_val, other_val)
             ):
                 # Recursively get the diffs for nested models
@@ -131,46 +148,3 @@ class BaseModelWithExtras(BaseModel):
             **cast(dict[str, Any], fields_d),
         )
         return DiffModel()  # it'll be filled in with the defaults
-
-
-class DiffList(GenericModel, UserList[T], Generic[T]):
-    """Similar to `list`, with `-` operator using `difflib.SequenceMatcher`"""
-
-    __root__: list[T] = []
-
-    def __init__(self, elements: Sequence[T] = ()) -> None:
-        """Allow passing data as a positional argument when instantiating class"""
-        super(DiffList, self).__init__(__root__=elements)
-
-    @property
-    def data(self) -> list[T]:  # type: ignore
-        """Define property `data` required for `collections.UserList` class"""
-        return self.__root__
-
-    def __iter__(self) -> Generator[Any, None, None]:
-        """Use list property as iterable"""
-        return (el for el in self.data)
-
-    def __sub__(
-        self, other: UserList[Any]
-    ) -> list[tuple[Optional[MutableSequence[Any]], ...]]:
-        """Return the difference using `difflib.SequenceMatcher`"""
-        if type(self) != type(other):
-            raise TypeError(
-                f"Unsupported operand types for `-`: `{type(self).__name__}` and"
-                f" `{type(other).__name__}`"
-            )
-        s = SequenceMatcher(isjunk=None, a=self, b=other)
-        pairs = [(self[i1:j1], other[i2:j2]) for _, i1, j1, i2, j2 in s.get_opcodes()]
-        return [tuple(el if len(el) > 0 else None for el in pair) for pair in pairs]
-
-    @classmethod
-    def __get_validators__(cls) -> Generator[Callable[..., Any], None, None]:
-        yield cls.validate
-
-    @classmethod
-    def validate(cls, v: list[T]) -> DiffList[T]:
-        if not isinstance(v, cls):
-            return cls(v)
-        else:
-            return v

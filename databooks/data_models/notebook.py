@@ -104,11 +104,85 @@ class Cell(BaseModel, extra=Extra.allow):
         return values
 
 
-class JupyterNotebook(BaseModelWithExtras, extra=Extra.forbid):
+# https://github.com/python/mypy/issues/9459
+T = TypeVar("T", Cell, tuple[Optional[list[Cell]], ...])  # type: ignore
+
+
+class Cells(GenericModel, BaseCells[T]):
+    """Similar to `list`, with `-` operator using `difflib.SequenceMatcher`"""
+
+    __root__: Sequence[T] = []
+
+    def __init__(self, elements: Sequence[T] = ()) -> None:
+        """Allow passing data as a positional argument when instantiating class"""
+        super(Cells, self).__init__(__root__=elements)
+
+    @property
+    def data(self) -> list[T]:  # type: ignore
+        """Define property `data` required for `collections.UserList` class"""
+        return list(self.__root__)
+
+    def __iter__(self) -> Generator[Any, None, None]:
+        """Use list property as iterable"""
+        return (el for el in self.data)
+
+    def __sub__(
+        self: Cells[Cell], other: Cells[Cell]
+    ) -> Cells[tuple[Optional[list[Cell]], ...]]:
+        """Return the difference using `difflib.SequenceMatcher`"""
+        if type(self) != type(other):
+            raise TypeError(
+                f"Unsupported operand types for `-`: `{type(self).__name__}` and"
+                f" `{type(other).__name__}`"
+            )
+        s = SequenceMatcher(isjunk=None, a=self, b=other)
+        pairs = [
+            (self.data[i1:j1], other.data[i2:j2])
+            for _, i1, j1, i2, j2 in s.get_opcodes()
+        ]
+        # https://github.com/python/mypy/issues/9459
+        return Cells[tuple[Optional[list[Cell]], ...]](  # type: ignore
+            [tuple(el if len(el) > 0 else None for el in pair) for pair in pairs]
+        )
+
+    def resolve(
+        self: Cells[tuple[Optional[list[Cell]], ...]],
+        *,
+        keep_first_cells: Optional[bool] = None,
+        **kwargs: Any,
+    ) -> list[Cell]:
+        """Resolve differences between `databooks.data_models.notebook.Cells`"""
+        if keep_first_cells is not None:
+            return list(
+                chain.from_iterable(
+                    pairs[not keep_first_cells]  # type: ignore
+                    for pairs in self.data
+                    if pairs[not keep_first_cells] is not None
+                )
+            )
+
+        else:
+            unique_vals = [set(pair) for pair in self.data]
+            return []
+            # Cellif len(v) > 1
+
+    @classmethod
+    def __get_validators__(cls) -> Generator[Callable[..., Any], None, None]:
+        yield cls.validate
+
+    @classmethod
+    def validate(cls, v: list[T]) -> Cells[T]:
+        if not isinstance(v, cls):
+            return cls(v)
+        else:
+            return v
+
+
+class JupyterNotebook(BaseModelWithExtras, extra=Extra.ignore):
     nbformat: int
     nbformat_minor: int
     metadata: NotebookMetadata
-    cells: DiffList[Cell]
+    cells: Cells[Cell]
 
     def clear_metadata(
         self,
@@ -144,7 +218,7 @@ class JupyterNotebook(BaseModelWithExtras, extra=Extra.forbid):
         self.metadata.remove_fields(notebook_metadata_remove)  # type: ignore
 
         if len(cell_kwargs) > 0:
-            _nb_cells: DiffList[Cell] = DiffList()
+            _nb_cells: Cells[Cell] = Cells()
             for cell in self.cells:
                 cell.clear_metadata(**cell_kwargs)
                 _nb_cells.append(cell)
