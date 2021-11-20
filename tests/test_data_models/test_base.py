@@ -1,5 +1,8 @@
 """Test base data models and components"""
-from databooks.data_models.base import BaseModelWithExtras, DiffList
+from typing import cast
+
+from databooks.data_models.base import BaseModelWithExtras
+from databooks.data_models.notebook import Cells
 
 
 def test_base_sub() -> None:
@@ -16,19 +19,12 @@ def test_base_sub() -> None:
         "bar": ("2", 4),
     }
 
-    assert diff.resolve(keep_first=True) == BaseModelWithExtras(  # type: ignore
+    assert diff.resolve(keep_first=True, ignore_none=True) == BaseModelWithExtras(
         is_diff=False, test=0, foo=1, bar="2", baz=2.3
     )
-
-
-def test_difflists() -> None:
-    """Test cell type"""
-    dl1 = DiffList((2, 1, 2, 3))
-    dl2 = DiffList((1, 2, 3, 4))
-
-    diff = dl1 - dl2
-    assert diff == [
-        (DiffList([2]), None),
-        (DiffList([1, 2, 3]), DiffList([1, 2, 3])),
-        (None, DiffList([4])),
-    ]
+    assert diff.resolve(keep_first=False, ignore_none=True) == BaseModelWithExtras(
+        is_diff=False, test=0, foo=2, bar=4, baz=2.3
+    )
+    assert diff.resolve(keep_first=True, ignore_none=False) == BaseModelWithExtras(
+        is_diff=False, test=0, foo=1, bar="2", baz=None
+    )

@@ -1,7 +1,10 @@
 """Test data models for notebook components"""
+from typing import Optional
+
 from databooks.data_models.notebook import (
     Cell,
     CellMetadata,
+    Cells,
     JupyterNotebook,
     NotebookMetadata,
 )
@@ -65,6 +68,17 @@ class TestCell:
             source=["test_source"],
             execution_count=None,
         )
+
+    def test_cells(self) -> None:
+        """Test cell type"""
+        dl1 = Cells[Cell]([self.cell])
+        dl2 = Cells[Cell]([self.cell] * 2)
+
+        diff = dl1 - dl2
+
+        assert type(dl1) == type(dl2) == Cells[Cell]
+        assert type(diff) == Cells[tuple[Optional[list[Cell]], ...]]
+        assert diff == Cells([([self.cell], [self.cell]), (None, [self.cell])])
 
 
 class TestJupyterNotebook(TestNotebookMetadata, TestCell):
