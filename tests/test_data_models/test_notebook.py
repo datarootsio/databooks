@@ -122,18 +122,40 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
                 display_name="different_kernel_display_name", name="kernel_name"
             ),
             field_to_remove=["Field to remove"],
-            another_field_to_remove="another field to remove",
+            another_field_to_remove="another field",
         )
-        notebook_2.cells = notebook_2.cells + [
-            Cell(
-                cell_type="raw",
-                metadata=CellMetadata(random_meta=["meta"]),
-                source="extra",
-            )
-        ]
+        extra_cell = Cell(
+            cell_type="raw",
+            metadata=CellMetadata(random_meta=["meta"]),
+            source="extra",
+        )
+        notebook_2.cells = notebook_2.cells + [extra_cell]
 
         diff = notebook_1 - notebook_2
-        print(diff.cells)
-        # print(diff.metadata)
+        notebook = deepcopy(notebook_1)
 
-        raise NotImplementedError
+        notebook.metadata.is_diff = False
+        assert diff.resolve(keep_first_cells=True) == notebook
+
+        notebook.cells = notebook_2.cells
+        assert diff.resolve(keep_first_cells=False) == notebook
+
+        notebook.cells = notebook_1.cells + [
+            Cell(
+                metadata=CellMetadata(git_hash=None),
+                source=["`<<<<<<< None`"],
+                cell_type="markdown",
+            ),
+            Cell(
+                source=["`=======`"],
+                cell_type="markdown",
+                metadata=CellMetadata(),
+            ),
+            extra_cell,
+            Cell(
+                metadata=CellMetadata(git_hash=None),
+                source=["`>>>>>>> None`"],
+                cell_type="markdown",
+            ),
+        ]
+        assert diff.resolve(keep_first_cells=None) == notebook
