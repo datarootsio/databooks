@@ -32,10 +32,13 @@ def get_repo(path: FilePath = Path.cwd()) -> Repo:
 
 def blob2commit(blob: Blob, repo: Repo = get_repo()) -> str:
     """Get the short commit message from blob hash"""
-    # TODO: change logic if conflict comes from stash?
-    # https://stackoverflow.com/questions/64617225/git-get-hash-of-unmerged-files
     _git = Git(working_dir=repo.working_dir)
-    return _git.log(find_object=blob, max_count=1, all=True, oneline=True)
+    commit_id = _git.log(find_object=blob, max_count=1, all=True, oneline=True)
+    return (
+        commit_id
+        if len(commit_id) > 0
+        else _git.stash("list", "--oneline", "--max-count", "1", "--find-object", blob)
+    )
 
 
 def get_conflict_blobs(repo: Repo = get_repo()) -> Generator[ConflictFile, None, None]:
