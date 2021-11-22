@@ -1,6 +1,7 @@
 from dataclasses import dataclass
+from os import PathLike
 from pathlib import Path
-from typing import Generator
+from typing import Generator, Union
 
 from git import Blob, Git, Repo  # type: ignore
 from pydantic import FilePath
@@ -12,13 +13,13 @@ logger = get_logger(name=__file__)
 
 @dataclass
 class UnmergedBlob:
-    filename: str
-    stage: dict[int, Blob]  # see
+    filename: Union[str, PathLike]
+    stage: dict[int, Blob]
 
 
 @dataclass
 class ConflictFile:
-    filename: str
+    filename: Union[str, PathLike]
     hash_id: str
     contents: str
 
@@ -42,9 +43,12 @@ def blob2commit(blob: Blob, repo: Repo = get_repo()) -> str:
 
 
 def get_conflict_blobs(repo: Repo = get_repo()) -> Generator[ConflictFile, None, None]:
+    """Get the source files for conflicts"""
     unmerged_blobs = repo.index.unmerged_blobs()
     blobs = (
-        UnmergedBlob(filename=str(k), stage=dict(v)) for k, v in unmerged_blobs.items()
+        UnmergedBlob(filename=k, stage=dict(v))
+        for k, v in unmerged_blobs.items()
+        if 0 not in dict(v).keys()  # only get blobs that could not be merged
     )
     return (
         ConflictFile(
@@ -53,5 +57,5 @@ def get_conflict_blobs(repo: Repo = get_repo()) -> Generator[ConflictFile, None,
             contents=repo.git.show(blob.stage[i]),
         )
         for blob in blobs
-        for i in (1, 2)
+        for i in (2, 3)  # take target and current stages - see `gitrevisions` docs
     )
