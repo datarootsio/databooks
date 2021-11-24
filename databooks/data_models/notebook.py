@@ -195,16 +195,16 @@ class Cells(GenericModel, BaseCells[T]):
         self: Cells[tuple[Optional[list[Cell]], ...]],
         *,
         keep_first_cells: Optional[bool] = None,
-        hash_first: Optional[str] = None,
-        hash_last: Optional[str] = None,
+        first_id: Optional[str] = None,
+        last_id: Optional[str] = None,
         **kwargs: Any,
     ) -> list[Cell]:
         """
         Resolve differences between `databooks.data_models.notebook.Cells`
         :param keep_first_cells: Whether to keep the cells of the first notebook or not.
          If `None`, then keep both wrapping the git-diff tags
-        :param hash_first: Git hash of first file in conflict
-        :param hash_last: Git hash of last file in conflict
+        :param first_id: Git hash of first file in conflict
+        :param last_id: Git hash of last file in conflict
         :param kwargs: (Unused) keyword arguments to keep compatibility with
          `databooks.data_models.base.resolve`
         :return: List of cells
@@ -223,8 +223,8 @@ class Cells(GenericModel, BaseCells[T]):
                 Cells.wrap_git(
                     first_cells=val[0],
                     last_cells=val[1],
-                    hash_first=hash_first,
-                    hash_last=hash_last,
+                    hash_first=first_id,
+                    hash_last=last_id,
                 )
                 if val[0] != val[1]
                 else val[0]
