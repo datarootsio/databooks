@@ -44,3 +44,29 @@ def test_get_repo() -> None:
     assert repo.working_dir is not None
     assert isinstance(repo, Repo)
     assert Path(repo.working_dir).stem == "databooks"
+
+
+def test_get_conflict_blobs(git_repo: GitRepo) -> None:
+    """Return `databooks.git_utils.ConflctFile` from git merge conflict"""
+    filename = "hello.txt"
+    git_repo = init_repo_conflicts(
+        git_repo=git_repo,
+        filename=filename,
+        contents_main="HELLO EVERYONE!",
+        contents_other="hello world",
+        commit_message_main="Commit message from main",
+        commit_message_other="Commit message from other",
+    )
+    conflicts = list(get_conflict_blobs(repo=git_repo.api))
+    assert len(conflicts) == 1
+
+    conflict = conflicts[0]
+    assert isinstance(conflict, ConflictFile)
+    assert conflict.filename == PosixPath(filename)
+
+    # Git logs start with git has, which won't match
+    assert conflict.first_log.endswith("Commit message from main")
+    assert conflict.last_log.endswith("Commit message from other")
+
+    assert conflict.first_contents == "HELLO EVERYONE!"
+    assert conflict.last_contents == "hello world"
