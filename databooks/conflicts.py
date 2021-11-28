@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Generator, Optional, cast
 
+from git import Repo
+
 from databooks.data_models.base import DiffModel
 from databooks.data_models.notebook import JupyterNotebook
 from databooks.git_utils import get_conflict_blobs, get_repo
@@ -17,7 +19,9 @@ class DiffFile:
     last_id: str
 
 
-def path2diff(nb_path: Path) -> Generator[DiffFile, None, None]:
+def path2diff(
+    nb_path: Path, repo: Optional[Repo] = None
+) -> Generator[DiffFile, None, None]:
     """
     Get the difference model from the path based on the git conflict information
     :param nb_path: Path to file with conflicts (must be glob expression, notebook or
@@ -28,7 +32,7 @@ def path2diff(nb_path: Path) -> Generator[DiffFile, None, None]:
         raise ValueError(
             "Expected either notebook fil(s), a directory or glob expression."
         )
-    repo = get_repo(nb_path)
+    repo = get_repo(nb_path) if repo is None else repo
     conflict_files = [
         f for f in get_conflict_blobs(repo=repo) if f.filename.match(str(nb_path))
     ]
