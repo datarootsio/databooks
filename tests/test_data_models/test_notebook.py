@@ -1,4 +1,5 @@
 """Test data models for notebook components"""
+from copy import deepcopy
 from typing import Optional
 
 from databooks.data_models.notebook import (
@@ -113,7 +114,6 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
         Use the `-` operator and resolve the diffs from the child classes with nested
          models
         """
-        from copy import deepcopy
 
         notebook_1 = deepcopy(self.jupyter_notebook)
         notebook_2 = deepcopy(self.jupyter_notebook)
