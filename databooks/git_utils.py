@@ -33,7 +33,7 @@ def get_repo(path: FilePath = Path.cwd()) -> Repo:
     return repo
 
 
-def blob2commit(blob: Blob, repo: Repo = get_repo()) -> str:
+def blob2commit(blob: Blob, repo: Repo) -> str:
     """Get the short commit message from blob hash"""
     _git = Git(working_dir=repo.working_dir)
     commit_id = _git.log(find_object=blob, max_count=1, all=True, oneline=True)
@@ -44,7 +44,7 @@ def blob2commit(blob: Blob, repo: Repo = get_repo()) -> str:
     )
 
 
-def get_conflict_blobs(repo: Repo = get_repo()) -> Generator[ConflictFile, None, None]:
+def get_conflict_blobs(repo: Repo) -> Generator[ConflictFile, None, None]:
     """Get the source files for conflicts"""
     unmerged_blobs = repo.index.unmerged_blobs()
     blobs = (
