@@ -1,6 +1,6 @@
 [[package]]
 name = "anyio"
-version = "3.3.4"
+version = "3.4.0"
 description = "High level compatibility layer for multiple asynchronous event loop implementations"
 category = "dev"
 optional = false
@@ -12,7 +12,7 @@ sniffio = ">=1.1"
 
 [package.extras]
 doc = ["sphinx-rtd-theme", "sphinx-autodoc-typehints (>=1.2.0)"]
-test = ["coverage[toml] (>=4.5)", "hypothesis (>=4.0)", "pytest (>=6.0)", "pytest-mock (>=3.6.1)", "trustme", "uvloop (<0.15)", "mock (>=4)", "uvloop (>=0.15)"]
+test = ["coverage[toml] (>=4.5)", "hypothesis (>=4.0)", "pytest (>=6.0)", "pytest-mock (>=3.6.1)", "trustme", "contextlib2", "uvloop (<0.15)", "mock (>=4)", "uvloop (>=0.15)"]
 trio = ["trio (>=0.16)"]
 
 [[package]]
@@ -141,7 +141,7 @@ pycparser = "*"
 
 [[package]]
 name = "charset-normalizer"
-version = "2.0.7"
+version = "2.0.8"
 description = "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet."
 category = "dev"
 optional = false
@@ -282,7 +282,7 @@ python-versions = "*"
 
 [[package]]
 name = "ipykernel"
-version = "6.5.0"
+version = "6.5.1"
 description = "IPython Kernel for Jupyter"
 category = "dev"
 optional = false
@@ -291,7 +291,7 @@ python-versions = ">=3.7"
 [package.dependencies]
 appnope = {version = "*", markers = "platform_system == \"Darwin\""}
 debugpy = ">=1.0.0,<2.0"
-ipython = ">=7.23.1,<8.0"
+ipython = ">=7.23.1"
 jupyter-client = "<8.0"
 matplotlib-inline = ">=0.1.0,<0.2.0"
 tornado = ">=4.2,<7.0"
@@ -302,7 +302,7 @@ test = ["pytest (!=5.3.4)", "pytest-cov", "flaky", "nose", "ipyparallel"]
 
 [[package]]
 name = "ipython"
-version = "7.29.0"
+version = "7.30.0"
 description = "IPython: Productive Interactive Computing"
 category = "dev"
 optional = false
@@ -412,7 +412,7 @@ format_nongpl = ["fqdn", "idna", "isoduration", "jsonpointer (>1.13)", "rfc3339-
 
 [[package]]
 name = "jupyter-client"
-version = "7.0.6"
+version = "7.1.0"
 description = "Jupyter protocol implementation and client libraries"
 category = "dev"
 optional = false
@@ -445,7 +445,7 @@ traitlets = "*"
 
 [[package]]
 name = "jupyter-server"
-version = "1.11.2"
+version = "1.12.1"
 description = "The backend—i.e. core services, APIs, and REST endpoints—to Jupyter web applications."
 category = "dev"
 optional = false
@@ -615,7 +615,7 @@ test = ["pytest", "pytest-tornasync", "pytest-console-scripts"]
 
 [[package]]
 name = "nbclient"
-version = "0.5.8"
+version = "0.5.9"
 description = "A client library for executing notebooks. Formerly nbconvert's ExecutePreprocessor."
 category = "dev"
 optional = false
@@ -840,7 +840,7 @@ twisted = ["twisted"]
 
 [[package]]
 name = "prompt-toolkit"
-version = "3.0.22"
+version = "3.0.23"
 description = "Library for building powerful interactive command lines in Python"
 category = "dev"
 optional = false
@@ -1060,7 +1060,7 @@ use_chardet_on_py3 = ["chardet (>=3.0.2,<5)"]
 
 [[package]]
 name = "rich"
-version = "10.15.0"
+version = "10.15.1"
 description = "Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal"
 category = "main"
 optional = false
@@ -1254,8 +1254,8 @@ content-hash = "d87125962694b3770e9b25009fedbf330344327bed3fa9476c0ea4b18dd9811e
 
 [metadata.files]
 anyio = [
-    {file = "anyio-3.3.4-py3-none-any.whl", hash = "sha256:4fd09a25ab7fa01d34512b7249e366cd10358cdafc95022c7ff8c8f8a5026d66"},
-    {file = "anyio-3.3.4.tar.gz", hash = "sha256:67da67b5b21f96b9d3d65daa6ea99f5d5282cb09f50eb4456f8fb51dffefc3ff"},
+    {file = "anyio-3.4.0-py3-none-any.whl", hash = "sha256:2855a9423524abcdd652d942f8932fda1735210f77a6b392eafd9ff34d3fe020"},
+    {file = "anyio-3.4.0.tar.gz", hash = "sha256:24adc69309fb5779bc1e06158e143e0b6d2c56b302a3ac3de3083c705a6ed39d"},
 ]
 appnope = [
     {file = "appnope-0.1.2-py2.py3-none-any.whl", hash = "sha256:93aa393e9d6c54c5cd570ccadd8edad61ea0c4b9ea7a01409020c9aa019eb442"},
@@ -1355,8 +1355,8 @@ cffi = [
     {file = "cffi-1.15.0.tar.gz", hash = "sha256:920f0d66a896c2d99f0adbb391f990a84091179542c205fa53ce5787aff87954"},
 ]
 charset-normalizer = [
-    {file = "charset-normalizer-2.0.7.tar.gz", hash = "sha256:e019de665e2bcf9c2b64e2e5aa025fa991da8720daa3c1138cadd2fd1856aed0"},
-    {file = "charset_normalizer-2.0.7-py3-none-any.whl", hash = "sha256:f7af805c321bfa1ce6714c51f254e0d5bb5e5834039bc17db7ebe3a4cec9492b"},
+    {file = "charset-normalizer-2.0.8.tar.gz", hash = "sha256:735e240d9a8506778cd7a453d97e817e536bb1fc29f4f6961ce297b9c7a917b0"},
+    {file = "charset_normalizer-2.0.8-py3-none-any.whl", hash = "sha256:83fcdeb225499d6344c8f7f34684c2981270beacc32ede2e669e94f7fa544405"},
 ]
 click = [
     {file = "click-7.1.2-py2.py3-none-any.whl", hash = "sha256:dacca89f4bfadd5de3d7489b7c8a566eee0d3676333fbb50030263894c38c0dc"},
@@ -1434,12 +1434,12 @@ iniconfig = [
     {file = "iniconfig-1.1.1.tar.gz", hash = "sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32"},
 ]
 ipykernel = [
-    {file = "ipykernel-6.5.0-py3-none-any.whl", hash = "sha256:f43de132feea90f86d68c51013afe9694f9415f440053ec9909dd656c75b04b5"},
-    {file = "ipykernel-6.5.0.tar.gz", hash = "sha256:299795cca2c4aed7e233e3ad5360e1c73627fd0dcec11a9e75d5b2df43629353"},
+    {file = "ipykernel-6.5.1-py3-none-any.whl", hash = "sha256:ff0cb4a67326d2f903b7d7a2e63719d082434b46f00536410bd4e3ad2b98f3b7"},
+    {file = "ipykernel-6.5.1.tar.gz", hash = "sha256:dd27172bccbbcfef952991e49372e4c6fd1c14eed0df05ebd5b4335cb27a81a2"},
 ]
 ipython = [
-    {file = "ipython-7.29.0-py3-none-any.whl", hash = "sha256:a658beaf856ce46bc453366d5dc6b2ddc6c481efd3540cb28aa3943819caac9f"},
-    {file = "ipython-7.29.0.tar.gz", hash = "sha256:4f69d7423a5a1972f6347ff233e38bbf4df6a150ef20fbb00c635442ac3060aa"},
+    {file = "ipython-7.30.0-py3-none-any.whl", hash = "sha256:c8f3e07aefb9cf9e067f39686f035ce09b27a1ee602116a3030b91b6fc138ee4"},
+    {file = "ipython-7.30.0.tar.gz", hash = "sha256:d41f8e80b99690122400f9b2069b12f670246a1b4cc5d332bd6c4e2500e6d6fb"},
 ]
 ipython-genutils = [
     {file = "ipython_genutils-0.2.0-py2.py3-none-any.whl", hash = "sha256:72dd37233799e619666c9f639a9da83c34013a73e8bbc79a7a6348d93c61fab8"},
@@ -1466,16 +1466,16 @@ jsonschema = [
     {file = "jsonschema-4.2.1.tar.gz", hash = "sha256:390713469ae64b8a58698bb3cbc3859abe6925b565a973f87323ef21b09a27a8"},
 ]
 jupyter-client = [
-    {file = "jupyter_client-7.0.6-py3-none-any.whl", hash = "sha256:074bdeb1ffaef4a3095468ee16313938cfdc48fc65ca95cc18980b956c2e5d79"},
-    {file = "jupyter_client-7.0.6.tar.gz", hash = "sha256:8b6e06000eb9399775e0a55c52df6c1be4766666209c22f90c2691ded0e338dc"},
+    {file = "jupyter_client-7.1.0-py3-none-any.whl", hash = "sha256:64d93752d8cbfba0c1030c3335c3f0d9797cd1efac012652a14aac1653db11a3"},
+    {file = "jupyter_client-7.1.0.tar.gz", hash = "sha256:a5f995a73cffb314ed262713ae6dfce53c6b8216cea9f332071b8ff44a6e1654"},
 ]
 jupyter-core = [
     {file = "jupyter_core-4.9.1-py3-none-any.whl", hash = "sha256:1c091f3bbefd6f2a8782f2c1db662ca8478ac240e962ae2c66f0b87c818154ea"},
     {file = "jupyter_core-4.9.1.tar.gz", hash = "sha256:dce8a7499da5a53ae3afd5a9f4b02e5df1d57250cf48f3ad79da23b4778cd6fa"},
 ]
 jupyter-server = [
-    {file = "jupyter_server-1.11.2-py3-none-any.whl", hash = "sha256:eb247b555f5bdfb4a219d78e86bc8769456a1a712d8e30a4dbe06e3fe7e8a278"},
-    {file = "jupyter_server-1.11.2.tar.gz", hash = "sha256:c1f32e0c1807ab2de37bf70af97a36b4436db0bc8af3124632b1f4441038bf95"},
+    {file = "jupyter_server-1.12.1-py3-none-any.whl", hash = "sha256:93a84d06c35613ecf3bc5de8ff2d92a410a3a5f57a3a23444ca75e4b2b390209"},
+    {file = "jupyter_server-1.12.1.tar.gz", hash = "sha256:f71e10ebaa6704a1e0fe76ec70a16a0804ab5a9d268f0c512e8c69086a8e86d1"},
 ]
 jupyterlab = [
     {file = "jupyterlab-3.2.4-py3-none-any.whl", hash = "sha256:b2375626001ab48af85e5da542a56a163ac8b490828642757e4e0e5e8c5af59d"},
@@ -1575,8 +1575,8 @@ nbclassic = [
     {file = "nbclassic-0.3.4.tar.gz", hash = "sha256:f00b07ef4908fc38fd332d2676ccd3ceea5076528feaf21bd27e809ef20f5578"},
 ]
 nbclient = [
-    {file = "nbclient-0.5.8-py3-none-any.whl", hash = "sha256:e85d4d6280d0a0237c1a6ec7a5e0757cf40a1fcb8c47253516b3a1f87f4ceae8"},
-    {file = "nbclient-0.5.8.tar.gz", hash = "sha256:34f52cc9cb831a5d8ccd7031537e354c75dc61a24487f998712d1289de320a25"},
+    {file = "nbclient-0.5.9-py3-none-any.whl", hash = "sha256:8a307be4129cce5f70eb83a57c3edbe45656623c31de54e38bb6fdfbadc428b3"},
+    {file = "nbclient-0.5.9.tar.gz", hash = "sha256:99e46ddafacd0b861293bf246fed8540a184adfa3aa7d641f89031ec070701e0"},
 ]
 nbconvert = [
     {file = "nbconvert-6.3.0-py3-none-any.whl", hash = "sha256:8f23fbeabda4a500685d788ee091bf22cf34119304314304fb39f16e2fc32f37"},
@@ -1639,8 +1639,8 @@ prometheus-client = [
     {file = "prometheus_client-0.12.0.tar.gz", hash = "sha256:1b12ba48cee33b9b0b9de64a1047cbd3c5f2d0ab6ebcead7ddda613a750ec3c5"},
 ]
 prompt-toolkit = [
-    {file = "prompt_toolkit-3.0.22-py3-none-any.whl", hash = "sha256:48d85cdca8b6c4f16480c7ce03fd193666b62b0a21667ca56b4bb5ad679d1170"},
-    {file = "prompt_toolkit-3.0.22.tar.gz", hash = "sha256:449f333dd120bd01f5d296a8ce1452114ba3a71fae7288d2f0ae2c918764fa72"},
+    {file = "prompt_toolkit-3.0.23-py3-none-any.whl", hash = "sha256:5f29d62cb7a0ecacfa3d8ceea05a63cd22500543472d64298fc06ddda906b25d"},
+    {file = "prompt_toolkit-3.0.23.tar.gz", hash = "sha256:7053aba00895473cb357819358ef33f11aa97e4ac83d38efb123e5649ceeecaf"},
 ]
 ptyprocess = [
     {file = "ptyprocess-0.7.0-py2.py3-none-any.whl", hash = "sha256:4b41f3967fce3af57cc7e94b888626c18bf37a083e3651ca8feeb66d492fef35"},
@@ -1866,8 +1866,8 @@ requests = [
     {file = "requests-2.26.0.tar.gz", hash = "sha256:b8aa58f8cf793ffd8782d3d8cb19e66ef36f7aba4353eec859e74678b01b07a7"},
 ]
 rich = [
-    {file = "rich-10.15.0-py3-none-any.whl", hash = "sha256:11516740a10dddead0c782dc11fdde552b19fd0614dbbba8f78ea7602d940720"},
-    {file = "rich-10.15.0.tar.gz", hash = "sha256:3f7b0851e097ae90e43216375db413c2f910a0f310705614bce1a2ae43c8264e"},
+    {file = "rich-10.15.1-py3-none-any.whl", hash = "sha256:a59fb2721c52c5061ac65f318c0afb709e098b1ab6ce5813ea38982654c4b6ee"},
+    {file = "rich-10.15.1.tar.gz", hash = "sha256:93d0ea3c35ecfd8703dbe52b76885e224ad8d68c7766c921c726b14b22a57b7d"},
 ]
 send2trash = [
     {file = "Send2Trash-1.8.0-py3-none-any.whl", hash = "sha256:f20eaadfdb517eaca5ce077640cb261c7d2698385a6a0f072a4a5447fd49fa08"},
