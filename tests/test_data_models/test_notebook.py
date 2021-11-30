@@ -42,7 +42,9 @@ class TestCell:
             metadata=self.cell_metadata,
             source=["test_source"],
             execution_count=1,
-            outputs=["example output\n"],
+            outputs=[
+                {"name": "stdout", "output_type": "stream", "text": ["test text\n"]}
+            ],
         )
 
     def test_cell_metadata(self) -> None:
