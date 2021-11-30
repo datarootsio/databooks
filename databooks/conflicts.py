@@ -2,19 +2,28 @@
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Generator, Optional, cast
+from typing import Any, Generator, Optional, cast
 
 from git import Repo
 
-from databooks.data_models.base import DiffModel
+from databooks.data_models.base import BaseCells, DiffModel
 from databooks.data_models.notebook import JupyterNotebook
 from databooks.git_utils import get_conflict_blobs, get_repo
+
+
+class DiffJupyterNotebook(DiffModel):
+    """Protocol for mypy static type checking"""
+
+    nbformat: int
+    nbformat_minor: int
+    metadata: dict[str, Any]
+    cells: BaseCells[Any]
 
 
 @dataclass
 class DiffFile:
     filename: Path
-    diff_notebook: DiffModel
+    diff_notebook: DiffJupyterNotebook
     first_id: str
     last_id: str
 
@@ -28,9 +37,9 @@ def path2diff(
      directory)
     :return: Generator of `DiffModel`s, to be resolved
     """
-    if not (nb_path.suffix in ("", ".ipynb") or nb_path.is_dir()):
+    if nb_path.suffix not in ("", ".ipynb"):
         raise ValueError(
-            "Expected either notebook fil(s), a directory or glob expression."
+            "Expected either notebook files, a directory or glob expression."
         )
     repo = get_repo(nb_path) if repo is None else repo
     conflict_files = [
@@ -41,7 +50,29 @@ def path2diff(
         nb_2 = JupyterNotebook.parse_raw(f.last_contents)
         yield DiffFile(
             filename=Path(f.filename),
-            diff_notebook=cast(DiffModel, nb_1 - nb_2),
+            diff_notebook=cast(DiffJupyterNotebook, nb_1 - nb_2),
             first_id=f.first_log,
             last_id=f.last_log,
         )
+
+
+def diff2nb(
+    diff_file: DiffFile,
+    *,
+    keep_first: bool = True,
+    cells_first: Optional[bool] = None,
+    ignore_none: bool = True
+) -> JupyterNotebook:
+    """Merge diffs and return valid a notebook"""
+    nb = cast(
+        JupyterNotebook,
+        diff_file.diff_notebook.resolve(
+            ignore_none=ignore_none,
+            keep_first=keep_first,
+            keep_first_cells=cells_first,
+            first_id=diff_file.first_id,
+            last_id=diff_file.first_id,
+        ),
+    )
+    nb.remove_fields("is_diff", recursive=True)
+    return nb
