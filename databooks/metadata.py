@@ -34,5 +34,5 @@ def clear(
         cell_metadata_keep=cell_metadata_keep,
         **kwargs
     )
-    with open(write_path, "w") as out_file:
+    with write_path.open("w") as out_file:
         json.dump(nb.dict(), fp=out_file, indent=2)

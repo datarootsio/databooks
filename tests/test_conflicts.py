@@ -9,7 +9,7 @@ from tests.test_git_utils import init_repo_conflicts
 
 
 def test_path2diff(git_repo: GitRepo) -> None:
-    "Return a DiffFile based on a path and git conflicts"
+    """Return a DiffFile based on a path and git conflicts"""
     notebook_main = TestJupyterNotebook().jupyter_notebook
     notebook_other = TestJupyterNotebook().jupyter_notebook
 
