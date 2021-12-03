@@ -119,7 +119,7 @@ def meta(
 @app.command()
 def fix(
     paths: list[Path] = Argument(
-        Path.cwd(), help="Path or glob expression of file with conflicts"
+        ..., help="Path or glob expression of file with conflicts"
     ),
     ignore: list[str] = Option(["!*"], help="Glob expression(s) of files to ignore"),
     metadata_first: bool = Option(
