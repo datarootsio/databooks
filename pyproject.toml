@@ -13,6 +13,9 @@ version = "0.1.0"
 description = ""
 authors = ["Murilo Cunha <murilo@dataroots.io>"]
 
+[tool.poetry.scripts]
+databooks = "databooks.cli:app"
+
 [tool.poetry.dependencies]
 python = "^3.9"
 typer = "^0.3.2"
