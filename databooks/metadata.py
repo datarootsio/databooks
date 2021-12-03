@@ -60,3 +60,28 @@ def clear(
     return not nb_equals
 
 
+def clear_all(
+    read_paths: list[Path],
+    write_paths: list[Path],
+    *,
+    progress_callback: Callable[[], None] = lambda: None,
+    **clear_kwargs: Any,
+) -> list[bool]:
+    """
+    Clear metadata for multiple notebooks at notebooks and cell level.
+    :param read_paths: Paths of notebook to remove metadata
+    :param write_paths: Paths of where to write cleaned notebooks
+    :param progress_callback: Callback function to report progress
+    :param clear_kwargs: Keyword arguments to be passed to `databooks.metadata.clear`
+    :return: Whether the notebooks contained or not unwanted metadata
+    """
+    if len(read_paths) != len(write_paths):
+        raise ValueError(
+            "Read and write paths must have same length."
+            f" Got {len(read_paths)} and {len(write_paths)}"
+        )
+    checks = []
+    for nb_path, write_path in zip(read_paths, write_paths):
+        checks.append(clear(read_path=nb_path, write_path=write_path, **clear_kwargs))
+        progress_callback()
+    return checks
