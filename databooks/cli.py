@@ -61,7 +61,7 @@ def meta(
 ) -> None:
     """Clear notebook metadata"""
     if any(path.suffix not in ("", ".ipynb") for path in paths):
-        raise ValueError(
+        raise BadParameter(
             "Expected either notebook files, a directory or glob expression."
         )
     nb_paths = expand_paths(paths=paths, ignore=ignore)
@@ -139,7 +139,7 @@ def fix(
     filepaths = expand_paths(paths=paths, ignore=ignore)
     diffs = list(path2diffs(nb_paths=filepaths))
     if not diffs:
-        raise ValueError(
+        raise BadParameter(
             f"No conflicts found at {', '.join([str(p) for p in filepaths])}."
         )
     if interactive:
