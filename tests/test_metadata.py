@@ -16,19 +16,27 @@ def test_metadata_clear() -> None:
         cell_outputs=True,
     )
 
-    nb = JupyterNotebook.parse_file(path=write_path, content_type="json")
+    nb_read = JupyterNotebook.parse_file(path=read_path, content_type="json")
+    nb_write = JupyterNotebook.parse_file(path=write_path, content_type="json")
 
     assert write_path.exists()
-    assert all(cell.metadata == CellMetadata() for cell in nb.cells)
-    assert all(cell.outputs == [] for cell in nb.cells if cell.cell_type == "code")
+    assert len(nb_write.cells) == len(nb_read.cells)
+    assert all(cell.metadata == CellMetadata() for cell in nb_write.cells)
     assert all(
-        cell.execution_count is None for cell in nb.cells if cell.cell_type == "code"
+        cell.outputs == [] for cell in nb_write.cells if cell.cell_type == "code"
     )
     assert all(
-        not hasattr(cell, "outputs") for cell in nb.cells if cell.cell_type != "code"
+        cell.execution_count is None
+        for cell in nb_write.cells
+        if cell.cell_type == "code"
+    )
+    assert all(
+        not hasattr(cell, "outputs")
+        for cell in nb_write.cells
+        if cell.cell_type != "code"
     )
     assert all(
         not hasattr(cell, "execution_count")
-        for cell in nb.cells
+        for cell in nb_write.cells
         if cell.cell_type != "code"
     )
