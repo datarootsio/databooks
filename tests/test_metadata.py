@@ -3,12 +3,17 @@ from pathlib import Path
 
 from databooks.data_models.notebook import CellMetadata, JupyterNotebook
 from databooks.metadata import clear
+from tests.test_data_models.test_notebook import TestJupyterNotebook
+from databooks.common import write_notebook
 
 
-def test_metadata_clear() -> None:
+def test_metadata_clear(tmpdir) -> None:
     """Clear metadata from a notebook and write clean notebook"""
+    read_path = tmpdir.mkdir("notebooks") / "test_nb.ipynb"
+    write_notebook(nb=TestJupyterNotebook().jupyter_notebook, path=read_path)
+
     read_path = Path("notebooks/small.ipynb")
-    write_path = Path("notebooks/clean_small.ipynb")
+    write_path = read_path.parent / ("clean_" + read_path.name)
 
     clear(
         read_path=read_path,
