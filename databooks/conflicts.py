@@ -103,3 +103,14 @@ def diff2nb(
     if verbose:
         logger.info(f"Resolved conflicts in {diff_file.filename}.")
     return nb
+
+
+def diffs2nbs(
+    diff_files: list[DiffFile],
+    progress_callback: Callable[[], None] = lambda: None,
+    **diff2nb_kwargs: Any,
+) -> None:
+    for diff in diff_files:
+        nb = diff2nb(diff, **diff2nb_kwargs)
+        write_notebook(nb=nb, path=diff.filename)
+        progress_callback()
