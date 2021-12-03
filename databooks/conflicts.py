@@ -67,9 +67,28 @@ def diff2nb(
     *,
     keep_first: bool = True,
     cells_first: Optional[bool] = None,
-    ignore_none: bool = True
+    ignore_none: bool = True,
+    verbose: bool = False,
 ) -> JupyterNotebook:
-    """Merge diffs and return valid a notebook"""
+    """
+    Merge diffs and return valid a notebook
+    :param diff_file: DiffFile with path, DiffJupyterNotebook and IDs
+    :param keep_first: Whether to keep the metadata of the first or last notebook
+    :param cells_first: Whether to keep the cells of the first or last notebook
+    :param ignore_none: Keep all metadata fields even if it's included in only one
+     notebook
+    :param verbose: Log written files and metadata conflicts
+    :return: Resolved conflicts as a `databooks.data_models.notebook.JupyterNotebook`
+     model
+    """
+    first_meta, last_meta = diff_file.diff_notebook.metadata
+    if first_meta != last_meta and verbose:
+        msg = (
+            f"Notebook metadata conflict for {diff_file.filename}. Keeping " + "first."
+            if keep_first
+            else "last."
+        )
+        logger.info(msg)
     nb = cast(
         JupyterNotebook,
         diff_file.diff_notebook.resolve(
@@ -81,4 +100,6 @@ def diff2nb(
         ),
     )
     nb.remove_fields("is_diff", recursive=True)
+    if verbose:
+        logger.info(f"Resolved conflicts in {diff_file.filename}.")
     return nb
