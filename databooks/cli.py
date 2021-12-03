@@ -11,7 +11,7 @@ from rich.progress import (
     TimeElapsedColumn,
 )
 from rich.prompt import Confirm
-from typer import Argument, Exit, Option, Typer, echo
+from typer import Argument, BadParameter, Exit, Option, Typer, echo
 
 from databooks.common import expand_paths, get_logger
 from databooks.conflicts import diffs2nbs, path2diffs
@@ -24,15 +24,23 @@ _DISTRIBUTION_METADATA = metadata("databooks")
 app = Typer()
 
 
+def version_callback(value: bool) -> None:
+    if value:
+        echo("databooks version: " + _DISTRIBUTION_METADATA["Version"])
+        raise Exit()
+
+
 @app.callback()
-def callback(version: Optional[bool] = Option(None, "--version")) -> None:
+def callback(
+    version: Optional[bool] = Option(
+        None, "--version", callback=version_callback, is_eager=True
+    )
+) -> None:
     """
     Data science notebooks - set of helpers to ease collaboration of data scientists
      using Jupyter Notebooks. Easily resolve git conflicts and remove metadata to reduce
      the number of conflicts.
     """
-    if version:
-        echo("databooks version: " + _DISTRIBUTION_METADATA["Version"])
 
 
 @app.command()
