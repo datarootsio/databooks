@@ -4,7 +4,6 @@ from pathlib import Path
 from typing import Generator
 
 from git import Blob, Git, Repo  # type: ignore
-from pydantic import FilePath
 
 from databooks.common import get_logger
 
@@ -26,7 +25,7 @@ class ConflictFile:
     last_contents: str
 
 
-def get_repo(path: FilePath = Path.cwd()) -> Repo:
+def get_repo(path: Path = Path.cwd()) -> Repo:
     """Find git repo in current or parent directories"""
     repo = Repo(path=path, search_parent_directories=True)
     logger.info(f"Repo found at: {repo.working_dir}")

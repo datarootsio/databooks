@@ -2,7 +2,7 @@ from pathlib import Path, PosixPath
 
 from pytest_git import GitRepo
 
-from databooks.conflicts import DiffFile, path2diff
+from databooks.conflicts import DiffFile, path2diffs
 from databooks.data_models.notebook import Cell, CellMetadata, NotebookMetadata
 from tests.test_data_models.test_notebook import TestJupyterNotebook
 from tests.test_git_utils import init_repo_conflicts
@@ -38,7 +38,7 @@ def test_path2diff(git_repo: GitRepo) -> None:
         commit_message_other="Commit message from other",
     )
 
-    diff_files = list(path2diff(nb_path=nb_filepath, repo=git_repo.api))
+    diff_files = list(path2diffs(nb_paths=[nb_filepath], repo=git_repo.api))
 
     assert len(diff_files) == 1
 
