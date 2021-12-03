@@ -273,8 +273,8 @@ class JupyterNotebook(BaseModelWithExtras, extra=Extra.ignore):
         self.metadata.remove_fields(notebook_metadata_remove)  # type: ignore
 
         if len(cell_kwargs) > 0:
-            _nb_cells: Cells[Cell] = Cells()
+            _clean_cells = []
             for cell in self.cells:
                 cell.clear_metadata(**cell_kwargs)
-                _nb_cells.append(cell)
-            self.cells = _nb_cells
+                _clean_cells.append(cell)
+            self.cells = Cells(_clean_cells)
