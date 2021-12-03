@@ -2,13 +2,16 @@
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Generator, Optional, cast
+from typing import Any, Callable, Generator, Optional, cast
 
 from git import Repo
 
+from databooks.common import get_logger, write_notebook
 from databooks.data_models.base import BaseCells, DiffModel
 from databooks.data_models.notebook import JupyterNotebook
 from databooks.git_utils import get_conflict_blobs, get_repo
+
+logger = get_logger(__file__)
 
 
 class DiffJupyterNotebook(DiffModel):
@@ -28,8 +31,8 @@ class DiffFile:
     last_id: str
 
 
-def path2diff(
-    nb_path: Path, repo: Optional[Repo] = None
+def path2diffs(
+    nb_paths: list[Path], repo: Optional[Repo] = None
 ) -> Generator[DiffFile, None, None]:
     """
     Get the difference model from the path based on the git conflict information
@@ -37,13 +40,16 @@ def path2diff(
      directory)
     :return: Generator of `DiffModel`s, to be resolved
     """
-    if nb_path.suffix not in ("", ".ipynb"):
+    if any(nb_path.suffix not in ("", ".ipynb") for nb_path in nb_paths):
         raise ValueError(
             "Expected either notebook files, a directory or glob expression."
         )
-    repo = get_repo(nb_path) if repo is None else repo
+    common_parent = max(set.intersection(*[set(p.parents) for p in nb_paths]))
+    repo = get_repo(common_parent) if repo is None else repo
     conflict_files = [
-        f for f in get_conflict_blobs(repo=repo) if f.filename.match(str(nb_path))
+        f
+        for f in get_conflict_blobs(repo=repo)
+        if any(f.filename.match(str(p)) for p in nb_paths)
     ]
     for f in conflict_files:
         nb_1 = JupyterNotebook.parse_raw(f.first_contents)
