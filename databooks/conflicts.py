@@ -1,15 +1,16 @@
 """Functions to resolve any git conflicts between notebooks"""
 
-from dataclasses import dataclass
+from __future__ import annotations
+
 from pathlib import Path
-from typing import Any, Callable, Generator, Optional, cast
+from typing import Any, Callable, Optional, cast
 
 from git import Repo
 
 from databooks.common import get_logger, write_notebook
 from databooks.data_models.base import BaseCells, DiffModel
-from databooks.data_models.notebook import JupyterNotebook
-from databooks.git_utils import get_conflict_blobs, get_repo
+from databooks.data_models.notebook import Cell, Cells, JupyterNotebook
+from databooks.git_utils import ConflictFile, get_conflict_blobs, get_repo
 
 logger = get_logger(__file__)
 
@@ -23,21 +24,12 @@ class DiffJupyterNotebook(DiffModel):
     cells: BaseCells[Any]
 
 
-@dataclass
-class DiffFile:
-    filename: Path
-    diff_notebook: DiffJupyterNotebook
-    first_id: str
-    last_id: str
-
-
-def path2diffs(
+def path2conflicts(
     nb_paths: list[Path], repo: Optional[Repo] = None
-) -> Generator[DiffFile, None, None]:
+) -> list[ConflictFile]:
     """
     Get the difference model from the path based on the git conflict information
-    :param nb_path: Path to file with conflicts (must be glob expression, notebook or
-     directory)
+    :param nb_path: Path to file with conflicts (must be notebook paths)
     :return: Generator of `DiffModel`s, to be resolved
     """
     if any(nb_path.suffix not in ("", ".ipynb") for nb_path in nb_paths):
@@ -46,24 +38,17 @@ def path2diffs(
         )
     common_parent = max(set.intersection(*[set(p.parents) for p in nb_paths]))
     repo = get_repo(common_parent) if repo is None else repo
-    conflict_files = [
-        f
-        for f in get_conflict_blobs(repo=repo)
-        if any(f.filename.match(str(p)) for p in nb_paths)
+    return [
+        file
+        for file in get_conflict_blobs(repo=repo)
+        if any(
+            file.filename.match(str(p.name)) for p in nb_paths
+        )  # TODO: check - use p.resolve().relative_to(other)
     ]
-    for f in conflict_files:
-        nb_1 = JupyterNotebook.parse_raw(f.first_contents)
-        nb_2 = JupyterNotebook.parse_raw(f.last_contents)
-        yield DiffFile(
-            filename=Path(f.filename),
-            diff_notebook=cast(DiffJupyterNotebook, nb_1 - nb_2),
-            first_id=f.first_log,
-            last_id=f.last_log,
-        )
 
 
-def diff2nb(
-    diff_file: DiffFile,
+def conflict2nb(
+    conflict_file: ConflictFile,
     *,
     keep_first: bool = True,
     cells_first: Optional[bool] = None,
@@ -71,8 +56,8 @@ def diff2nb(
     verbose: bool = False,
 ) -> JupyterNotebook:
     """
-    Merge diffs and return valid a notebook
-    :param diff_file: DiffFile with path, DiffJupyterNotebook and IDs
+    Merge diffs from conflicts and return valid a notebook
+    :param conflict_file: A `databooks.git_utils.ConflictFile` with conflicts
     :param keep_first: Whether to keep the metadata of the first or last notebook
     :param cells_first: Whether to keep the cells of the first or last notebook
     :param ignore_none: Keep all metadata fields even if it's included in only one
@@ -81,36 +66,49 @@ def diff2nb(
     :return: Resolved conflicts as a `databooks.data_models.notebook.JupyterNotebook`
      model
     """
-    first_meta, last_meta = diff_file.diff_notebook.metadata
-    if first_meta != last_meta and verbose:
+    nb_1 = JupyterNotebook.parse_raw(conflict_file.first_contents)
+    nb_2 = JupyterNotebook.parse_raw(conflict_file.last_contents)
+    if nb_1.metadata != nb_2.metadata and verbose:
         msg = (
-            f"Notebook metadata conflict for {diff_file.filename}. Keeping " + "first."
+            f"Notebook metadata conflict for {conflict_file.filename}. Keeping "
+            + "first."
             if keep_first
             else "last."
         )
         logger.info(msg)
+
+    diff_nb = cast(DiffModel, nb_1 - nb_2)
     nb = cast(
         JupyterNotebook,
-        diff_file.diff_notebook.resolve(
+        diff_nb.resolve(
             ignore_none=ignore_none,
             keep_first=keep_first,
             keep_first_cells=cells_first,
-            first_id=diff_file.first_id,
-            last_id=diff_file.first_id,
+            first_id=conflict_file.first_log,
+            last_id=conflict_file.last_log,
         ),
     )
-    nb.remove_fields("is_diff", recursive=True)
     if verbose:
-        logger.info(f"Resolved conflicts in {diff_file.filename}.")
+        logger.info(f"Resolved conflicts in {conflict_file.filename}.")
     return nb
 
 
-def diffs2nbs(
-    diff_files: list[DiffFile],
+def conflicts2nbs(
+    conflict_files: list[ConflictFile],
+        *,
     progress_callback: Callable[[], None] = lambda: None,
-    **diff2nb_kwargs: Any,
+    **conflict2nb_kwargs: Any,
 ) -> None:
-    for diff in diff_files:
-        nb = diff2nb(diff, **diff2nb_kwargs)
-        write_notebook(nb=nb, path=diff.filename)
+    """
+    Wrap `databooks.conflicts.conflict2nb` to write notebooks to list of
+     `databooks.git_utils.ConflictFile`
+    :param conflict_files: Files with source conflict files and one-liner git logs
+    :param progress_callback: Callback function to report progress
+    :param conflict2nb_kwargs: Keyword arguments to be passed to
+     `databooks.conflicts.conflict2nb`
+    :return:
+    """
+    for conflict in conflict_files:
+        nb = conflict2nb(conflict, **conflict2nb_kwargs)
+        write_notebook(nb=nb, path=conflict.filename)
         progress_callback()
