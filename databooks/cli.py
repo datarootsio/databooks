@@ -14,7 +14,7 @@ from rich.prompt import Confirm
 from typer import Argument, BadParameter, Exit, Option, Typer, echo
 
 from databooks.common import expand_paths, get_logger
-from databooks.conflicts import diffs2nbs, path2diffs
+from databooks.conflicts import conflicts2nbs, path2conflicts
 from databooks.metadata import clear_all
 
 logger = get_logger(__file__)
@@ -133,14 +133,17 @@ def fix(
         " Omit to keep both",
     ),
     interactive: bool = Option(
-        False, "--interactive", "-i", help="Interactively resolve the conflicts"
+        False,
+        "--interactive",
+        "-i",
+        help="Interactively resolve the conflicts (not implemented)",
     ),
     verbose: bool = Option(False, help="Log processed files in console"),
 ) -> None:
     """Fix git conflicts for notebooks"""
     filepaths = expand_paths(paths=paths, ignore=ignore)
-    diffs = list(path2diffs(nb_paths=filepaths))
-    if not diffs:
+    conflict_files = path2conflicts(nb_paths=filepaths)
+    if not conflict_files:
         raise BadParameter(
             f"No conflicts found at {', '.join([str(p) for p in filepaths])}."
         )
@@ -154,15 +157,17 @@ def fix(
         TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
         TimeElapsedColumn(),
     ) as progress:
-        conflicts = progress.add_task("[yellow]Removing metadata", total=len(diffs))
-        diffs2nbs(
-            diff_files=diffs,
+        conflicts = progress.add_task(
+            "[yellow]Removing metadata", total=len(conflict_files)
+        )
+        conflicts2nbs(
+            conflict_files=conflict_files,
             keep_first=metadata_first,
             cells_first=cells_first,
             verbose=verbose,
             progress_callback=lambda: progress.update(conflicts, advance=1),
         )
-    logger.info(f"Resolved the conflicts of {len(diffs)}!")
+    logger.info(f"Resolved the conflicts of {len(conflict_files)}!")
 
 
 @app.command()
