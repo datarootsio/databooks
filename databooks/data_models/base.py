@@ -90,7 +90,13 @@ class BaseModelWithExtras(BaseModel):
     class Config:
         extra = Extra.allow
 
-    def remove_fields(self, fields: Iterable[str], *, recursive: bool = False) -> None:
+    def remove_fields(
+        self,
+        fields: Iterable[str],
+        *,
+        recursive: bool = False,
+        missing_ok: bool = False,
+    ) -> None:
         """
         Remove selected fields
         :param fields: Fields to remove
@@ -98,11 +104,14 @@ class BaseModelWithExtras(BaseModel):
          nested models
         :return:
         """
+        d_model = dict(self)
         for field in fields:
-            if recursive and isinstance(getattr(self, field), BaseModelWithExtras):
-                getattr(self, field).remove_fields(fields)
+            field_val = d_model.get(field) if missing_ok else d_model[field]
+            if recursive and isinstance(field_val, BaseModelWithExtras):
+                field_val.remove_fields(fields)
             else:
-                delattr(self, field)
+                if d_model.pop(field, None):
+                    delattr(self, field)
 
     def __str__(self) -> str:
         """Equivalent to __repr__"""
@@ -139,8 +148,8 @@ class BaseModelWithExtras(BaseModel):
 
         # Build Pydantic models dynamically
         DiffModel = create_model(
-            "Diff" + self.__class__.__name__,
-            __base__=self.__class__,
+            "Diff" + type(self).__name__,
+            __base__=type(self),
             resolve=resolve,
             is_diff=True,
             **cast(dict[str, Any], fields_d),
