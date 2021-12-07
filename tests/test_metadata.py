@@ -1,10 +1,14 @@
 """Test metadata wrapper functions"""
+import logging
 from pathlib import Path
 
+from _pytest.logging import LogCaptureFixture
+from py._path.local import LocalPath
+
+from databooks.common import write_notebook
 from databooks.data_models.notebook import CellMetadata, JupyterNotebook
 from databooks.metadata import clear
-from tests.test_data_models.test_notebook import TestJupyterNotebook
-from databooks.common import write_notebook
+from tests.test_data_models.test_notebook import TestJupyterNotebook  # type: ignore
 
 
 def test_metadata_clear(tmpdir) -> None:

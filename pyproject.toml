@@ -1,7 +1,6 @@
 [tool.mypy]
 disallow_untyped_calls = true
 disallow_untyped_defs = true
-exclude = "tests/"
 
 [tool.isort]
 profile = "black"
@@ -28,9 +27,11 @@ black = "^21.7b0"
 isort = "^5.9.2"
 flake8 = "^3.9.2"
 pytest = "^6.2.4"
-jupyterlab = "^3.1.0"
+pytest-cov = "^3.0.0"
+coverage = "^6.2"
+typer-cli = "^0.0.12"
+lxml = "^4.6.4"
 mypy = "^0.910"
-pytest-git = "^1.7.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
