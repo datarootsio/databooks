@@ -43,7 +43,7 @@ def path2conflicts(
         for file in get_conflict_blobs(repo=repo)
         if any(
             file.filename.match(str(p.name)) for p in nb_paths
-        )  # TODO: check - use p.resolve().relative_to(other)
+        )
     ]
 
 
