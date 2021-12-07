@@ -31,7 +31,7 @@ def expand_paths(paths: list[Path], ignore: list[str]) -> list[Path]:
     Get paths of existing file from list of directory or file paths
     :param paths: Paths to consider (can be directories or files)
     :param ignore: Glob expressions of files to ignore
-    :return: List of existing paths
+    :return: List of existing paths for notebooks
     """
     paths = list(
         chain.from_iterable(
@@ -39,4 +39,8 @@ def expand_paths(paths: list[Path], ignore: list[str]) -> list[Path]:
         )
     )
 
-    return [p for p in paths if not any(p.match(i) for i in ignore) and p.exists()]
+    return [
+        p
+        for p in paths
+        if not any(p.match(i) for i in ignore) and p.exists() and p.suffix == ".ipynb"
+    ]
