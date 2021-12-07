@@ -81,9 +81,7 @@ def resolve(
                 else value[not keep_first]
             )
 
-    res_vals["is_diff"] = False
-
-    return model.__class__.__bases__[0](**res_vals)
+    return type(model).mro()[1](**res_vals)
 
 
 class BaseModelWithExtras(BaseModel):

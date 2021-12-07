@@ -1,7 +1,8 @@
 """Test data models for notebook components"""
 from copy import deepcopy
-from typing import Optional
+from typing import Optional, cast
 
+from databooks.data_models.base import DiffModel
 from databooks.data_models.notebook import (
     Cell,
     CellMetadata,
@@ -80,7 +81,7 @@ class TestCell:
         diff = dl1 - dl2
 
         assert type(dl1) == type(dl2) == Cells[Cell]
-        assert type(diff) == Cells[tuple[Optional[list[Cell]], ...]]
+        assert type(diff) == Cells[tuple[Optional[list[Cell]], ...]]  # type: ignore
         assert diff == Cells([([self.cell], [self.cell]), (None, [self.cell])])
 
 
@@ -133,10 +134,9 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
         )
         notebook_2.cells = notebook_2.cells + [extra_cell]
 
-        diff = notebook_1 - notebook_2
+        diff = cast(DiffModel, notebook_1 - notebook_2)
         notebook = deepcopy(notebook_1)
 
-        notebook.metadata.is_diff = False
         assert diff.resolve(keep_first_cells=True) == notebook
 
         notebook.cells = notebook_2.cells
