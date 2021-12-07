@@ -1,7 +1,7 @@
 """Git helper functions"""
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Generator
+from typing import cast
 
 from git import Blob, Git, Repo  # type: ignore
 
@@ -43,7 +43,7 @@ def blob2commit(blob: Blob, repo: Repo) -> str:
     )
 
 
-def get_conflict_blobs(repo: Repo) -> Generator[ConflictFile, None, None]:
+def get_conflict_blobs(repo: Repo) -> list[ConflictFile]:
     """Get the source files for conflicts"""
     unmerged_blobs = repo.index.unmerged_blobs()
     blobs = (
@@ -51,13 +51,15 @@ def get_conflict_blobs(repo: Repo) -> Generator[ConflictFile, None, None]:
         for k, v in unmerged_blobs.items()
         if 0 not in dict(v).keys()  # only get blobs that could not be merged
     )
-    return (
+    # Type checking: `repo.working_dir` is not None if repo is passed
+    repo.working_dir = cast(str, repo.working_dir)
+    return [
         ConflictFile(
-            filename=blob.filename,
+            filename=repo.working_dir / blob.filename,
             first_log=blob2commit(blob=blob.stage[2], repo=repo),
             last_log=blob2commit(blob=blob.stage[3], repo=repo),
             first_contents=repo.git.show(blob.stage[2]),
             last_contents=repo.git.show(blob.stage[3]),
         )
         for blob in blobs
-    )
+    ]
