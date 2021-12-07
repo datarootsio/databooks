@@ -29,7 +29,7 @@ def clear(
     :param verbose: Log written files
     :param kwargs: Additional keyword arguments to pass to
      `databooks.data_models.JupyterNotebook.clear_metadata`
-    :return: Whether notebooks contain unwanted metadata
+    :return: Whether notebooks are equal
     """
 
     if write_path is None:
@@ -41,7 +41,6 @@ def clear(
         cell_metadata_keep=cell_metadata_keep,
         **kwargs,
     )
-
     nb_equals = notebook == JupyterNotebook.parse_file(read_path, content_type="json")
     if verbose:
         if nb_equals or check:
@@ -55,9 +54,9 @@ def clear(
             write_notebook(nb=notebook, path=write_path)
             logger.info(f"Removed metadata from {read_path}, saved as {write_path}")
 
-    elif not nb_equals:
+    elif not nb_equals and not check:
         write_notebook(nb=notebook, path=write_path)
-    return not nb_equals
+    return nb_equals
 
 
 def clear_all(
