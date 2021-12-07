@@ -45,7 +45,7 @@ def callback(
 
 @app.command()
 def meta(
-    paths: list[Path] = Argument(..., help="Path(s) or glob expression(s) of files"),
+    paths: list[Path] = Argument(..., help="Path(s) of notebook files"),
     ignore: list[str] = Option(["!*"], help="Glob expression(s) of files to ignore"),
     prefix: str = Option("", help="Prefix to add to filepath when writing files"),
     suffix: str = Option("", help="Suffix to add to filepath when writing files"),
@@ -55,9 +55,13 @@ def meta(
     cell_meta_keep: list[str] = Option([], help="Cells metadata fields to keep"),
     overwrite: bool = Option(False, "--yes", "-y", help="Confirm overwrite of files"),
     check: bool = Option(
-        False, help="Don't write files but check whether there is unwanted metadata"
+        False,
+        "--check",
+        help="Don't write files but check whether there is unwanted metadata",
     ),
-    verbose: bool = Option(False, help="Log processed files in console"),
+    verbose: bool = Option(
+        False, "--verbose", "-v", help="Log processed files in console"
+    ),
 ) -> None:
     """Clear notebook metadata"""
     if any(path.suffix not in ("", ".ipynb") for path in paths):
@@ -90,7 +94,7 @@ def meta(
     ) as progress:
         metadata = progress.add_task("[yellow]Removing metadata", total=len(nb_paths))
 
-        checks = clear_all(
+        are_equal = clear_all(
             read_paths=nb_paths,
             write_paths=write_paths,
             progress_callback=lambda: progress.update(metadata, advance=1),
@@ -101,26 +105,24 @@ def meta(
             check=check,
             verbose=verbose,
         )
-
     if check:
         msg = (
             "No unwanted metadata!"
-            if all(checks)
-            else f"Found unwanted metadata in {sum(checks)} out of {len(checks)} files"
+            if all(are_equal)
+            else f"Found unwanted metadata in {sum(not eq for eq in are_equal)} out of"
+            f" {len(are_equal)} files"
         )
         logger.info(msg)
     else:
         logger.info(
-            f"The metadata of {sum(checks)} out of {len(checks)} notebooks"
-            " were removed!"
+            f"The metadata of {sum(not eq for eq in are_equal)} out of {len(are_equal)}"
+            " notebooks were removed!"
         )
 
 
 @app.command()
 def fix(
-    paths: list[Path] = Argument(
-        ..., help="Path or glob expression of file with conflicts"
-    ),
+    paths: list[Path] = Argument(..., help="Path(s) of notebook files with conflicts"),
     ignore: list[str] = Option(["!*"], help="Glob expression(s) of files to ignore"),
     metadata_first: bool = Option(
         True, help="Whether or not to keep the metadata from the first/current notebook"
