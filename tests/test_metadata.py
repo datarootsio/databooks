@@ -11,12 +11,40 @@ from databooks.metadata import clear
 from tests.test_data_models.test_notebook import TestJupyterNotebook  # type: ignore
 
 
-def test_metadata_clear(tmpdir) -> None:
+def test_metadata_clear__check_verbose(
+    tmpdir: LocalPath, caplog: LogCaptureFixture
+) -> None:
     """Clear metadata from a notebook and write clean notebook"""
-    read_path = tmpdir.mkdir("notebooks") / "test_nb.ipynb"
+    caplog.set_level(logging.INFO)
+    read_path = Path(tmpdir.mkdir("notebooks") / "test_nb.ipynb")  # type: ignore
     write_notebook(nb=TestJupyterNotebook().jupyter_notebook, path=read_path)
+    write_path = read_path.parent / ("clean_" + read_path.name)
 
-    read_path = Path("notebooks/small.ipynb")
+    clear(
+        read_path=read_path,
+        write_path=write_path,
+        cell_outputs=True,
+        check=True,
+        verbose=True,
+    )
+    logs = list(caplog.records)
+
+    assert (
+        JupyterNotebook.parse_file(path=read_path, content_type="json")
+        == TestJupyterNotebook().jupyter_notebook
+    )
+
+    assert not write_path.exists()
+    assert len(logs) == 1
+    assert logs[0].message == (
+        f"No action taken for {read_path} - only check (unwanted metadata found)."
+    )
+
+
+def test_metadata_clear(tmpdir: LocalPath) -> None:
+    """Clear metadata from a notebook and write clean notebook"""
+    read_path = Path(tmpdir.mkdir("notebooks") / "test_nb.ipynb")  # type: ignore
+    write_notebook(nb=TestJupyterNotebook().jupyter_notebook, path=read_path)
     write_path = read_path.parent / ("clean_" + read_path.name)
 
     clear(
