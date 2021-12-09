@@ -8,14 +8,14 @@ from typing import Any, Callable, Generator, Optional, Sequence, TypeVar, Union
 from pydantic import BaseModel, Extra, root_validator, validator
 from pydantic.generics import GenericModel
 
-from databooks.data_models.base import BaseCells, BaseModelWithExtras
+from databooks.data_models.base import BaseCells, DatabooksBase
 
 
-class NotebookMetadata(BaseModelWithExtras):
+class NotebookMetadata(DatabooksBase):
     ...
 
 
-class CellMetadata(BaseModelWithExtras):
+class CellMetadata(DatabooksBase):
     ...
 
 
@@ -233,7 +233,7 @@ class Cells(GenericModel, BaseCells[T]):
         )
 
 
-class JupyterNotebook(BaseModelWithExtras, extra=Extra.ignore):
+class JupyterNotebook(DatabooksBase, extra=Extra.ignore):
     nbformat: int
     nbformat_minor: int
     metadata: NotebookMetadata

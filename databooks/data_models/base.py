@@ -17,7 +17,7 @@ class DiffModel(Protocol, Iterable):
 
     is_diff: bool
 
-    def resolve(self, *args: Any, **kwargs: Any) -> BaseModelWithExtras:
+    def resolve(self, *args: Any, **kwargs: Any) -> DatabooksBase:
         ...
 
 
@@ -33,7 +33,7 @@ class BaseCells(UserList[T], Generic[T]):
 def resolve(
     model: DiffModel,
     **kwargs: Any,
-) -> BaseModelWithExtras:
+) -> DatabooksBase:
     ...
 
 
@@ -51,10 +51,10 @@ def resolve(
     keep_first: bool = True,
     ignore_none: bool = True,
     **kwargs: Any,
-) -> BaseModelWithExtras | list[T]:
+) -> DatabooksBase | list[T]:
     """
     Resolve differences for 'diff models' into one similar to the parent class
-     ``databooks.data_models.Cell.BaseModelWithExtras`
+     `databooks.data_models.Cell.DatabooksBase`
     :param model: DiffModel that is to be resolved (self when added as a method to a
      class
     :param keep_first: Whether to keep the information from the prior in the
@@ -84,7 +84,7 @@ def resolve(
     return type(model).mro()[1](**res_vals)
 
 
-class BaseModelWithExtras(BaseModel):
+class DatabooksBase(BaseModel):
     """Base Pydantic class with extras on managing fields."""
 
     class Config:
@@ -107,7 +107,7 @@ class BaseModelWithExtras(BaseModel):
         d_model = dict(self)
         for field in fields:
             field_val = d_model.get(field) if missing_ok else d_model[field]
-            if recursive and isinstance(field_val, BaseModelWithExtras):
+            if recursive and isinstance(field_val, DatabooksBase):
                 field_val.remove_fields(fields)
             else:
                 if d_model.pop(field, None):
@@ -117,7 +117,7 @@ class BaseModelWithExtras(BaseModel):
         """Equivalent to __repr__"""
         return repr(self)
 
-    def __sub__(self, other: BaseModelWithExtras) -> BaseModelWithExtras:
+    def __sub__(self, other: DatabooksBase) -> DatabooksBase:
         """
         The difference basically return models that replace each fields by a tuple,
          where for each field we have `field = (self_value, other_value)`
@@ -138,7 +138,7 @@ class BaseModelWithExtras(BaseModel):
             self_val = self_d.get(name)
             other_val = other_d.get(name)
             if type(self_val) is type(other_val) and all(
-                isinstance(val, (BaseModelWithExtras, BaseCells))
+                isinstance(val, (DatabooksBase, BaseCells))
                 for val in (self_val, other_val)
             ):
                 # Recursively get the diffs for nested models
