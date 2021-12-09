@@ -41,9 +41,7 @@ def path2conflicts(
     return [
         file
         for file in get_conflict_blobs(repo=repo)
-        if any(
-            file.filename.match(str(p.name)) for p in nb_paths
-        )
+        if any(file.filename.match(str(p.name)) for p in nb_paths)
     ]
 
 
@@ -95,7 +93,7 @@ def conflict2nb(
 
 def conflicts2nbs(
     conflict_files: list[ConflictFile],
-        *,
+    *,
     progress_callback: Callable[[], None] = lambda: None,
     **conflict2nb_kwargs: Any,
 ) -> None:
