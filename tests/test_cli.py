@@ -1,6 +1,6 @@
 import logging
-from pathlib import Path
 from importlib.metadata import version
+from pathlib import Path
 
 from _pytest.logging import LogCaptureFixture
 from py._path.local import LocalPath

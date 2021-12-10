@@ -82,7 +82,9 @@ class TestCell:
 
         assert type(dl1) == type(dl2) == Cells[Cell]
         assert type(diff) == Cells[Tuple[List[Cell], List[Cell]]]
-        assert diff == Cells([([self.cell], [self.cell]), ([], [self.cell])])
+        assert diff == Cells(
+            [([self.cell], [self.cell]), ([], [self.cell])]  # type: ignore
+        )
 
 
 class TestJupyterNotebook(TestNotebookMetadata, TestCell):
