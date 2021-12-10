@@ -1,14 +1,17 @@
 
 site_name: "databooks"
-site_description: "Data science collaboration with jupyter notebooks"
-site_url: "https://databooks.github.io/"
-repo_url: "https://github.com/databooks/databooks"
-edit_uri: "blob/master/docs/"
-repo_name: "databooks/databooks"
+site_description: "Documentation for `databooks`."
+site_url: "https://datarootsio.github.io/databooks"
+repo_url: "https://github.com/datarootsio/databooks"
+edit_uri: "blob/main/docs/"
+repo_name: "datarootsio/databooks"
 
 markdown_extensions:
+  - def_list
   - pymdownx.snippets:
       check_paths: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
 
 theme:
   name: "material"
@@ -27,7 +30,10 @@ theme:
 plugins:
 - search
 - autorefs
+- coverage
 - mkdocstrings:
+    watch:
+      - databooks
     handlers:
       python:
         selection:
