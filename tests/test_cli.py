@@ -35,7 +35,7 @@ def test_meta(tmpdir: LocalPath) -> None:
     write_notebook(nb=TestJupyterNotebook().jupyter_notebook, path=read_path)
 
     nb_read = JupyterNotebook.parse_file(path=read_path, content_type="json")
-    result = runner.invoke(app, ["meta", str(read_path)], input="y")
+    result = runner.invoke(app, ["meta", str(read_path), "--overwrite"])
     nb_write = JupyterNotebook.parse_file(path=read_path, content_type="json")
 
     assert result.exit_code == 0
