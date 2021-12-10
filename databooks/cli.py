@@ -1,5 +1,5 @@
 """Main CLI application"""
-from importlib.metadata import metadata
+from importlib.metadata import version
 from pathlib import Path
 from typing import List, Optional
 
@@ -19,14 +19,12 @@ from databooks.metadata import clear_all
 
 logger = get_logger(__file__)
 
-_DISTRIBUTION_METADATA = metadata("databooks")
-
 app = Typer()
 
 
 def version_callback(value: bool) -> None:
     if value:
-        echo("databooks version: " + _DISTRIBUTION_METADATA["Version"])
+        echo("databooks version: " + version("databooks"))
         raise Exit()
 
 
@@ -37,7 +35,7 @@ def callback(
     )
 ) -> None:
     """
-    Data science notebooks - set of helpers to ease collaboration of data scientists
+    Databooks - set of helpers to ease collaboration of data scientists
      using Jupyter Notebooks. Easily resolve git conflicts and remove metadata to reduce
      the number of conflicts.
     """
