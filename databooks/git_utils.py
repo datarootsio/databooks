@@ -1,7 +1,7 @@
 """Git helper functions"""
 from dataclasses import dataclass
 from pathlib import Path
-from typing import cast
+from typing import Dict, List, cast
 
 from git import Blob, Git, Repo  # type: ignore
 
@@ -13,7 +13,7 @@ logger = get_logger(name=__file__)
 @dataclass
 class UnmergedBlob:
     filename: Path
-    stage: dict[int, Blob]
+    stage: Dict[int, Blob]
 
 
 @dataclass
@@ -43,7 +43,7 @@ def blob2commit(blob: Blob, repo: Repo) -> str:
     )
 
 
-def get_conflict_blobs(repo: Repo) -> list[ConflictFile]:
+def get_conflict_blobs(repo: Repo) -> List[ConflictFile]:
     """Get the source files for conflicts"""
     unmerged_blobs = repo.index.unmerged_blobs()
     blobs = (

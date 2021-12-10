@@ -3,8 +3,18 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from collections import UserList
-from collections.abc import Iterable
-from typing import Any, Generic, Protocol, TypeVar, cast, overload, runtime_checkable
+from typing import (
+    Any,
+    Dict,
+    Generic,
+    Iterable,
+    List,
+    Protocol,
+    TypeVar,
+    cast,
+    overload,
+    runtime_checkable,
+)
 
 from pydantic import BaseModel, Extra, create_model
 
@@ -21,7 +31,7 @@ class DiffModel(Protocol, Iterable):
         ...
 
 
-class BaseCells(UserList[T], Generic[T]):
+class BaseCells(UserList, Generic[T]):
     @abstractmethod
     def resolve(self, **kwargs: Any) -> list:
         raise NotImplementedError
@@ -41,7 +51,7 @@ def resolve(
 def resolve(
     model: BaseCells,
     **kwargs: Any,
-) -> list[T]:
+) -> List[T]:
     ...
 
 
@@ -51,7 +61,7 @@ def resolve(
     keep_first: bool = True,
     ignore_none: bool = True,
     **kwargs: Any,
-) -> DatabooksBase | list[T]:
+) -> DatabooksBase | List[T]:
     """
     Resolve differences for 'diff models' into one similar to the parent class
      `databooks.data_models.Cell.DatabooksBase`
@@ -68,7 +78,7 @@ def resolve(
     if not is_diff:
         raise TypeError("Can only resolve dynamic 'diff models' (when `is_diff=True`).")
 
-    res_vals = cast(dict[str, Any], {})
+    res_vals = cast(Dict[str, Any], {})
     for name, value in field_d.items():
         if isinstance(value, (DiffModel, BaseCells)):
             res_vals[name] = value.resolve(
@@ -152,6 +162,6 @@ class DatabooksBase(BaseModel):
             __base__=type(self),
             resolve=resolve,
             is_diff=True,
-            **cast(dict[str, Any], fields_d),
+            **cast(Dict[str, Any], fields_d),
         )
         return DiffModel()  # it'll be filled in with the defaults

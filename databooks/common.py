@@ -3,6 +3,7 @@ import json
 import logging
 from itertools import chain
 from pathlib import Path
+from typing import List
 
 from rich.logging import RichHandler
 
@@ -26,7 +27,7 @@ def write_notebook(nb: JupyterNotebook, path: Path) -> None:
         json.dump(nb.dict(), fp=f, indent=2)
 
 
-def expand_paths(paths: list[Path], ignore: list[str]) -> list[Path]:
+def expand_paths(paths: List[Path], ignore: List[str]) -> List[Path]:
     """
     Get paths of existing file from list of directory or file paths
     :param paths: Paths to consider (can be directories or files)

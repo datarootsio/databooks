@@ -1,10 +1,20 @@
 """Data models - Jupyter Notebooks and components"""
 from __future__ import annotations
 
-from collections.abc import Sequence
 from difflib import SequenceMatcher
 from itertools import chain
-from typing import Any, Callable, Generator, Optional, TypeVar, Union
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Generator,
+    List,
+    Optional,
+    Sequence,
+    Tuple,
+    TypeVar,
+    Union,
+)
 
 from pydantic import BaseModel, Extra, root_validator, validator
 from pydantic.generics import GenericModel
@@ -27,7 +37,7 @@ class Cell(BaseModel, extra=Extra.allow):
     """
 
     metadata: CellMetadata
-    source: Union[list[str], str]
+    source: Union[List[str], str]
     cell_type: str
 
     def __hash__(self) -> int:
@@ -68,7 +78,7 @@ class Cell(BaseModel, extra=Extra.allow):
 
         if self.cell_type == "code":
             if cell_outputs:
-                self.outputs: list[dict[str, Any]] = []
+                self.outputs: List[Dict[str, Any]] = []
             if cell_execution_count:
                 self.execution_count = None
 
@@ -81,7 +91,7 @@ class Cell(BaseModel, extra=Extra.allow):
         return v
 
     @root_validator
-    def must_not_be_list_for_code_cells(cls, values: dict[str, Any]) -> dict[str, Any]:
+    def must_not_be_list_for_code_cells(cls, values: Dict[str, Any]) -> Dict[str, Any]:
         """Check that code cells have list-type outputs"""
         if values["cell_type"] == "code" and not isinstance(values["outputs"], list):
             raise ValueError(
@@ -92,8 +102,8 @@ class Cell(BaseModel, extra=Extra.allow):
 
     @root_validator
     def only_code_cells_have_outputs_and_execution_count(
-        cls, values: dict[str, Any]
-    ) -> dict[str, Any]:
+        cls, values: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Check that only code cells have outputs and execution count"""
         if values["cell_type"] != "code" and (
             ("outputs" in values) or ("execution_count" in values)
@@ -105,7 +115,7 @@ class Cell(BaseModel, extra=Extra.allow):
         return values
 
 
-T = TypeVar("T", Cell, tuple[list[Cell], list[Cell]])
+T = TypeVar("T", Cell, Tuple[List[Cell], List[Cell]])
 
 
 class Cells(GenericModel, BaseCells[T]):
@@ -118,7 +128,7 @@ class Cells(GenericModel, BaseCells[T]):
         super(Cells, self).__init__(__root__=elements)
 
     @property
-    def data(self) -> list[T]:  # type: ignore
+    def data(self) -> List[T]:  # type: ignore
         """Define property `data` required for `collections.UserList` class"""
         return list(self.__root__)
 
@@ -128,7 +138,7 @@ class Cells(GenericModel, BaseCells[T]):
 
     def __sub__(
         self: Cells[Cell], other: Cells[Cell]
-    ) -> Cells[tuple[list[Cell], list[Cell]]]:
+    ) -> Cells[Tuple[List[Cell], List[Cell]]]:
         """Return the difference using `difflib.SequenceMatcher`"""
         if type(self) != type(other):
             raise TypeError(
@@ -137,7 +147,7 @@ class Cells(GenericModel, BaseCells[T]):
             )
         s = SequenceMatcher(isjunk=None, a=self, b=other)
 
-        return Cells[tuple[list[Cell], list[Cell]]](
+        return Cells[Tuple[List[Cell], List[Cell]]](
             [
                 # https://github.com/python/mypy/issues/9459
                 tuple((self.data[i1:j1], other.data[i2:j2]))  # type: ignore
@@ -150,7 +160,7 @@ class Cells(GenericModel, BaseCells[T]):
         yield cls.validate
 
     @classmethod
-    def validate(cls, v: list[T]) -> Cells[T]:
+    def validate(cls, v: List[T]) -> Cells[T]:
         if not isinstance(v, cls):
             return cls(v)
         else:
@@ -159,11 +169,11 @@ class Cells(GenericModel, BaseCells[T]):
     @classmethod
     def wrap_git(
         cls,
-        first_cells: list[Cell],
-        last_cells: list[Cell],
+        first_cells: List[Cell],
+        last_cells: List[Cell],
         hash_first: Optional[str] = None,
         hash_last: Optional[str] = None,
-    ) -> list[Cell]:
+    ) -> List[Cell]:
         """Wrap git-diff cells in existing notebook"""
         return (
             [
@@ -192,13 +202,13 @@ class Cells(GenericModel, BaseCells[T]):
         )
 
     def resolve(
-        self: Cells[tuple[list[Cell], list[Cell]]],
+        self: Cells[Tuple[List[Cell], List[Cell]]],
         *,
         keep_first_cells: Optional[bool] = None,
         first_id: Optional[str] = None,
         last_id: Optional[str] = None,
         **kwargs: Any,
-    ) -> list[Cell]:
+    ) -> List[Cell]:
         """
         Resolve differences between `databooks.data_models.notebook.Cells`
         :param keep_first_cells: Whether to keep the cells of the first notebook or not.

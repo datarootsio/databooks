@@ -1,7 +1,6 @@
 """Metadata wrapper functions for cleaning notebook metadata"""
-from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any, Callable, List, Optional, Sequence
 
 from databooks.common import get_logger, write_notebook
 from databooks.data_models.notebook import JupyterNotebook
@@ -60,12 +59,12 @@ def clear(
 
 
 def clear_all(
-    read_paths: list[Path],
-    write_paths: list[Path],
+    read_paths: List[Path],
+    write_paths: List[Path],
     *,
     progress_callback: Callable[[], None] = lambda: None,
     **clear_kwargs: Any,
-) -> list[bool]:
+) -> List[bool]:
     """
     Clear metadata for multiple notebooks at notebooks and cell level.
     :param read_paths: Paths of notebook to remove metadata

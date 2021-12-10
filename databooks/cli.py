@@ -1,7 +1,7 @@
 """Main CLI application"""
 from importlib.metadata import metadata
 from pathlib import Path
-from typing import Optional
+from typing import List, Optional
 
 from rich.progress import (
     BarColumn,
@@ -45,14 +45,14 @@ def callback(
 
 @app.command()
 def meta(
-    paths: list[Path] = Argument(..., help="Path(s) of notebook files"),
-    ignore: list[str] = Option(["!*"], help="Glob expression(s) of files to ignore"),
+    paths: List[Path] = Argument(..., help="Path(s) of notebook files"),
+    ignore: List[str] = Option(["!*"], help="Glob expression(s) of files to ignore"),
     prefix: str = Option("", help="Prefix to add to filepath when writing files"),
     suffix: str = Option("", help="Suffix to add to filepath when writing files"),
     rm_outs: bool = Option(False, help="Whether to remove cell outputs"),
     rm_exec: bool = Option(True, help="Whether to remove the cell execution counts"),
-    nb_meta_keep: list[str] = Option([], help="Notebook metadata fields to keep"),
-    cell_meta_keep: list[str] = Option([], help="Cells metadata fields to keep"),
+    nb_meta_keep: List[str] = Option([], help="Notebook metadata fields to keep"),
+    cell_meta_keep: List[str] = Option([], help="Cells metadata fields to keep"),
     overwrite: bool = Option(False, "--yes", "-y", help="Confirm overwrite of files"),
     check: bool = Option(
         False,
@@ -122,8 +122,8 @@ def meta(
 
 @app.command()
 def fix(
-    paths: list[Path] = Argument(..., help="Path(s) of notebook files with conflicts"),
-    ignore: list[str] = Option(["!*"], help="Glob expression(s) of files to ignore"),
+    paths: List[Path] = Argument(..., help="Path(s) of notebook files with conflicts"),
+    ignore: List[str] = Option(["!*"], help="Glob expression(s) of files to ignore"),
     metadata_first: bool = Option(
         True, help="Whether or not to keep the metadata from the first/current notebook"
     ),

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Callable, Optional, cast
+from typing import Any, Callable, Dict, List, Optional, Tuple, cast
 
 from git import Repo
 
@@ -20,13 +20,13 @@ class DiffJupyterNotebook(DiffModel):
 
     nbformat: int
     nbformat_minor: int
-    metadata: dict[str, Any]
+    metadata: Dict[str, Any]
     cells: BaseCells[Any]
 
 
 def path2conflicts(
-    nb_paths: list[Path], repo: Optional[Repo] = None
-) -> list[ConflictFile]:
+    nb_paths: List[Path], repo: Optional[Repo] = None
+) -> List[ConflictFile]:
     """
     Get the difference model from the path based on the git conflict information
     :param nb_path: Path to file with conflicts (must be notebook paths)
@@ -92,7 +92,7 @@ def conflict2nb(
 
 
 def conflicts2nbs(
-    conflict_files: list[ConflictFile],
+    conflict_files: List[ConflictFile],
     *,
     progress_callback: Callable[[], None] = lambda: None,
     **conflict2nb_kwargs: Any,
@@ -112,6 +112,6 @@ def conflicts2nbs(
         progress_callback()
 
 
-def cells_equals(diff_cells: Cells[tuple[list[Cell], list[Cell]]]) -> list[bool]:
+def cells_equals(diff_cells: Cells[Tuple[List[Cell], List[Cell]]]) -> List[bool]:
     """Return if cells in `DiffCells` are equal"""
     return [cell_first == cell_last for cell_first, cell_last in diff_cells]
