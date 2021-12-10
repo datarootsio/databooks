@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+from importlib.metadata import version
 
 from _pytest.logging import LogCaptureFixture
 from py._path.local import LocalPath
@@ -24,7 +25,7 @@ def test_version_callback() -> None:
     """Print version and help"""
     result = runner.invoke(app, ["--version"])
     assert result.exit_code == 0
-    assert "databooks version: " in result.stdout
+    assert f"databooks version: {version('databooks')}\n" == result.stdout
 
 
 def test_meta(tmpdir: LocalPath) -> None:
