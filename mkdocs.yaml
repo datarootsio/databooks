@@ -45,13 +45,10 @@ extra_css:
 nav:
 - Home:
   - Overview: index.md
-#  - Changelog: changelog.md
-#  - Alternatives and comparisons: alternatives.md
-#  - License: license.md
-#- How it works:
-#    -
+  - License: license.md
 - CLI: CLI.md
 - API:
+  - Overview: API.md
   - Data models:
     - Base: data_models/base.md
     - Notebooks: data_models/notebook.md
@@ -60,7 +57,7 @@ nav:
   - Git: git_utils.md
   - Metadata: metadata.md
 - Development:
-  - Contributing: contributing.md
+  - Contributing: contrib.md
   - Coverage report: coverage.md
 
 copyright: 'Maintained by dataroots'
