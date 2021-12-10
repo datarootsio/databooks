@@ -112,6 +112,6 @@ def conflicts2nbs(
         progress_callback()
 
 
-def cells_equals(diff_cells: Cells[tuple[Optional[list[Cell]], ...]]) -> list[bool]:
+def cells_equals(diff_cells: Cells[tuple[list[Cell], list[Cell]]]) -> list[bool]:
     """Return if cells in `DiffCells` are equal"""
     return [cell_first == cell_last for cell_first, cell_last in diff_cells]

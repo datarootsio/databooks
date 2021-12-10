@@ -1,9 +1,10 @@
 """Data models - Jupyter Notebooks and components"""
 from __future__ import annotations
 
+from collections.abc import Sequence
 from difflib import SequenceMatcher
 from itertools import chain
-from typing import Any, Callable, Generator, Optional, Sequence, TypeVar, Union
+from typing import Any, Callable, Generator, Optional, TypeVar, Union
 
 from pydantic import BaseModel, Extra, root_validator, validator
 from pydantic.generics import GenericModel
@@ -104,8 +105,7 @@ class Cell(BaseModel, extra=Extra.allow):
         return values
 
 
-# https://github.com/python/mypy/issues/9459
-T = TypeVar("T", Cell, tuple[Optional[list[Cell]], ...])  # type: ignore
+T = TypeVar("T", Cell, tuple[list[Cell], list[Cell]])
 
 
 class Cells(GenericModel, BaseCells[T]):
@@ -128,7 +128,7 @@ class Cells(GenericModel, BaseCells[T]):
 
     def __sub__(
         self: Cells[Cell], other: Cells[Cell]
-    ) -> Cells[tuple[Optional[list[Cell]], ...]]:
+    ) -> Cells[tuple[list[Cell], list[Cell]]]:
         """Return the difference using `difflib.SequenceMatcher`"""
         if type(self) != type(other):
             raise TypeError(
@@ -136,13 +136,13 @@ class Cells(GenericModel, BaseCells[T]):
                 f" `{type(other).__name__}`"
             )
         s = SequenceMatcher(isjunk=None, a=self, b=other)
-        pairs = [
-            (self.data[i1:j1], other.data[i2:j2])
-            for _, i1, j1, i2, j2 in s.get_opcodes()
-        ]
-        # https://github.com/python/mypy/issues/9459
-        return Cells[tuple[Optional[list[Cell]], ...]](  # type: ignore
-            [tuple(el if len(el) > 0 else None for el in pair) for pair in pairs]
+
+        return Cells[tuple[list[Cell], list[Cell]]](
+            [
+                # https://github.com/python/mypy/issues/9459
+                tuple((self.data[i1:j1], other.data[i2:j2]))  # type: ignore
+                for _, i1, j1, i2, j2 in s.get_opcodes()
+            ]
         )
 
     @classmethod
@@ -192,7 +192,7 @@ class Cells(GenericModel, BaseCells[T]):
         )
 
     def resolve(
-        self: Cells[tuple[Optional[list[Cell]], ...]],
+        self: Cells[tuple[list[Cell], list[Cell]]],
         *,
         keep_first_cells: Optional[bool] = None,
         first_id: Optional[str] = None,
@@ -211,13 +211,8 @@ class Cells(GenericModel, BaseCells[T]):
         """
         if keep_first_cells is not None:
             return list(
-                chain.from_iterable(
-                    pairs[not keep_first_cells]  # type: ignore
-                    for pairs in self.data
-                    if pairs[not keep_first_cells] is not None
-                )
+                chain.from_iterable(pairs[not keep_first_cells] for pairs in self.data)
             )
-        pairs = [tuple(v if v is not None else [] for v in pair) for pair in self.data]
         return list(
             chain.from_iterable(
                 Cells.wrap_git(
@@ -228,7 +223,7 @@ class Cells(GenericModel, BaseCells[T]):
                 )
                 if val[0] != val[1]
                 else val[0]
-                for val in pairs
+                for val in self.data
             )
         )
 
