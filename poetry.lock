@@ -115,7 +115,7 @@ pyflakes = ">=2.3.0,<2.4.0"
 name = "ghp-import"
 version = "2.0.2"
 description = "Copy your docs directly to the gh-pages branch."
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 
@@ -152,7 +152,7 @@ typing-extensions = {version = ">=3.7.4.3", markers = "python_version < \"3.10\"
 name = "importlib-metadata"
 version = "4.8.2"
 description = "Read metadata from Python packages"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -190,7 +190,7 @@ plugins = ["setuptools"]
 name = "jinja2"
 version = "3.0.3"
 description = "A very fast and expressive template engine."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -218,7 +218,7 @@ source = ["Cython (>=0.29.7)"]
 name = "markdown"
 version = "3.3.6"
 description = "Python implementation of Markdown."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -232,7 +232,7 @@ testing = ["coverage", "pyyaml"]
 name = "markupsafe"
 version = "2.0.1"
 description = "Safely add untrusted strings to HTML/XML markup."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -248,7 +248,7 @@ python-versions = "*"
 name = "mergedeep"
 version = "1.3.4"
 description = "A deep merge function for 🐍."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -256,7 +256,7 @@ python-versions = ">=3.6"
 name = "mkdocs"
 version = "1.2.3"
 description = "Project documentation with Markdown."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -285,6 +285,17 @@ python-versions = ">=3.6,<4.0"
 
 [package.dependencies]
 Markdown = ">=3.3,<4.0"
+mkdocs = ">=1.1,<2.0"
+
+[[package]]
+name = "mkdocs-coverage"
+version = "0.2.4"
+description = "MkDocs plugin to integrate your coverage HTML report into your site."
+category = "main"
+optional = false
+python-versions = ">=3.6.1"
+
+[package.dependencies]
 mkdocs = ">=1.1,<2.0"
 
 [[package]]
@@ -357,7 +368,7 @@ python-versions = "*"
 name = "packaging"
 version = "21.3"
 description = "Core utilities for Python packages"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -458,7 +469,7 @@ Markdown = ">=3.2"
 name = "pyparsing"
 version = "3.0.6"
 description = "Python parsing module"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -505,7 +516,7 @@ testing = ["fields", "hunter", "process-tests", "six", "pytest-xdist", "virtuale
 name = "python-dateutil"
 version = "2.8.2"
 description = "Extensions to the standard Python datetime module"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
 
@@ -530,7 +541,7 @@ numpy-style = ["docstring_parser (>=0.7,<1.0)"]
 name = "pyyaml"
 version = "6.0"
 description = "YAML parser and emitter for Python"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -538,7 +549,7 @@ python-versions = ">=3.6"
 name = "pyyaml-env-tag"
 version = "0.1"
 description = "A custom YAML tag for referencing environment variables in YAML files. "
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -573,7 +584,7 @@ python-versions = "!=3.0,!=3.1,!=3.2,!=3.3,>=2.6"
 name = "six"
 version = "1.16.0"
 description = "Python 2 and 3 compatibility utilities"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 
@@ -643,7 +654,7 @@ python-versions = ">=3.6"
 name = "watchdog"
 version = "2.1.6"
 description = "Filesystem events monitoring"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -654,7 +665,7 @@ watchmedo = ["PyYAML (>=3.10)"]
 name = "zipp"
 version = "3.6.0"
 description = "Backport of pathlib-compatible object wrapper for zip files"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -665,7 +676,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "6065c44d947bc09034e025d20c975a5bd8659d570e7f2ca63f062bff9f5f3cac"
+content-hash = "a1703f4a7b6d507c8657dfed94785ccb2c8b616ac6beec125f16e8f4d94ec07b"
 
 [metadata.files]
 astunparse = [
@@ -894,6 +905,10 @@ mkdocs = [
 mkdocs-autorefs = [
     {file = "mkdocs-autorefs-0.3.0.tar.gz", hash = "sha256:2f89556eb2107d72e3aff41b04dcaaf1125d407a33b8027fbc982137d248d37d"},
     {file = "mkdocs_autorefs-0.3.0-py3-none-any.whl", hash = "sha256:261875003e49b5d708993fd2792a69d624cbc8cf7de49e96c81d3d9825977ca4"},
+]
+mkdocs-coverage = [
+    {file = "mkdocs-coverage-0.2.4.tar.gz", hash = "sha256:d0535b9ecf0a436fcbda3c8d7d58209d05441d79fa9388e12de99e50631f9b0a"},
+    {file = "mkdocs_coverage-0.2.4-py3-none-any.whl", hash = "sha256:7caf6953c8aa10d4386e8536e2e0d3e2f0b4f8a3066f94417bd216ef6e4baa37"},
 ]
 mkdocs-material = [
     {file = "mkdocs-material-8.1.0.tar.gz", hash = "sha256:714ba4d19e753a70ea21b1a30732aa8526c0507ad8940f64e0a153eaa957c0af"},
