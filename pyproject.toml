@@ -1,8 +1,13 @@
+[tool.black]
+include = "databooks|tests"
+
 [tool.mypy]
+files = ["databooks"]
 disallow_untyped_calls = true
 disallow_untyped_defs = true
 
 [tool.isort]
+skip_glob = ["docs/*"]
 profile = "black"
 multi_line_output = 3
 

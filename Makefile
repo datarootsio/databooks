@@ -5,13 +5,13 @@
 lint: ## flake8 linting and black and isort code style for scripts
 	 @echo ">>> lint scripts"
 	 @echo ">>> black files"
-	 black databooks tests
+	 black .
 	 @echo ">>> isort files"
-	 isort databooks tests
-	 @echo ">>> mypy files"
-	 mypy databooks
+	 isort .
 	 @echo ">>> flake8 files"
-	 flake8 databooks tests
+	 flake8 .
+	 @echo ">>> mypy files"
+	 mypy
 
 # misc
 help: ## show help on available commands
