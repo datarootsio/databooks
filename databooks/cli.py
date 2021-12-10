@@ -10,7 +10,6 @@ from rich.progress import (
     TextColumn,
     TimeElapsedColumn,
 )
-from rich.prompt import Confirm
 from typer import Argument, BadParameter, Exit, Option, Typer, echo
 
 from databooks.common import expand_paths, get_logger
@@ -51,7 +50,9 @@ def meta(
     rm_exec: bool = Option(True, help="Whether to remove the cell execution counts"),
     nb_meta_keep: List[str] = Option([], help="Notebook metadata fields to keep"),
     cell_meta_keep: List[str] = Option([], help="Cells metadata fields to keep"),
-    overwrite: bool = Option(False, "--yes", "-y", help="Confirm overwrite of files"),
+    overwrite: bool = Option(
+        False, "--overwrite", "-w", help="Confirm overwrite of files"
+    ),
     check: bool = Option(
         False,
         "--check",
@@ -68,17 +69,11 @@ def meta(
         )
     nb_paths = expand_paths(paths=paths, ignore=ignore)
     if not bool(prefix + suffix) and not check:
-        overwrite = (
-            Confirm.ask(
-                f"{len(nb_paths)} files may be overwritten"
-                " (no prefix nor suffix was passed). Continue?"
-            )
-            if not overwrite
-            else overwrite
-        )
-
         if not overwrite:
-            raise Exit()
+            raise BadParameter(
+                "No prefix nor suffix were passed."
+                " Please specify `--overwrite` or `-w` to overwrite files."
+            )
         else:
             logger.warning(f"{len(nb_paths)} files will be overwritten")
 
@@ -104,13 +99,14 @@ def meta(
             verbose=verbose,
         )
     if check:
-        msg = (
-            "No unwanted metadata!"
-            if all(are_equal)
-            else f"Found unwanted metadata in {sum(not eq for eq in are_equal)} out of"
-            f" {len(are_equal)} files"
-        )
-        logger.info(msg)
+        if all(are_equal):
+            logger.info("No unwanted metadata!")
+        else:
+            logger.info(
+                f"Found unwanted metadata in {sum(not eq for eq in are_equal)} out of"
+                f" {len(are_equal)} files"
+            )
+            Exit(code=1)
     else:
         logger.info(
             f"The metadata of {sum(not eq for eq in are_equal)} out of {len(are_equal)}"
