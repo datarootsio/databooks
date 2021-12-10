@@ -62,7 +62,7 @@ def meta(
         False, "--verbose", "-v", help="Log processed files in console"
     ),
 ) -> None:
-    """Clear notebook metadata"""
+    """Clear both notebook and cell metadata"""
     if any(path.suffix not in ("", ".ipynb") for path in paths):
         raise BadParameter(
             "Expected either notebook files, a directory or glob expression."
@@ -134,7 +134,11 @@ def fix(
     ),
     verbose: bool = Option(False, help="Log processed files in console"),
 ) -> None:
-    """Fix git conflicts for notebooks"""
+    """
+    Fix git conflicts for notebooks by getting unmerged blobs from git index
+     comparing them and returning a valid notebook with the differences -
+     see [git docs](https://git-scm.com/docs/git-ls-files)
+    """
     filepaths = expand_paths(paths=paths, ignore=ignore)
     conflict_files = path2conflicts(nb_paths=filepaths)
     if not conflict_files:
@@ -166,6 +170,5 @@ def fix(
 
 @app.command()
 def diff() -> None:
-    """Show differences between notebooks"""
-    # like git diff but for notebooks
+    """Show differences between notebooks (not implemented)"""
     raise NotImplementedError
