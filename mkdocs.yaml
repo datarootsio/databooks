@@ -1,0 +1,73 @@
+
+site_name: "databooks"
+site_description: "Data science collaboration with jupyter notebooks"
+site_url: "https://databooks.github.io/"
+repo_url: "https://github.com/databooks/databooks"
+edit_uri: "blob/master/docs/"
+repo_name: "databooks/databooks"
+
+markdown_extensions:
+  - pymdownx.snippets:
+      check_paths: true
+
+theme:
+  name: "material"
+  logo: images/logo-white.png
+  favicon: images/favicon.ico
+  font:
+    text: arvo
+    code: poppins
+  icon:
+    repo: fontawesome/brands/github-alt
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+
+plugins:
+- search
+- autorefs
+- mkdocstrings:
+    handlers:
+      python:
+        selection:
+          docstring_style: restructured-text
+
+extra_css:
+  - stylesheets/extra.css
+
+nav:
+- Home:
+  - Overview: index.md
+#  - Changelog: changelog.md
+#  - Alternatives and comparisons: alternatives.md
+#  - License: license.md
+#- How it works:
+#    -
+- CLI: CLI.md
+- API:
+  - Data models:
+    - Base: data_models/base.md
+    - Notebooks: data_models/notebook.md
+  - Common utils: common.md
+  - Conflicts: conflicts.md
+  - Git: git_utils.md
+  - Metadata: metadata.md
+- Development:
+  - Contributing: contributing.md
+  - Coverage report: coverage.md
+
+copyright: 'Maintained by dataroots'
+
+extra:
+    social:
+        - icon: fontawesome/brands/github-alt
+          link: 'https://github.com/datarootsio'
+        - icon: fontawesome/brands/linkedin
+          link: 'https://www.linkedin.com/company/dataroots/'
+        - icon: fontawesome/brands/instagram
+          link: 'https://www.instagram.com/lifeatdataroots/'
+        - icon: fontawesome/brands/youtube
+          link: 'https://www.youtube.com/c/dataroots'
+        - icon: fontawesome/solid/globe
+          link: 'https://dataroots.io/'
