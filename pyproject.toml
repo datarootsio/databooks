@@ -16,7 +16,7 @@ authors = ["Murilo Cunha <murilo@dataroots.io>"]
 databooks = "databooks.cli:app"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.8"
 typer = "^0.3.2"
 rich = "^10.6.0"
 pydantic = "^1.8.2"
