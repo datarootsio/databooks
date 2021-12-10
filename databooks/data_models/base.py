@@ -119,9 +119,8 @@ class DatabooksBase(BaseModel):
             field_val = d_model.get(field) if missing_ok else d_model[field]
             if recursive and isinstance(field_val, DatabooksBase):
                 field_val.remove_fields(fields)
-            else:
-                if d_model.pop(field, None):
-                    delattr(self, field)
+            elif d_model.pop(field, None):
+                delattr(self, field)
 
     def __str__(self) -> str:
         """Equivalent to __repr__"""
