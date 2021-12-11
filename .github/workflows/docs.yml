@@ -5,7 +5,7 @@ on:
       - main
 
 jobs:
-  deploy:
+  deploy-docs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -19,8 +19,8 @@ jobs:
           poetry install --no-interaction --no-ansi
       - name: Configure git user
         run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
       - name: Create coverage report
         run: pytest --cov-report html --cov=databooks tests/
       - name: Deploy docs
