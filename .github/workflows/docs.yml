@@ -16,6 +16,8 @@ jobs:
         run: |
           pip install poetry==1.1.7
           poetry config virtualenvs.create false
-          poetry install --no-interaction --no-ansi --dev-only
+          poetry install --no-interaction --no-ansi
+      - name: Create coverage report
+        run: pytest --cov-report html --cov=databooks tests/
       - name: Deploy docs
         run: mkdocs gh-deploy --force
