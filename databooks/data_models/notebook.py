@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from difflib import SequenceMatcher
 from itertools import chain
+from pathlib import Path
 from typing import (
     Any,
     Callable,
@@ -243,6 +244,18 @@ class JupyterNotebook(DatabooksBase, extra=Extra.ignore):
     nbformat_minor: int
     metadata: NotebookMetadata
     cells: Cells[Cell]
+
+    @classmethod
+    def parse_file(cls, path: Path | str, **parse_kwargs: Any) -> JupyterNotebook:
+        """Parse notebook from a path"""
+        content_arg = parse_kwargs.pop("content_type", None)
+        if content_arg is not None:
+            raise ValueError(
+                f"Expected `content_type` to be `json`, got `{content_arg}`"
+            )
+        return super(JupyterNotebook, cls).parse_file(
+            path=path, content_type="json", **parse_kwargs
+        )
 
     def clear_metadata(
         self,

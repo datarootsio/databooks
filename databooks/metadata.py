@@ -2,8 +2,8 @@
 from pathlib import Path
 from typing import Any, Callable, List, Optional, Sequence
 
+from databooks import JupyterNotebook
 from databooks.common import get_logger, write_notebook
-from databooks.data_models.notebook import JupyterNotebook
 
 logger = get_logger(__file__)
 
@@ -33,14 +33,14 @@ def clear(
 
     if write_path is None:
         write_path = read_path
-    notebook = JupyterNotebook.parse_file(read_path, content_type="json")
+    notebook = JupyterNotebook.parse_file(read_path)
 
     notebook.clear_metadata(
         notebook_metadata_keep=notebook_metadata_keep,
         cell_metadata_keep=cell_metadata_keep,
         **kwargs,
     )
-    nb_equals = notebook == JupyterNotebook.parse_file(read_path, content_type="json")
+    nb_equals = notebook == JupyterNotebook.parse_file(read_path)
     if verbose:
         if nb_equals or check:
             msg = (

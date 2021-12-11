@@ -34,9 +34,9 @@ def test_meta(tmpdir: LocalPath) -> None:
     read_path = tmpdir.mkdir("notebooks") / "test_meta_nb.ipynb"  # type: ignore
     write_notebook(nb=TestJupyterNotebook().jupyter_notebook, path=read_path)
 
-    nb_read = JupyterNotebook.parse_file(path=read_path, content_type="json")
+    nb_read = JupyterNotebook.parse_file(path=read_path)
     result = runner.invoke(app, ["meta", str(read_path), "--overwrite"])
-    nb_write = JupyterNotebook.parse_file(path=read_path, content_type="json")
+    nb_write = JupyterNotebook.parse_file(path=read_path)
 
     assert result.exit_code == 0
     assert len(nb_write.cells) == len(nb_read.cells)
@@ -65,9 +65,9 @@ def test_meta__check(tmpdir: LocalPath, caplog: LogCaptureFixture) -> None:
     read_path = tmpdir.mkdir("notebooks") / "test_meta_nb.ipynb"  # type: ignore
     write_notebook(nb=TestJupyterNotebook().jupyter_notebook, path=read_path)
 
-    nb_read = JupyterNotebook.parse_file(path=read_path, content_type="json")
+    nb_read = JupyterNotebook.parse_file(path=read_path)
     result = runner.invoke(app, ["meta", str(read_path), "--check"])
-    nb_write = JupyterNotebook.parse_file(path=read_path, content_type="json")
+    nb_write = JupyterNotebook.parse_file(path=read_path)
 
     logs = list(caplog.records)
     assert result.exit_code == 0
@@ -113,9 +113,7 @@ def test_fix(tmpdir: LocalPath) -> None:
 
     # Run CLI and check conflict resolution
     result = runner.invoke(app, ["fix", str(tmpdir)])
-    fixed_notebook = JupyterNotebook.parse_file(
-        path=(tmpdir / nb_path), content_type="json"
-    )
+    fixed_notebook = JupyterNotebook.parse_file(path=tmpdir / nb_path)
 
     assert len(conflict_files) == 1
     assert result.exit_code == 0

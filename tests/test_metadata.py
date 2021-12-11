@@ -30,7 +30,7 @@ def test_metadata_clear__check_verbose(
     logs = list(caplog.records)
 
     assert (
-        JupyterNotebook.parse_file(path=read_path, content_type="json")
+        JupyterNotebook.parse_file(path=read_path)
         == TestJupyterNotebook().jupyter_notebook
     )
 
@@ -53,8 +53,8 @@ def test_metadata_clear(tmpdir: LocalPath) -> None:
         cell_outputs=True,
     )
 
-    nb_read = JupyterNotebook.parse_file(path=read_path, content_type="json")
-    nb_write = JupyterNotebook.parse_file(path=write_path, content_type="json")
+    nb_read = JupyterNotebook.parse_file(path=read_path)
+    nb_write = JupyterNotebook.parse_file(path=write_path)
 
     assert write_path.exists()
     assert len(nb_write.cells) == len(nb_read.cells)

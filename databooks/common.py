@@ -7,7 +7,7 @@ from typing import List
 
 from rich.logging import RichHandler
 
-from databooks.data_models.notebook import JupyterNotebook
+from databooks import JupyterNotebook
 
 
 def get_logger(name: str, level: str = "INFO") -> logging.Logger:
