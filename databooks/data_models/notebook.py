@@ -251,7 +251,7 @@ class JupyterNotebook(DatabooksBase, extra=Extra.ignore):
         content_arg = parse_kwargs.pop("content_type", None)
         if content_arg is not None:
             raise ValueError(
-                f"Expected `content_type` to be `json`, got `{content_arg}`"
+                f"Value of `content_type` must be `json` (default), got `{content_arg}`"
             )
         return super(JupyterNotebook, cls).parse_file(
             path=path, content_type="json", **parse_kwargs
