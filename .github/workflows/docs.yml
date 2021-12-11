@@ -17,6 +17,10 @@ jobs:
           pip install poetry==1.1.7
           poetry config virtualenvs.create false
           poetry install --no-interaction --no-ansi
+      - name: Configure git user
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
       - name: Create coverage report
         run: pytest --cov-report html --cov=databooks tests/
       - name: Deploy docs
