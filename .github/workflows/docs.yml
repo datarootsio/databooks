@@ -1,0 +1,21 @@
+name: docs
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          pip install poetry==1.1.7
+          poetry config virtualenvs.create false
+          poetry install --no-interaction --no-ansi --dev-only
+      - name: Deploy docs
+        run: mkdocs gh-deploy --force
