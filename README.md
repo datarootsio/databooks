@@ -18,7 +18,8 @@ The key features include:
 
 ## Requirements
 
-- Python 3.7+
+`databooks` is built on top of:
+- Python 3.8+
 - [Typer](https://typer.tiangolo.com/)
 - [Rich](https://rich.readthedocs.io/en/latest/)
 - [Pydantic](https://pydantic-docs.helpmanual.io/)
