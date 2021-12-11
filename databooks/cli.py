@@ -1,5 +1,5 @@
 """Main CLI application"""
-from importlib.metadata import version
+from importlib.metadata import metadata
 from pathlib import Path
 from typing import List, Optional
 
@@ -16,6 +16,8 @@ from databooks.common import expand_paths, get_logger
 from databooks.conflicts import conflicts2nbs, path2conflicts
 from databooks.metadata import clear_all
 
+_DISTRIBUTION_METADATA = metadata("databooks")
+
 logger = get_logger(__file__)
 
 app = Typer()
@@ -23,7 +25,7 @@ app = Typer()
 
 def version_callback(value: bool) -> None:
     if value:
-        echo("databooks version: " + version("databooks"))
+        echo("databooks version: " + _DISTRIBUTION_METADATA["Version"])
         raise Exit()
 
 
@@ -33,11 +35,9 @@ def callback(
         None, "--version", callback=version_callback, is_eager=True
     )
 ) -> None:
-    """
-    Databooks - set of helpers to ease collaboration of data scientists
-     using Jupyter Notebooks. Easily resolve git conflicts and remove metadata to reduce
-     the number of conflicts.
-    """
+    ...
+
+callback.__doc__ = _DISTRIBUTION_METADATA["Summary"]  # add docs from pyproject.toml
 
 
 @app.command()

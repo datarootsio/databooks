@@ -14,7 +14,11 @@ multi_line_output = 3
 [tool.poetry]
 name = "databooks"
 version = "0.1.0"
-description = ""
+description = """
+Databooks - set of helpers to ease collaboration of data scientists using Jupyter
+ Notebooks. Easily resolve git conflicts and remove metadata to reduce the number of
+ conflicts.
+"""
 authors = ["Murilo Cunha <murilo@dataroots.io>"]
 
 [tool.poetry.scripts]
