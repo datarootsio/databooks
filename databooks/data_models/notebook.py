@@ -1,7 +1,7 @@
 """Data models - Jupyter Notebooks and components"""
 from __future__ import annotations
-from copy import deepcopy
 
+from copy import deepcopy
 from difflib import SequenceMatcher
 from itertools import chain
 from pathlib import Path
