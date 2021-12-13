@@ -1,5 +1,5 @@
 [tool.black]
-include = "databooks|tests"
+include = "(databooks/|tests/)"
 
 [tool.mypy]
 files = ["databooks"]
