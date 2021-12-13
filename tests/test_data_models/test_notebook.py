@@ -2,6 +2,8 @@
 from copy import deepcopy
 from typing import List, Tuple, cast
 
+import pytest
+
 from databooks.data_models.base import DiffModel
 from databooks.data_models.notebook import (
     Cell,
@@ -20,9 +22,25 @@ class TestNotebookMetadata:
             field_to_remove="Field to remove",
         )
 
+    def test_remove_fields__missing_ok(self) -> None:
+        """Remove fields specified from NotebookMetadata model (ignore if missing)"""
+        metadata = deepcopy(self.notebook_metadata)
+        assert hasattr(metadata, "field_to_remove")
+        extra_fields = [
+            field for field, _ in metadata if field not in metadata.__fields__
+        ]
+
+        with pytest.raises(KeyError):
+            metadata.remove_fields(["missing_field"], missing_ok=False)
+
+        metadata.remove_fields(["missing_field"], missing_ok=True)
+        metadata.remove_fields(extra_fields, missing_ok=True)
+
+        assert not hasattr(metadata, "field_to_remove")
+
     def test_remove_fields(self) -> None:
         """Remove fields specified from NotebookMetadata model"""
-        metadata = self.notebook_metadata
+        metadata = deepcopy(self.notebook_metadata)
         assert hasattr(metadata, "field_to_remove")
         extra_fields = [
             field for field, _ in metadata if field not in metadata.__fields__
