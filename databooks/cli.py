@@ -37,7 +37,9 @@ def callback(
 ) -> None:
     ...
 
-callback.__doc__ = _DISTRIBUTION_METADATA["Summary"]  # add docs from pyproject.toml
+
+# add docs dynamically from `pyproject.toml`
+callback.__doc__ = _DISTRIBUTION_METADATA["Summary"]
 
 
 @app.command()
