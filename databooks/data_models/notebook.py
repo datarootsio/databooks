@@ -263,7 +263,7 @@ class Cells(GenericModel, BaseCells[T]):
         )
 
 
-class JupyterNotebook(DatabooksBase, extra=Extra.ignore):
+class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
     nbformat: int
     nbformat_minor: int
     metadata: NotebookMetadata
