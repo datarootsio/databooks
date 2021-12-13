@@ -1,5 +1,6 @@
 """Data models - Jupyter Notebooks and components"""
 from __future__ import annotations
+from copy import deepcopy
 
 from difflib import SequenceMatcher
 from itertools import chain
@@ -17,7 +18,7 @@ from typing import (
     Union,
 )
 
-from pydantic import BaseModel, Extra, root_validator, validator
+from pydantic import Extra, root_validator, validator
 from pydantic.generics import GenericModel
 
 from databooks.data_models.base import BaseCells, DatabooksBase
@@ -31,7 +32,7 @@ class CellMetadata(DatabooksBase):
     ...
 
 
-class Cell(BaseModel, extra=Extra.allow):
+class Cell(DatabooksBase):
     """
     Jupyter notebook cells. `outputs` and `execution_count` not included since they
      should only be present in code cells - thus are treated as extra fields.
@@ -55,6 +56,7 @@ class Cell(BaseModel, extra=Extra.allow):
         cell_metadata_remove: Sequence[str] = None,
         cell_execution_count: bool = True,
         cell_outputs: bool = False,
+        remove_fields: List[str] = ["id"],
     ) -> None:
         """
         Clear cell metadata, execution count and outputs
@@ -77,6 +79,7 @@ class Cell(BaseModel, extra=Extra.allow):
             )
         self.metadata.remove_fields(cell_metadata_remove)  # type: ignore
 
+        self.remove_fields(remove_fields, missing_ok=True)
         if self.cell_type == "code":
             if cell_outputs:
                 self.outputs: List[Dict[str, Any]] = []
@@ -146,13 +149,34 @@ class Cells(GenericModel, BaseCells[T]):
                 f"Unsupported operand types for `-`: `{type(self).__name__}` and"
                 f" `{type(other).__name__}`"
             )
-        s = SequenceMatcher(isjunk=None, a=self, b=other)
 
+        _self = deepcopy(self)
+        _other = deepcopy(other)
+        for cells in (_self, _other):
+            for cell in cells:
+                cell.remove_fields(["id"], missing_ok=True)
+
+        # By setting the context to the max number of cells and using
+        #  `pathlib.SequenceMatcher.get_grouped_opcodes` we essentially get the same
+        #  result as `pathlib.SequenceMatcher.get_opcodes` but in smaller chunks
+        n_context = max(len(_self), len(_other))
+        diff_opcodes = list(
+            SequenceMatcher(
+                isjunk=None, a=_self, b=_other, autojunk=False
+            ).get_grouped_opcodes(n_context)
+        )
+
+        if len(diff_opcodes) > 1:
+            raise RuntimeError(
+                "Expected one group for opcodes when context size is "
+                f" {n_context} for {len(_self)} and {len(_other)} cells in"
+                " notebooks."
+            )
         return Cells[Tuple[List[Cell], List[Cell]]](
             [
                 # https://github.com/python/mypy/issues/9459
-                tuple((self.data[i1:j1], other.data[i2:j2]))  # type: ignore
-                for _, i1, j1, i2, j2 in s.get_opcodes()
+                tuple((_self.data[i1:j1], _other.data[i2:j2]))  # type: ignore
+                for _, i1, j1, i2, j2 in chain.from_iterable(diff_opcodes)
             ]
         )
 
@@ -291,8 +315,7 @@ class JupyterNotebook(DatabooksBase, extra=Extra.ignore):
         self.metadata.remove_fields(notebook_metadata_remove)  # type: ignore
 
         if len(cell_kwargs) > 0:
-            _clean_cells = []
-            for cell in self.cells:
+            _clean_cells = deepcopy(self.cells)
+            for cell in _clean_cells:
                 cell.clear_metadata(**cell_kwargs)
-                _clean_cells.append(cell)
-            self.cells = Cells(_clean_cells)
+            self.cells = _clean_cells
