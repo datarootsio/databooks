@@ -42,6 +42,11 @@ already avoid many of the conflicts.
 $ databooks meta [OPTIONS] PATHS...
 ```
 
+<video controls>
+  <source src="docs/images/databooks_meta.mov" type="video/quicktime">
+  Embedded videos not supported by the browser.
+</video>
+
 ### Fix git conflicts for notebooks
 
 Specify the paths for notebook files with conflicts to be fixed. Then, `databooks` finds
@@ -50,6 +55,11 @@ the source notebooks that caused the conflicts and compares them (so no JSON man
 ```console
 $ databooks fix [OPTIONS] PATHS...
 ```
+
+<video controls>
+  <source src="docs/images/databooks_fix.mov" type="video/quicktime">
+  Embedded videos not supported by the browser.
+</video>
 
 ## License
 
