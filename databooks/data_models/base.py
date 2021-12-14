@@ -119,7 +119,7 @@ class DatabooksBase(BaseModel):
             field_val = d_model.get(field) if missing_ok else d_model[field]
             if recursive and isinstance(field_val, DatabooksBase):
                 field_val.remove_fields(fields)
-            elif d_model.pop(field, None):
+            elif field in d_model:
                 delattr(self, field)
 
     def __str__(self) -> str:

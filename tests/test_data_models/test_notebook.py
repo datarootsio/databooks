@@ -20,6 +20,7 @@ class TestNotebookMetadata:
         return NotebookMetadata(
             kernelspec=dict(display_name="kernel_display_name", name="kernel_name"),
             field_to_remove="Field to remove",
+            tags=[],
         )
 
     def test_remove_fields__missing_ok(self) -> None:
@@ -42,11 +43,13 @@ class TestNotebookMetadata:
         """Remove fields specified from NotebookMetadata model"""
         metadata = deepcopy(self.notebook_metadata)
         assert hasattr(metadata, "field_to_remove")
+        assert hasattr(metadata, "tags")
         extra_fields = [
             field for field, _ in metadata if field not in metadata.__fields__
         ]
         metadata.remove_fields(extra_fields)
         assert not hasattr(metadata, "field_to_remove")
+        assert not hasattr(metadata, "tags")
 
 
 class TestCell:
@@ -156,6 +159,11 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
 
         diff = cast(DiffModel, notebook_1 - notebook_2)
         notebook = deepcopy(notebook_1)
+
+        # add `tags` since we resolve with default `ignore_none = True`
+        notebook.metadata = NotebookMetadata(
+            **notebook_1.metadata.dict(), **{"tags": []}
+        )
 
         assert diff.resolve(keep_first_cells=True) == notebook
 
