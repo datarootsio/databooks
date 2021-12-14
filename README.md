@@ -42,10 +42,7 @@ already avoid many of the conflicts.
 $ databooks meta [OPTIONS] PATHS...
 ```
 
-<video controls>
-  <source src="docs/images/databooks_meta.mov" type="video/quicktime">
-  Embedded videos not supported by the browser.
-</video>
+![databooks meta demo](https://raw.githubusercontent.com/datarootsio/databooks/main/docs/images/databooks-meta.gif?token=AKUGIEOHIY4XVJK2IRRMNRLBYJBEQ)
 
 ### Fix git conflicts for notebooks
 
@@ -56,10 +53,7 @@ the source notebooks that caused the conflicts and compares them (so no JSON man
 $ databooks fix [OPTIONS] PATHS...
 ```
 
-<video controls>
-  <source src="docs/images/databooks_fix.mov" type="video/quicktime">
-  Embedded videos not supported by the browser.
-</video>
+![databooks fix demo](https://raw.githubusercontent.com/datarootsio/databooks/main/docs/images/databooks-fix.gif?token=AKUGIELRRMXJMU7RSUUGYUDBYJD5G)
 
 ## License
 
