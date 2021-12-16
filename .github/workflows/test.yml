@@ -29,6 +29,10 @@ jobs:
           isort . --check
           flake8 .
           mypy
+      - name: Configure git user for git unit tests
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
       - name: Unit tests
         run: |
           pytest -v
