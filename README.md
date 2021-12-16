@@ -3,6 +3,9 @@
 # databooks
 [![maintained by dataroots](https://dataroots.io/maintained.svg)](https://dataroots.io)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Codecov](https://codecov.io/github/datarootsio/databooks/badge.svg?branch=main&service=github)](https://github.com/datarootsio/databooks/actions)
+[![tests](https://github.com/datarootsio/databooks/workflows/tests/badge.svg?branch=main)](https://github.com/datarootsio/databooks/actions)
+
 
 `databooks` is a package for reducing the friction data scientists while using [Jupyter
 notebooks](https://jupyter.org/), by reducing the number of git conflicts between
@@ -28,7 +31,7 @@ The key features include:
 ## Installation
 
 ```
-pip install databooks
+pip install --i https://test.pypi.org/simple/ databooks
 ```
 
 ## Usage
