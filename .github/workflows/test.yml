@@ -1,0 +1,38 @@
+name: 'test'
+on:
+  pull_request:
+    types: [opened]
+    branches:
+      - main
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, 3.10]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          pip install poetry==1.1.7
+          poetry config virtualenvs.create false
+          poetry install --no-interaction --no-ansi
+      - name: QA with flake8, black, isort and mypy
+        run: |
+          black . --check
+          isort . --check
+          flake8 .
+          mypy
+      - name: Unit tests
+        run: |
+          pytest -v
+      - name: Coverage report
+        run: |
+          pytest --cov=./ --cov-report=xml
+      - name: Upload coverage
+        uses: codecov/codecov-action@v1
