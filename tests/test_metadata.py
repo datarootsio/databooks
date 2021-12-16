@@ -15,7 +15,7 @@ def test_metadata_clear__check_verbose(
     tmpdir: LocalPath, caplog: LogCaptureFixture
 ) -> None:
     """Clear metadata from a notebook and write clean notebook"""
-    caplog.set_level(logging.INFO)
+    caplog.set_level(logging.DEBUG)
     read_path = Path(tmpdir.mkdir("notebooks") / "test_nb.ipynb")  # type: ignore
     write_notebook(nb=TestJupyterNotebook().jupyter_notebook, path=read_path)
     write_path = read_path.parent / ("clean_" + read_path.name)
@@ -35,8 +35,8 @@ def test_metadata_clear__check_verbose(
     )
 
     assert not write_path.exists()
-    assert len(logs) == 1
-    assert logs[0].message == (
+    assert len(logs) == 2
+    assert logs[1].message == (
         f"No action taken for {read_path} - only check (unwanted metadata found)."
     )
 
