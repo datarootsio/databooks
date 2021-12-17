@@ -45,6 +45,7 @@ extra_css:
 nav:
 - Home:
   - Overview: index.md
+  - Alternatives and comparisons: alternatives.md
   - License: license.md
 - CLI: CLI.md
 - API:
