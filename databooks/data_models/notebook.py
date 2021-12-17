@@ -102,7 +102,7 @@ class Cell(DatabooksBase):
 
         cell_fields = self.__fields__  # especified in Class definition
         if any(field in cell_remove_fields for field in cell_fields):
-            logger.warning(
+            logger.debug(
                 "Ignoring removal of "
                 + str([f for f in cell_remove_fields if f in cell_fields])
                 + f" - removing fields yields invalid `{type(self).__name__}`."
