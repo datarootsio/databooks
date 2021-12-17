@@ -1,6 +1,7 @@
 """Main CLI application."""
 from importlib.metadata import metadata
 from pathlib import Path
+from textwrap import dedent
 from typing import List, Optional
 
 from rich.progress import (
@@ -17,7 +18,7 @@ from databooks.conflicts import conflicts2nbs, path2conflicts
 from databooks.logging import get_logger
 from databooks.metadata import clear_all
 
-_DISTRIBUTION_METADATA = metadata("databooks")
+_DISTRIBUTION_METADATA = metadata(__package__)
 
 logger = get_logger(__file__)
 
@@ -41,7 +42,7 @@ def callback(  # noqa: D103
 
 
 # add docs dynamically from `pyproject.toml`
-callback.__doc__ = _DISTRIBUTION_METADATA["Summary"]
+callback.__doc__ = dedent(_DISTRIBUTION_METADATA["Summary"])
 
 
 @app.command()
