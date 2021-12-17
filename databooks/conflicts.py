@@ -32,6 +32,7 @@ def path2conflicts(
     Get the difference model from the path based on the git conflict information.
 
     :param nb_paths: Path to file with conflicts (must be notebook paths)
+    :param repo: The git repo to look for conflicts
     :return: Generator of `DiffModel`s, to be resolved
     """
     if any(nb_path.suffix not in ("", ".ipynb") for nb_path in nb_paths):
