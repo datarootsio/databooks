@@ -58,6 +58,19 @@ class Cell(DatabooksBase):
             for v in self.__dict__.values()
         )
 
+    def remove_fields(self, *args: Any, **kwargs: Any) -> None:
+        """
+        Overwrite databooks.data_models.DatabooksBase.remove_fields to raise warning
+         in favour of `Cell.clear_metadata` instead, as it preserve the Jupyter notebook
+         schema.
+        """
+        logger.warning(
+            "Removing fields in `databooks.data_models.notebook.Cell` may yield invalid"
+            " notebook. Use `databooks.data_models.notebook.Cell.clear_metadata` with a"
+            " `cell_remove_fields` parameter instead."
+        )
+        super(Cell, self).remove_fields(*args, **kwargs)
+
     def clear_metadata(
         self,
         *,
@@ -87,7 +100,16 @@ class Cell(DatabooksBase):
             )
         self.metadata.remove_fields(cell_metadata_remove)  # type: ignore
 
-        self.remove_fields(remove_fields, missing_ok=True)
+        cell_fields = self.__fields__  # especified in Class definition
+        if any(field in cell_remove_fields for field in cell_fields):
+            logger.warning(
+                "Ignoring removal of "
+                + str([f for f in cell_remove_fields if f in cell_fields])
+                + f" - removing fields yields invalid `{type(self).__name__}`."
+            )
+            cell_remove_fields = [f for f in cell_remove_fields if f not in cell_fields]
+
+        super(Cell, self).remove_fields(cell_remove_fields, missing_ok=True)
         if self.cell_type == "code":
             self.outputs: List[Dict[str, Any]] = (
                 [] if "outputs" not in cell_fields else self.outputs
