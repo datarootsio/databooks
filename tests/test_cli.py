@@ -111,13 +111,13 @@ def test_fix(tmpdir: LocalPath) -> None:
     id_other = conflict_files[0].last_log
 
     # Run CLI and check conflict resolution
-    result = runner.invoke(app, ["fix", str(tmpdir)])
+    result = runner.invoke(app, ["fix", str(tmpdir), "--cell-fields-ignore", "id"])
     fixed_notebook = JupyterNotebook.parse_file(path=tmpdir / nb_path)
 
     assert len(conflict_files) == 1
     assert result.exit_code == 0
 
-    # add `tags` since we use `databooks.data_models.base.resolve` with default
+    # Add `tags` since we use `databooks.data_models.base.resolve` with default
     #  `ignore_none = True`
     assert fixed_notebook.metadata == NotebookMetadata(
         **notebook_1.metadata.dict(), **{"tags": []}
