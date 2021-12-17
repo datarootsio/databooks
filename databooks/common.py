@@ -1,36 +1,10 @@
 """Common set of miscellaneous functions."""
 import json
-import logging
-import os
 from itertools import chain
 from pathlib import Path
 from typing import List
 
-from rich.logging import RichHandler
-
 from databooks import JupyterNotebook
-
-
-def get_logger(name: str) -> logging.Logger:
-    """Get logger with rich configuration."""
-    level = os.getenv("LOG_LEVEL", logging.INFO)
-
-    logging.basicConfig(
-        level=level,
-        format="%(message)s",
-        datefmt="[%X]",
-        handlers=[RichHandler(rich_tracebacks=True)],
-    )
-    return logging.getLogger(name)
-
-
-def set_verbose(logger: logging.Logger) -> None:
-    """Set logger to DEBUG level when user requests verbosity."""
-    verbose_level = logging.DEBUG
-    logger.setLevel(verbose_level)
-    logger.debug(
-        f"Verbose mode: setting log level to {logging.getLevelName(verbose_level)}"
-    )
 
 
 def write_notebook(nb: JupyterNotebook, path: Path) -> None:

@@ -12,8 +12,9 @@ from rich.progress import (
 )
 from typer import Argument, BadParameter, Exit, Option, Typer, echo
 
-from databooks.common import expand_paths, get_logger
+from databooks.common import expand_paths
 from databooks.conflicts import conflicts2nbs, path2conflicts
+from databooks.logging import get_logger
 from databooks.metadata import clear_all
 
 _DISTRIBUTION_METADATA = metadata("databooks")

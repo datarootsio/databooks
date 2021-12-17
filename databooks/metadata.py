@@ -3,7 +3,8 @@ from pathlib import Path
 from typing import Any, Callable, List, Optional, Sequence
 
 from databooks import JupyterNotebook
-from databooks.common import get_logger, set_verbose, write_notebook
+from databooks.common import write_notebook
+from databooks.logging import get_logger, set_verbose
 
 logger = get_logger(__file__)
 

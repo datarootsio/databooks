@@ -5,7 +5,7 @@ from typing import Dict, List, cast
 
 from git import Blob, Git, Repo  # type: ignore
 
-from databooks.common import get_logger
+from databooks.logging import get_logger
 
 logger = get_logger(name=__file__)
 

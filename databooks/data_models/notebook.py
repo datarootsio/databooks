@@ -22,6 +22,9 @@ from pydantic import Extra, root_validator, validator
 from pydantic.generics import GenericModel
 
 from databooks.data_models.base import BaseCells, DatabooksBase
+from databooks.logging import get_logger
+
+logger = get_logger(__file__)
 
 
 class NotebookMetadata(DatabooksBase):

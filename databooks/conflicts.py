@@ -7,10 +7,11 @@ from typing import Any, Callable, Dict, List, Optional, Tuple, cast
 
 from git import Repo
 
-from databooks.common import get_logger, set_verbose, write_notebook
+from databooks.common import write_notebook
 from databooks.data_models.base import BaseCells, DiffModel
 from databooks.data_models.notebook import Cell, Cells, JupyterNotebook
 from databooks.git_utils import ConflictFile, get_conflict_blobs, get_repo
+from databooks.logging import get_logger, set_verbose
 
 logger = get_logger(__file__)
 
