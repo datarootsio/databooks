@@ -112,12 +112,13 @@ class Cell(DatabooksBase):
             cell_remove_fields = [f for f in cell_remove_fields if f not in cell_fields]
 
         super(Cell, self).remove_fields(cell_remove_fields, missing_ok=True)
+
         if self.cell_type == "code":
             self.outputs: List[Dict[str, Any]] = (
-                [] if "outputs" not in cell_fields else self.outputs
+                [] if "outputs" not in dict(self) else self.outputs
             )
             self.execution_count: Optional[PositiveInt] = (
-                None if "execution_count" not in cell_fields else self.execution_count
+                None if "execution_count" not in dict(self) else self.execution_count
             )
 
     @validator("cell_type")
