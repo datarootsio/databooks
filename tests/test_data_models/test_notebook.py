@@ -115,7 +115,7 @@ class TestCell:
             "Ignoring removal of ['source'] - removing fields yields invalid `Cell`."
         )
 
-    def test_sub_cells(self) -> None:
+    def test_cells_sub(self) -> None:
         """Get the diff from different `Cells`."""
         dl1 = Cells[Cell]([self.cell])
         dl2 = Cells[Cell]([self.cell] * 2)
