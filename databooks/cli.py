@@ -138,6 +138,13 @@ def fix(
         help="Whether to keep the cells from the first or last notebook."
         " Omit to keep both",
     ),
+    cell_fields_ignore: List[str] = Option(
+        [
+            "id",
+            "execution_count",
+        ],
+        help="Cell fields to remove before comparing cells",
+    ),
     interactive: bool = Option(
         False,
         "--interactive",
@@ -176,6 +183,7 @@ def fix(
             conflict_files=conflict_files,
             keep_first=metadata_first,
             cells_first=cells_first,
+            cell_fields_ignore=cell_fields_ignore,
             verbose=verbose,
             progress_callback=lambda: progress.update(conflicts, advance=1),
         )
