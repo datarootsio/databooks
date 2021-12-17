@@ -1,5 +1,6 @@
 """Main CLI application."""
 from importlib.metadata import metadata
+from itertools import compress
 from pathlib import Path
 from textwrap import dedent
 from typing import List, Optional
@@ -55,6 +56,10 @@ def meta(
     rm_exec: bool = Option(True, help="Whether to remove the cell execution counts"),
     nb_meta_keep: List[str] = Option([], help="Notebook metadata fields to keep"),
     cell_meta_keep: List[str] = Option([], help="Cells metadata fields to keep"),
+    cell_fields_keep: List[str] = Option(
+        [],
+        help="Other (excluding `execution_counts` and `outputs`) cell fields to keep",
+    ),
     overwrite: bool = Option(
         False, "--overwrite", "-w", help="Confirm overwrite of files"
     ),
@@ -83,6 +88,9 @@ def meta(
             logger.warning(f"{len(nb_paths)} files will be overwritten")
 
     write_paths = [p.parent / (prefix + p.stem + suffix + p.suffix) for p in nb_paths]
+    cell_keep_fields = list(
+        compress(["outputs", "execution_count"], (not v for v in (rm_outs, rm_exec)))
+    ) + list(cell_fields_keep)
     with Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
@@ -98,8 +106,7 @@ def meta(
             progress_callback=lambda: progress.update(metadata, advance=1),
             notebook_metadata_keep=nb_meta_keep,
             cell_metadata_keep=cell_meta_keep,
-            cell_execution_count=rm_exec,
-            cell_outputs=rm_outs,
+            cell_keep_fields=cell_keep_fields,
             check=check,
             verbose=verbose,
         )
