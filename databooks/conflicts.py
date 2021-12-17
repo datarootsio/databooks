@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple, cast
+from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, cast
 
 from git import Repo
 
@@ -52,6 +52,7 @@ def conflict2nb(
     *,
     keep_first: bool = True,
     cells_first: Optional[bool] = None,
+    cell_fields_ignore: Sequence[str] = ("id", "execution_count"),
     ignore_none: bool = True,
     verbose: bool = False,
 ) -> JupyterNotebook:
@@ -63,6 +64,8 @@ def conflict2nb(
     :param cells_first: Whether to keep the cells of the first or last notebook
     :param ignore_none: Keep all metadata fields even if it's included in only one
      notebook
+    :param cell_fields_ignore: Fields to remove before comparing notebooks - i.e.: cell
+     IDs or execution counts may not want to be considered
     :param verbose: Log written files and metadata conflicts
     :return: Resolved conflicts as a `databooks.data_models.notebook.JupyterNotebook`
      model
@@ -80,6 +83,13 @@ def conflict2nb(
             else "last."
         )
         logger.debug(msg)
+
+    if cell_fields_ignore:
+        for cells in (nb_1.cells, nb_2.cells):
+            for cell in cells:
+                cell.clear_metadata(
+                    cell_metadata_remove=[], cell_remove_fields=cell_fields_ignore
+                )
 
     diff_nb = cast(DiffModel, nb_1 - nb_2)
     nb = cast(
