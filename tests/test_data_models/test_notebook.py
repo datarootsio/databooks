@@ -165,7 +165,9 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
         """Remove metadata specified in JupyterNotebook - cells and notebook levels."""
         notebook = self.jupyter_notebook
         notebook.clear_metadata(
-            notebook_metadata_keep=[], cell_metadata_keep=[], cell_outputs=True
+            notebook_metadata_keep=[],
+            cell_metadata_keep=[],
+            cell_remove_fields=["outputs", "execution_count"],
         )
 
         assert all(cell.metadata == CellMetadata() for cell in notebook.cells)
