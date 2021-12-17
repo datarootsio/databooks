@@ -18,7 +18,7 @@ from typing import (
     Union,
 )
 
-from pydantic import Extra, root_validator, validator
+from pydantic import Extra, PositiveInt, root_validator, validator
 from pydantic.generics import GenericModel
 
 from databooks.data_models.base import BaseCells, DatabooksBase
@@ -63,9 +63,7 @@ class Cell(DatabooksBase):
         *,
         cell_metadata_keep: Sequence[str] = None,
         cell_metadata_remove: Sequence[str] = None,
-        cell_execution_count: bool = True,
-        cell_outputs: bool = False,
-        remove_fields: List[str] = ["id"],
+        cell_remove_fields: Sequence[str] = (),
     ) -> None:
         """
         Clear cell metadata, execution count and outputs.
@@ -73,8 +71,7 @@ class Cell(DatabooksBase):
         :param cell_metadata_keep: Metadata values to keep - simply pass an empty
          sequence (i.e.: `()`) to remove all extra fields.
         :param cell_metadata_remove: Metadata values to remove
-        :param cell_execution_count: Whether or not to keep the execution count
-        :param cell_outputs: whether or not to keep the cell outputs
+        :param cell_remove_fields: Fields to remove from cell
         :return:
         """
         nargs = sum((cell_metadata_keep is not None, cell_metadata_remove is not None))
@@ -83,6 +80,7 @@ class Cell(DatabooksBase):
                 "Exactly one of `cell_metadata_keep` or `cell_metadata_remove` must"
                 f" be passed, got {nargs} arguments."
             )
+
         if cell_metadata_keep is not None:
             cell_metadata_remove = tuple(
                 field for field, _ in self.metadata if field not in cell_metadata_keep
@@ -91,10 +89,12 @@ class Cell(DatabooksBase):
 
         self.remove_fields(remove_fields, missing_ok=True)
         if self.cell_type == "code":
-            if cell_outputs:
-                self.outputs: List[Dict[str, Any]] = []
-            if cell_execution_count:
-                self.execution_count = None
+            self.outputs: List[Dict[str, Any]] = (
+                [] if "outputs" not in cell_fields else self.outputs
+            )
+            self.execution_count: Optional[PositiveInt] = (
+                None if "execution_count" not in cell_fields else self.execution_count
+            )
 
     @validator("cell_type")
     def cell_has_valid_type(cls, v: str) -> str:
