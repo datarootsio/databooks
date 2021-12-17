@@ -129,7 +129,7 @@ class TestCell:
         )
 
     def test_cell_remove_fields(self, caplog: LogCaptureFixture) -> None:
-        """Test remove fields with logs"""
+        """Test remove fields with logs."""
         caplog.set_level(logging.DEBUG)
         cell = deepcopy(self.cell)
         cell.remove_fields(["cell_type", "outputs"])  # yields invalid `cell`
