@@ -25,10 +25,11 @@ def get_logger(name: str) -> logging.Logger:
 
 
 def set_verbose(logger: logging.Logger) -> None:
+    """Set logger to DEBUG level when user requests verbosity."""
     verbose_level = logging.DEBUG
     logger.setLevel(verbose_level)
     logger.debug(
-        f"verbose mode: setting log level to {logging.getLevelName(verbose_level)}"
+        f"Verbose mode: setting log level to {logging.getLevelName(verbose_level)}"
     )
 
 
