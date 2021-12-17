@@ -60,9 +60,11 @@ class Cell(DatabooksBase):
 
     def remove_fields(self, *args: Any, **kwargs: Any) -> None:
         """
-        Overwrite databooks.data_models.DatabooksBase.remove_fields to raise warning
-         in favour of `Cell.clear_metadata` instead, as it preserve the Jupyter notebook
-         schema.
+        Remove Cell fields with a warning.
+
+        Overwrite `databooks.data_models.DatabooksBase.remove_fields` to raise warning
+         in favour of `Cell.clear_metadata` instead, as it preserves a valid Jupyter
+         Notebook schema.
         """
         logger.warning(
             "Removing fields in `databooks.data_models.notebook.Cell` may yield invalid"
