@@ -1,8 +1,11 @@
+"""Test data models for notebook components."""
+import logging
 from copy import deepcopy
 from importlib import resources
 from typing import List, Tuple, cast
 
 import pytest
+from _pytest.logging import LogCaptureFixture
 
 from databooks.data_models.base import DiffModel
 from databooks.data_models.notebook import (
@@ -86,19 +89,30 @@ class TestCell:
         assert metadata.dict() == {}
         assert metadata == CellMetadata()
 
-    def test_clear(self) -> None:
+    def test_clear(self, caplog: LogCaptureFixture) -> None:
         """Remove metadata specified from notebook `Cell`."""
+        caplog.set_level(logging.DEBUG)
+
         cell = self.cell
+
         assert cell.metadata is not None
+
         cell.clear_metadata(
-            cell_metadata_keep=[], cell_execution_count=True, cell_outputs=True
+            cell_metadata_keep=[],
+            cell_remove_fields=["execution_count", "outputs", "source"],
         )
+        logs = list(caplog.records)
+
         assert cell == Cell(
             cell_type="code",
             metadata=CellMetadata(),
             outputs=[],
             source=["test_source"],
             execution_count=None,
+        )
+        assert len(logs) == 1
+        assert logs[0].message == (
+            "Ignoring removal of ['source'] - removing fields yields invalid `Cell`."
         )
 
     def test_sub_cells(self) -> None:
