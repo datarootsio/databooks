@@ -128,6 +128,25 @@ class TestCell:
             [([self.cell], [self.cell]), ([], [self.cell])]  # type: ignore
         )
 
+    def test_cell_remove_fields(self, caplog: LogCaptureFixture) -> None:
+        """Test remove fields with logs"""
+        caplog.set_level(logging.DEBUG)
+        cell = deepcopy(self.cell)
+        cell.remove_fields(["cell_type", "outputs"])  # yields invalid `cell`
+        logs = list(caplog.records)
+
+        assert cell.dict() == dict(
+            metadata=self.cell_metadata,
+            source=["test_source"],
+            execution_count=1,
+        )
+        assert len(logs) == 1
+        assert logs[0].message == (
+            "Removing fields in `databooks.data_models.notebook.Cell` may yield invalid"
+            " notebook. Use `databooks.data_models.notebook.Cell.clear_metadata` with a"
+            " `cell_remove_fields` parameter instead."
+        )
+
 
 class TestJupyterNotebook(TestNotebookMetadata, TestCell):
     """Tests related to notebooks."""
