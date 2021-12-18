@@ -1,4 +1,4 @@
-"""Common set of miscellaneous functions"""
+"""Common set of miscellaneous functions."""
 import json
 import logging
 import os
@@ -34,14 +34,15 @@ def set_verbose(logger: logging.Logger) -> None:
 
 
 def write_notebook(nb: JupyterNotebook, path: Path) -> None:
-    """Write notebook to a path"""
+    """Write notebook to a path."""
     with path.open("w") as f:
         json.dump(nb.dict(), fp=f, indent=2)
 
 
 def expand_paths(paths: List[Path], ignore: List[str]) -> List[Path]:
     """
-    Get paths of existing file from list of directory or file paths
+    Get paths of existing file from list of directory or file paths.
+
     :param paths: Paths to consider (can be directories or files)
     :param ignore: Glob expressions of files to ignore
     :return: List of existing paths for notebooks

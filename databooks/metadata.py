@@ -1,4 +1,4 @@
-"""Metadata wrapper functions for cleaning notebook metadata"""
+"""Metadata wrapper functions for cleaning notebook metadata."""
 from pathlib import Path
 from typing import Any, Callable, List, Optional, Sequence
 
@@ -18,7 +18,9 @@ def clear(
     **kwargs: Any,
 ) -> bool:
     """
-    Clear Jupyter Notebook metadata (at notebook and cell level) and write clean
+    Clear Jupyter Notebook metadata.
+
+    Clear metadata (at notebook and cell level) and write clean
      notebook. By default remove all metadata.
     :param read_path: Path of notebook file with metadata to be cleaned
     :param write_path: Path of notebook file with metadata to be cleaned
@@ -67,6 +69,7 @@ def clear_all(
 ) -> List[bool]:
     """
     Clear metadata for multiple notebooks at notebooks and cell level.
+
     :param read_paths: Paths of notebook to remove metadata
     :param write_paths: Paths of where to write cleaned notebooks
     :param progress_callback: Callback function to report progress
