@@ -1,4 +1,3 @@
-"""Test data models for notebook components"""
 from copy import deepcopy
 from typing import List, Tuple, cast
 
@@ -15,8 +14,11 @@ from databooks.data_models.notebook import (
 
 
 class TestNotebookMetadata:
+    """Tests related to notebook metadata fields."""
+
     @property
     def notebook_metadata(self) -> NotebookMetadata:
+        """`NotebookMetadata` property to test on."""
         return NotebookMetadata(
             kernelspec=dict(display_name="kernel_display_name", name="kernel_name"),
             field_to_remove="Field to remove",
@@ -24,7 +26,7 @@ class TestNotebookMetadata:
         )
 
     def test_remove_fields__missing_ok(self) -> None:
-        """Remove fields specified from NotebookMetadata model (ignore if missing)"""
+        """Remove fields specified from NotebookMetadata model (ignore if missing)."""
         metadata = deepcopy(self.notebook_metadata)
         assert hasattr(metadata, "field_to_remove")
         extra_fields = [
@@ -40,7 +42,7 @@ class TestNotebookMetadata:
         assert not hasattr(metadata, "field_to_remove")
 
     def test_remove_fields(self) -> None:
-        """Remove fields specified from NotebookMetadata model"""
+        """Remove fields specified from NotebookMetadata model."""
         metadata = deepcopy(self.notebook_metadata)
         assert hasattr(metadata, "field_to_remove")
         assert hasattr(metadata, "tags")
@@ -53,12 +55,16 @@ class TestNotebookMetadata:
 
 
 class TestCell:
+    """Tests related to notebook cell fields."""
+
     @property
     def cell_metadata(self) -> CellMetadata:
+        """`CellMetadata` property to test on."""
         return CellMetadata(field_to_remove="Field to remove")
 
     @property
     def cell(self) -> Cell:
+        """`Cell` property to test on."""
         return Cell(
             cell_type="code",
             metadata=self.cell_metadata,
@@ -70,7 +76,7 @@ class TestCell:
         )
 
     def test_cell_metadata(self) -> None:
-        """Remove fields specified from CellMetadata model"""
+        """Remove fields specified from `CellMetadata` model."""
         metadata = self.cell_metadata
         extra_fields = [
             field for field, _ in metadata if field not in metadata.__fields__
@@ -80,7 +86,7 @@ class TestCell:
         assert metadata == CellMetadata()
 
     def test_clear(self) -> None:
-        """Remove metadata specified from notebook Cell"""
+        """Remove metadata specified from notebook `Cell`."""
         cell = self.cell
         assert cell.metadata is not None
         cell.clear_metadata(
@@ -94,8 +100,8 @@ class TestCell:
             execution_count=None,
         )
 
-    def test_cells(self) -> None:
-        """Test cell type"""
+    def test_sub_cells(self) -> None:
+        """Get the diff from different `Cells`."""
         dl1 = Cells[Cell]([self.cell])
         dl2 = Cells[Cell]([self.cell] * 2)
 
@@ -109,8 +115,11 @@ class TestCell:
 
 
 class TestJupyterNotebook(TestNotebookMetadata, TestCell):
+    """Tests related to notebooks."""
+
     @property
     def jupyter_notebook(self) -> JupyterNotebook:
+        """`JupyterNotebook` property to test on."""
         return JupyterNotebook(
             metadata=self.notebook_metadata,
             nbformat=4,
@@ -119,7 +128,7 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
         )
 
     def test_clear_metadata(self) -> None:
-        """Remove metadata specified from JupyterNotebook - cells and notebook levels"""
+        """Remove metadata specified in JupyterNotebook - cells and notebook levels."""
         notebook = self.jupyter_notebook
         notebook.clear_metadata(
             notebook_metadata_keep=[], cell_metadata_keep=[], cell_outputs=True
@@ -137,10 +146,11 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
 
     def test_notebook_sub(self) -> None:
         """
+        Compute and resolve diffs of notebooks.
+
         Use the `-` operator and resolve the diffs from the child classes with nested
          models
         """
-
         notebook_1 = deepcopy(self.jupyter_notebook)
         notebook_2 = deepcopy(self.jupyter_notebook)
         notebook_1.metadata = NotebookMetadata(

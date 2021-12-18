@@ -22,15 +22,14 @@ runner = CliRunner()
 
 
 def test_version_callback() -> None:
-    """Print version and help"""
+    """Print version and help."""
     result = runner.invoke(app, ["--version"])
     assert result.exit_code == 0
     assert f"databooks version: {version('databooks')}\n" == result.stdout
 
 
 def test_meta(tmpdir: LocalPath) -> None:
-    """Fix notebook conflicts"""
-
+    """Fix notebook conflicts."""
     read_path = tmpdir.mkdir("notebooks") / "test_meta_nb.ipynb"  # type: ignore
     write_notebook(nb=TestJupyterNotebook().jupyter_notebook, path=read_path)
 
@@ -59,7 +58,7 @@ def test_meta(tmpdir: LocalPath) -> None:
 
 
 def test_meta__check(tmpdir: LocalPath, caplog: LogCaptureFixture) -> None:
-    """Fix notebook conflicts"""
+    """Fix notebook conflicts."""
     caplog.set_level(logging.INFO)
 
     read_path = tmpdir.mkdir("notebooks") / "test_meta_nb.ipynb"  # type: ignore
@@ -77,7 +76,7 @@ def test_meta__check(tmpdir: LocalPath, caplog: LogCaptureFixture) -> None:
 
 
 def test_fix(tmpdir: LocalPath) -> None:
-    """Fix notebook conflicts"""
+    """Fix notebook conflicts."""
     # Setup
     nb_path = Path("test_conflicts_nb.ipynb")
     notebook_1 = TestJupyterNotebook().jupyter_notebook

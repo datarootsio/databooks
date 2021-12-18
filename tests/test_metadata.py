@@ -1,4 +1,3 @@
-"""Test metadata wrapper functions"""
 import logging
 from pathlib import Path
 
@@ -14,7 +13,7 @@ from tests.test_data_models.test_notebook import TestJupyterNotebook  # type: ig
 def test_metadata_clear__check_verbose(
     tmpdir: LocalPath, caplog: LogCaptureFixture
 ) -> None:
-    """Clear metadata from a notebook and write clean notebook"""
+    """Clear metadata from a notebook and write clean notebook."""
     caplog.set_level(logging.DEBUG)
     read_path = Path(tmpdir.mkdir("notebooks") / "test_nb.ipynb")  # type: ignore
     write_notebook(nb=TestJupyterNotebook().jupyter_notebook, path=read_path)
@@ -42,7 +41,7 @@ def test_metadata_clear__check_verbose(
 
 
 def test_metadata_clear(tmpdir: LocalPath) -> None:
-    """Clear metadata from a notebook and write clean notebook"""
+    """Clear metadata from a notebook and write clean notebook."""
     read_path = Path(tmpdir.mkdir("notebooks") / "test_nb.ipynb")  # type: ignore
     write_notebook(nb=TestJupyterNotebook().jupyter_notebook, path=read_path)
     write_path = read_path.parent / ("clean_" + read_path.name)

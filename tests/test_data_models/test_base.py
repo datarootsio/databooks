@@ -1,11 +1,10 @@
-"""Test base data models and components"""
 from typing import cast
 
 from databooks.data_models.base import DatabooksBase, DiffModel
 
 
 def test_base_sub() -> None:
-    """Use the `-` operator and resolve the diffs from the base model"""
+    """Use the `-` operator and resolve the diffs from the base model."""
     model_1 = DatabooksBase(test=0, foo=1, bar="2")
     model_2 = DatabooksBase(bar=4, foo=2, baz=2.3, test=0)
     diff = cast(DiffModel, model_1 - model_2)
