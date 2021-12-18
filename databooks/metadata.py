@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Any, Callable, List, Optional, Sequence
 
 from databooks import JupyterNotebook
-from databooks.common import get_logger, write_notebook
+from databooks.common import get_logger, set_verbose, write_notebook
 
 logger = get_logger(__file__)
 
@@ -30,6 +30,8 @@ def clear(
      `databooks.data_models.JupyterNotebook.clear_metadata`
     :return: Whether notebooks are equal
     """
+    if verbose:
+        set_verbose(logger)
 
     if write_path is None:
         write_path = read_path
@@ -41,20 +43,18 @@ def clear(
         **kwargs,
     )
     nb_equals = notebook == JupyterNotebook.parse_file(read_path)
-    if verbose:
-        if nb_equals or check:
-            msg = (
-                "only check (unwanted metadata found)."
-                if not nb_equals
-                else "no metadata to remove."
-            )
-            logger.info(f"No action taken for {read_path} - " + msg)
-        else:
-            write_notebook(nb=notebook, path=write_path)
-            logger.info(f"Removed metadata from {read_path}, saved as {write_path}")
 
-    elif not nb_equals and not check:
+    if nb_equals or check:
+        msg = (
+            "only check (unwanted metadata found)."
+            if not nb_equals
+            else "no metadata to remove."
+        )
+        logger.debug(f"No action taken for {read_path} - " + msg)
+    else:
         write_notebook(nb=notebook, path=write_path)
+        logger.debug(f"Removed metadata from {read_path}, saved as {write_path}")
+
     return nb_equals
 
 

@@ -7,7 +7,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple, cast
 
 from git import Repo
 
-from databooks.common import get_logger, write_notebook
+from databooks.common import get_logger, set_verbose, write_notebook
 from databooks.data_models.base import BaseCells, DiffModel
 from databooks.data_models.notebook import Cell, Cells, JupyterNotebook
 from databooks.git_utils import ConflictFile, get_conflict_blobs, get_repo
@@ -64,16 +64,19 @@ def conflict2nb(
     :return: Resolved conflicts as a `databooks.data_models.notebook.JupyterNotebook`
      model
     """
+    if verbose:
+        set_verbose(logger)
+
     nb_1 = JupyterNotebook.parse_raw(conflict_file.first_contents)
     nb_2 = JupyterNotebook.parse_raw(conflict_file.last_contents)
-    if nb_1.metadata != nb_2.metadata and verbose:
+    if nb_1.metadata != nb_2.metadata:
         msg = (
             f"Notebook metadata conflict for {conflict_file.filename}. Keeping "
             + "first."
             if keep_first
             else "last."
         )
-        logger.info(msg)
+        logger.debug(msg)
 
     diff_nb = cast(DiffModel, nb_1 - nb_2)
     nb = cast(
@@ -86,8 +89,7 @@ def conflict2nb(
             last_id=conflict_file.last_log,
         ),
     )
-    if verbose:
-        logger.info(f"Resolved conflicts in {conflict_file.filename}.")
+    logger.debug(f"Resolved conflicts in {conflict_file.filename}.")
     return nb
 
 
