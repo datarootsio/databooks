@@ -204,11 +204,8 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
 
 def test_parse_file() -> None:
     """Deserialize `ipynb` file to `databooks.JupyterNotebook` models."""
-    with resources.path("tests", "notebooks") as nb_dir:
-        nb_path = nb_dir / "demo.ipynb"
-    assert nb_path.is_file()
-
-    notebook = JupyterNotebook.parse_file(nb_path)
+    with resources.path("tests.notebooks", "demo.ipynb") as nb_path:
+        notebook = JupyterNotebook.parse_file(nb_path)
 
     assert notebook.nbformat == 4
     assert notebook.nbformat_minor == 5
