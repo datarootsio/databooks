@@ -1,4 +1,4 @@
-"""Functions to resolve any git conflicts between notebooks"""
+"""Functions to resolve any git conflicts between notebooks."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ logger = get_logger(__file__)
 
 
 class DiffJupyterNotebook(DiffModel):
-    """Protocol for mypy static type checking"""
+    """Protocol for mypy static type checking."""
 
     nbformat: int
     nbformat_minor: int
@@ -28,7 +28,8 @@ def path2conflicts(
     nb_paths: List[Path], repo: Optional[Repo] = None
 ) -> List[ConflictFile]:
     """
-    Get the difference model from the path based on the git conflict information
+    Get the difference model from the path based on the git conflict information.
+
     :param nb_path: Path to file with conflicts (must be notebook paths)
     :return: Generator of `DiffModel`s, to be resolved
     """
@@ -54,7 +55,8 @@ def conflict2nb(
     verbose: bool = False,
 ) -> JupyterNotebook:
     """
-    Merge diffs from conflicts and return valid a notebook
+    Merge diffs from conflicts and return valid a notebook.
+
     :param conflict_file: A `databooks.git_utils.ConflictFile` with conflicts
     :param keep_first: Whether to keep the metadata of the first or last notebook
     :param cells_first: Whether to keep the cells of the first or last notebook
@@ -100,8 +102,10 @@ def conflicts2nbs(
     **conflict2nb_kwargs: Any,
 ) -> None:
     """
+    Get notebooks from conflicts.
+
     Wrap `databooks.conflicts.conflict2nb` to write notebooks to list of
-     `databooks.git_utils.ConflictFile`
+     `databooks.git_utils.ConflictFile`.
     :param conflict_files: Files with source conflict files and one-liner git logs
     :param progress_callback: Callback function to report progress
     :param conflict2nb_kwargs: Keyword arguments to be passed to
@@ -115,5 +119,5 @@ def conflicts2nbs(
 
 
 def cells_equals(diff_cells: Cells[Tuple[List[Cell], List[Cell]]]) -> List[bool]:
-    """Return if cells in `DiffCells` are equal"""
+    """Return if cells in `DiffCells` are equal."""
     return [cell_first == cell_last for cell_first, cell_last in diff_cells]

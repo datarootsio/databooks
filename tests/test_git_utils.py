@@ -16,7 +16,7 @@ def init_repo_conflicts(
     commit_message_main: str,
     commit_message_other: str,
 ) -> Repo:
-    """Create git repo and create a conflict"""
+    """Create git repo and create a conflict."""
     git_repo = Repo.init(path=tmpdir)
     git_repo.working_dir = cast(Path, git_repo.working_dir)
     git_filepath = git_repo.working_dir / filename
@@ -45,7 +45,7 @@ def init_repo_conflicts(
 
 
 def test_get_repo() -> None:
-    """Find git repository"""
+    """Find git repository."""
     filepath = Path(__file__)
     repo = get_repo(filepath)
     assert repo.working_dir is not None
@@ -54,7 +54,7 @@ def test_get_repo() -> None:
 
 
 def test_get_conflict_blobs(tmpdir: LocalPath) -> None:
-    """Return `databooks.git_utils.ConflctFile` from git merge conflict"""
+    """Return `databooks.git_utils.ConflctFile` from git merge conflict."""
     filepath = Path("hello.txt")
     git_repo = init_repo_conflicts(
         tmpdir=tmpdir,

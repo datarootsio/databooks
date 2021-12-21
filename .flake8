@@ -8,6 +8,8 @@ exclude =
     .ipynb_checkpoints,
     venv,
     docs
-per-file-ignores = __init__.py:F401
+per-file-ignores =
+    __init__.py:F401,D104
+    tests/*:D100,D104
 max-line-length = 88
 ignore = E203,W503 # conflicts with black

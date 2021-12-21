@@ -1,4 +1,4 @@
-"""Main CLI application"""
+"""Main CLI application."""
 from importlib.metadata import metadata
 from pathlib import Path
 from typing import List, Optional
@@ -24,13 +24,14 @@ app = Typer()
 
 
 def version_callback(value: bool) -> None:
+    """Return application version."""
     if value:
         echo("databooks version: " + _DISTRIBUTION_METADATA["Version"])
         raise Exit()
 
 
 @app.callback()
-def callback(
+def callback(  # noqa: D103
     version: Optional[bool] = Option(
         None, "--version", callback=version_callback, is_eager=True
     )
@@ -64,7 +65,7 @@ def meta(
         False, "--verbose", "-v", help="Log processed files in console"
     ),
 ) -> None:
-    """Clear both notebook and cell metadata"""
+    """Clear both notebook and cell metadata."""
     if any(path.suffix not in ("", ".ipynb") for path in paths):
         raise BadParameter(
             "Expected either notebook files, a directory or glob expression."
@@ -137,9 +138,11 @@ def fix(
     verbose: bool = Option(False, help="Log processed files in console"),
 ) -> None:
     """
-    Fix git conflicts for notebooks by getting unmerged blobs from git index
-     comparing them and returning a valid notebook with the differences -
-     see [git docs](https://git-scm.com/docs/git-ls-files)
+    Fix git conflicts for notebooks.
+
+    Perform by getting the unmerged blobs from git index, comparing them and returning
+     a valid notebook summarizing the differences - see
+     [git docs](https://git-scm.com/docs/git-ls-files).
     """
     filepaths = expand_paths(paths=paths, ignore=ignore)
     conflict_files = path2conflicts(nb_paths=filepaths)
@@ -172,5 +175,5 @@ def fix(
 
 @app.command()
 def diff() -> None:
-    """Show differences between notebooks (not implemented)"""
+    """Show differences between notebooks (not implemented)."""
     raise NotImplementedError

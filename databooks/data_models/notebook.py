@@ -1,4 +1,4 @@
-"""Data models - Jupyter Notebooks and components"""
+"""Data models - Jupyter Notebooks and components."""
 from __future__ import annotations
 
 from copy import deepcopy
@@ -25,17 +25,23 @@ from databooks.data_models.base import BaseCells, DatabooksBase
 
 
 class NotebookMetadata(DatabooksBase):
+    """Notebook metadata. Empty by default but can accept extra fields."""
+
     ...
 
 
 class CellMetadata(DatabooksBase):
+    """Cell metadata. Empty by default but can accept extra fields."""
+
     ...
 
 
 class Cell(DatabooksBase):
     """
-    Jupyter notebook cells. `outputs` and `execution_count` not included since they
-     should only be present in code cells - thus are treated as extra fields.
+    Jupyter notebook cells.
+
+    Fields `outputs` and `execution_count` are not included since they should only be
+     present in code cells - thus are treated as extra fields.
     """
 
     metadata: CellMetadata
@@ -43,7 +49,7 @@ class Cell(DatabooksBase):
     cell_type: str
 
     def __hash__(self) -> int:
-        """Cells must be hashable for `difflib.SequenceMatcher`"""
+        """Cells must be hashable for `difflib.SequenceMatcher`."""
         return hash(
             (type(self),) + tuple(v) if isinstance(v, list) else v
             for v in self.__dict__.values()
@@ -59,7 +65,8 @@ class Cell(DatabooksBase):
         remove_fields: List[str] = ["id"],
     ) -> None:
         """
-        Clear cell metadata, execution count and outputs
+        Clear cell metadata, execution count and outputs.
+
         :param cell_metadata_keep: Metadata values to keep - simply pass an empty
          sequence (i.e.: `()`) to remove all extra fields.
         :param cell_metadata_remove: Metadata values to remove
@@ -88,7 +95,7 @@ class Cell(DatabooksBase):
 
     @validator("cell_type")
     def cell_has_valid_type(cls, v: str) -> str:
-        """Check if cell has one of the three predefined types"""
+        """Check if cell has one of the three predefined types."""
         valid_cell_types = ("raw", "markdown", "code")
         if v not in valid_cell_types:
             raise ValueError(f"Invalid cell type. Must be one of {valid_cell_types}")
@@ -96,7 +103,7 @@ class Cell(DatabooksBase):
 
     @root_validator
     def must_not_be_list_for_code_cells(cls, values: Dict[str, Any]) -> Dict[str, Any]:
-        """Check that code cells have list-type outputs"""
+        """Check that code cells have list-type outputs."""
         if values["cell_type"] == "code" and not isinstance(values["outputs"], list):
             raise ValueError(
                 "All code cells must have a list output property, got"
@@ -108,7 +115,7 @@ class Cell(DatabooksBase):
     def only_code_cells_have_outputs_and_execution_count(
         cls, values: Dict[str, Any]
     ) -> Dict[str, Any]:
-        """Check that only code cells have outputs and execution count"""
+        """Check that only code cells have outputs and execution count."""
         if values["cell_type"] != "code" and (
             ("outputs" in values) or ("execution_count" in values)
         ):
@@ -123,27 +130,27 @@ T = TypeVar("T", Cell, Tuple[List[Cell], List[Cell]])
 
 
 class Cells(GenericModel, BaseCells[T]):
-    """Similar to `list`, with `-` operator using `difflib.SequenceMatcher`"""
+    """Similar to `list`, with `-` operator using `difflib.SequenceMatcher`."""
 
     __root__: Sequence[T] = []
 
     def __init__(self, elements: Sequence[T] = ()) -> None:
-        """Allow passing data as a positional argument when instantiating class"""
+        """Allow passing data as a positional argument when instantiating class."""
         super(Cells, self).__init__(__root__=elements)
 
     @property
     def data(self) -> List[T]:  # type: ignore
-        """Define property `data` required for `collections.UserList` class"""
+        """Define property `data` required for `collections.UserList` class."""
         return list(self.__root__)
 
     def __iter__(self) -> Generator[Any, None, None]:
-        """Use list property as iterable"""
+        """Use list property as iterable."""
         return (el for el in self.data)
 
     def __sub__(
         self: Cells[Cell], other: Cells[Cell]
     ) -> Cells[Tuple[List[Cell], List[Cell]]]:
-        """Return the difference using `difflib.SequenceMatcher`"""
+        """Return the difference using `difflib.SequenceMatcher`."""
         if type(self) != type(other):
             raise TypeError(
                 f"Unsupported operand types for `-`: `{type(self).__name__}` and"
@@ -182,10 +189,12 @@ class Cells(GenericModel, BaseCells[T]):
 
     @classmethod
     def __get_validators__(cls) -> Generator[Callable[..., Any], None, None]:
+        """Get validators for custom class."""
         yield cls.validate
 
     @classmethod
     def validate(cls, v: List[T]) -> Cells[T]:
+        """Ensure object is custom defined container."""
         if not isinstance(v, cls):
             return cls(v)
         else:
@@ -199,7 +208,7 @@ class Cells(GenericModel, BaseCells[T]):
         hash_first: Optional[str] = None,
         hash_last: Optional[str] = None,
     ) -> List[Cell]:
-        """Wrap git-diff cells in existing notebook"""
+        """Wrap git-diff cells in existing notebook."""
         return (
             [
                 Cell(
@@ -235,7 +244,8 @@ class Cells(GenericModel, BaseCells[T]):
         **kwargs: Any,
     ) -> List[Cell]:
         """
-        Resolve differences between `databooks.data_models.notebook.Cells`
+        Resolve differences between `databooks.data_models.notebook.Cells`.
+
         :param keep_first_cells: Whether to keep the cells of the first notebook or not.
          If `None`, then keep both wrapping the git-diff tags
         :param first_id: Git hash of first file in conflict
@@ -264,6 +274,8 @@ class Cells(GenericModel, BaseCells[T]):
 
 
 class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
+    """Jupyter notebook. Extra fields yield invalid notebook."""
+
     nbformat: int
     nbformat_minor: int
     metadata: NotebookMetadata
@@ -271,7 +283,7 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
 
     @classmethod
     def parse_file(cls, path: Path | str, **parse_kwargs: Any) -> JupyterNotebook:
-        """Parse notebook from a path"""
+        """Parse notebook from a path."""
         content_arg = parse_kwargs.pop("content_type", None)
         if content_arg is not None:
             raise ValueError(
@@ -289,7 +301,8 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
         **cell_kwargs: Any,
     ) -> None:
         """
-        Clear notebook and cell metadata
+        Clear notebook and cell metadata.
+
         :param notebook_metadata_keep: Metadata values to keep - simply pass an empty
          sequence (i.e.: `()`) to remove all extra fields.
         :param notebook_metadata_remove: Metadata values to remove
@@ -297,7 +310,6 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
          `databooks.data_models.Cell.clear_metadata`
         :return:
         """
-
         nargs = sum(
             (notebook_metadata_keep is not None, notebook_metadata_remove is not None)
         )

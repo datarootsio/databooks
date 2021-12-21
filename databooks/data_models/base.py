@@ -1,4 +1,4 @@
-"""Data models - Base Pydantic model with custom methods"""
+"""Data models - Base Pydantic model with custom methods."""
 from __future__ import annotations
 
 from abc import abstractmethod
@@ -23,17 +23,21 @@ T = TypeVar("T")
 
 @runtime_checkable
 class DiffModel(Protocol, Iterable):
-    """Protocol for mypy static type checking"""
+    """Protocol for mypy static type checking."""
 
     is_diff: bool
 
     def resolve(self, *args: Any, **kwargs: Any) -> DatabooksBase:
+        """Return a valid base object."""
         ...
 
 
 class BaseCells(UserList, Generic[T]):
+    """Base abstract class for notebook cells."""
+
     @abstractmethod
     def resolve(self, **kwargs: Any) -> list:
+        """Return valid notebook cells from differences."""
         raise NotImplementedError
 
     ...
@@ -63,8 +67,9 @@ def resolve(
     **kwargs: Any,
 ) -> DatabooksBase | List[T]:
     """
-    Resolve differences for 'diff models' into one similar to the parent class
-     `databooks.data_models.Cell.DatabooksBase`
+    Resolve differences for 'diff models'.
+
+    Return instance alike the parent class `databooks.data_models.Cell.DatabooksBase`.
     :param model: DiffModel that is to be resolved (self when added as a method to a
      class
     :param keep_first: Whether to keep the information from the prior in the
@@ -98,6 +103,8 @@ class DatabooksBase(BaseModel):
     """Base Pydantic class with extras on managing fields."""
 
     class Config:
+        """Default configuration for base class."""
+
         extra = Extra.allow
 
     def remove_fields(
@@ -108,7 +115,8 @@ class DatabooksBase(BaseModel):
         missing_ok: bool = False,
     ) -> None:
         """
-        Remove selected fields
+        Remove selected fields.
+
         :param fields: Fields to remove
         :param recursive: Whether or not to remove the fields recursively in case of
          nested models
@@ -123,11 +131,13 @@ class DatabooksBase(BaseModel):
                 delattr(self, field)
 
     def __str__(self) -> str:
-        """Equivalent to __repr__"""
+        """Return outputs of __repr__."""
         return repr(self)
 
     def __sub__(self, other: DatabooksBase) -> DatabooksBase:
         """
+        Subtraction between `databooks.data_models.base.DatabooksBase` objects.
+
         The difference basically return models that replace each fields by a tuple,
          where for each field we have `field = (self_value, other_value)`
         """
