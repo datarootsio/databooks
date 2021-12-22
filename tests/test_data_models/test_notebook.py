@@ -1,4 +1,5 @@
 from copy import deepcopy
+from importlib import resources
 from typing import List, Tuple, cast
 
 import pytest
@@ -199,3 +200,111 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
             ),
         ]
         assert diff.resolve(keep_first_cells=None) == notebook
+
+
+def test_parse_file() -> None:
+    """Deserialize `ipynb` file to `databooks.JupyterNotebook` models."""
+    with resources.path("tests.notebooks", "demo.ipynb") as nb_path:
+        notebook = JupyterNotebook.parse_file(nb_path)
+
+    assert notebook.nbformat == 4
+    assert notebook.nbformat_minor == 5
+    assert notebook.metadata == NotebookMetadata(
+        kernelspec={
+            "display_name": "Python 3 (ipykernel)",
+            "language": "python",
+            "name": "python3",
+        },
+        language_info={
+            "codemirror_mode": {"name": "ipython", "version": 3},
+            "file_extension": ".py",
+            "mimetype": "text/x-python",
+            "name": "python",
+            "nbconvert_exporter": "python",
+            "pygments_lexer": "ipython3",
+            "version": "3.8.12",
+        },
+        **{
+            "toc-showtags": False,
+            "toc-showmarkdowntxt": False,
+            "toc-showcode": True,
+            "toc-autonumbering": False,
+        },
+    )
+    assert notebook.cells == Cells(
+        [
+            Cell(
+                metadata=CellMetadata(tags=[]),
+                source=["# `databooks` demo!"],
+                cell_type="markdown",
+                id="9adc7c77-95f1-4cb9-b987-1411e28f2976",
+            ),
+            Cell(
+                metadata=CellMetadata(tags=["random-tag"]),
+                source=["from random import random  # cell with tags"],
+                cell_type="code",
+                outputs=[],
+                execution_count=1,
+                id="6a6eafec-a799-455b-8c1b-fd43a0a1f3ca",
+            ),
+            Cell(
+                metadata=CellMetadata(tags=[]),
+                source=["random()"],
+                cell_type="code",
+                outputs=[
+                    {
+                        "data": {"text/plain": ["0.9995123767309688"]},
+                        "execution_count": 2,
+                        "metadata": {},
+                        "output_type": "execute_result",
+                    }
+                ],
+                execution_count=2,
+                id="8b852d3e-5482-4feb-8bd1-e902ed6ecaff",
+            ),
+            Cell(
+                metadata=CellMetadata(),
+                source=['print("notebooks + git ❤️")'],
+                cell_type="code",
+                outputs=[
+                    {
+                        "name": "stdout",
+                        "output_type": "stream",
+                        "text": ["notebooks + git ❤️\n"],
+                    }
+                ],
+                execution_count=3,
+                id="4dcb36c4-d671-4ec9-9bff-87857b3f718a",
+            ),
+            Cell(
+                metadata=CellMetadata(),
+                source=["throw error"],
+                cell_type="code",
+                outputs=[
+                    {
+                        "ename": "SyntaxError",
+                        "evalue": "invalid syntax (1516912967.py, line 1)",
+                        "output_type": "error",
+                        "traceback": [
+                            '\x1b[0;36m  File \x1b[0;32m"/var/folders/_r/'
+                            "_8qwqbqn4_gdj4m3gb6_t0540000gn/T/ipykernel_3501/"
+                            '1516912967.py"\x1b[0;36m, line \x1b[0;32m1\x1b[0m\n\x1b'
+                            "[0;31m    throw error\x1b[0m\n\x1b[0m"
+                            "          ^\x1b[0m\n\x1b[0;31mSyntaxError"
+                            "\x1b[0m\x1b[0;31m:\x1b[0m invalid syntax\n"
+                        ],
+                    }
+                ],
+                execution_count=4,
+                id="53cd4d06-b52e-4fbb-9ae1-d55babe2f3a2",
+            ),
+            Cell(
+                metadata=CellMetadata(),
+                source=[],
+                cell_type="code",
+                outputs=[],
+                execution_count=None,
+                id="3916ae93-d4da-4deb-88d5-fb1c26c83d76",
+            ),
+        ]
+    )
