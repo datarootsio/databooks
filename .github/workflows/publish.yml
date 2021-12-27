@@ -5,10 +5,10 @@ on:
       - main
 
 jobs:
-  tag:
+  get-new-tag:
     runs-on: ubuntu-latest
-    env:
-      POETRY_VERSION: 1.1.7
+    outputs:
+      tag-id: ${{ steps.git-version.outputs.version }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -20,6 +20,15 @@ jobs:
         id: git-version
         with:
           release-branch: main
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: get-new-tag
+    env:
+      POETRY_VERSION: 1.1.7
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
       - name: Set up Python 3.8
         uses: actions/setup-python@v2
         with:
@@ -28,7 +37,7 @@ jobs:
         run: |
           pip install poetry==${{ env.POETRY_VERSION }}
           poetry install
-          poetry version ${{ steps.git-version.outputs.version }}
+          poetry version ${{ needs.get-new-tag.outputs.tag-id }}
       - name: Configure PiPy, version and build
         run: |
           poetry config pypi-token.pypi ${{ secrets.PIPY_TOKEN }}
@@ -39,7 +48,7 @@ jobs:
         run: |
           poetry publish -r test-pypi
           poetry publish
-      - name: Create tag
+      - name: Tag and release
         uses: actions/github-script@v5
         with:
           github-token: ${{ github.token }}
@@ -47,17 +56,12 @@ jobs:
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: "refs/tags/${{ steps.git-version.outputs.version }}",
+              ref: "refs/tags/${{ needs.get-new-tag.outputs.tag-id }}",
               sha: context.sha
             })
-      - name: Create release
-        uses: actions/github-script@v5
-        with:
-          github-token: ${{ github.token }}
-          script: |
             github.rest.repos.createRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              tag_name: "${{ steps.git-version.outputs.version }}",
+              tag_name: "${{ needs.get-new-tag.outputs.tag-id }}",
               generate_release_notes: true
             })
