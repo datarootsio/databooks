@@ -1,0 +1,63 @@
+name: 'publish'
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    env:
+      POETRY_VERSION: 1.1.7
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}  # checkout the correct branch name
+          fetch-depth: 0               # fetch the whole repo history
+      - name: Git Version
+        uses: codacy/git-version@2.2.0
+        id: git-version
+        with:
+          release-branch: main
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies and bump version
+        run: |
+          pip install poetry==${{ env.POETRY_VERSION }}
+          poetry install
+          poetry version ${{ steps.git-version.outputs.version }}
+      - name: Configure PiPy, version and build
+        run: |
+          poetry config pypi-token.pypi ${{ secrets.PIPY_TOKEN }}
+          poetry config repositories.test-pypi https://test.pypi.org/legacy/
+          poetry config pypi-token.test-pypi ${{ secrets.TEST_PIPY_TOKEN }}
+          poetry build
+      - name: Publish packages
+        run: |
+          poetry publish -r test-pypi
+          poetry publish
+      - name: Create tag
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: "refs/tags/${{ steps.git-version.outputs.version }}",
+              sha: context.sha
+            })
+      - name: Create release
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: "${{ steps.git-version.outputs.version }}",
+              generate_release_notes: true
+            })
