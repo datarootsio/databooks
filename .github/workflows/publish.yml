@@ -27,8 +27,7 @@ jobs:
     env:
       POETRY_VERSION: 1.1.7
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
       - name: Set up Python 3.8
         uses: actions/setup-python@v2
         with:
@@ -65,3 +64,26 @@ jobs:
               tag_name: "${{ needs.get-new-tag.outputs.tag-id }}",
               generate_release_notes: true
             })
+
+  docs:
+    runs-on: ubuntu-latest
+    needs: [get-new-tag, publish]
+    env:
+      POETRY_VERSION: 1.1.7
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          pip install poetry==${{ env.POETRY_VERSION }}
+          poetry install
+      - name: Configure git user
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+      - name: Create coverage report
+        run: poetry run pytest --cov-report html --cov=databooks tests/
+      - name: Deploy docs
+        run: poetry run mkdocs gh-deploy --force
