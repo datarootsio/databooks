@@ -72,6 +72,8 @@ jobs:
       POETRY_VERSION: 1.1.7
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v2
         with:
           python-version: 3.8
@@ -86,4 +88,6 @@ jobs:
       - name: Create coverage report
         run: poetry run pytest --cov-report html --cov=databooks tests/
       - name: Deploy docs
-        run: poetry run mkdocs gh-deploy --force
+        run: |
+          poetry run mike deploy --push --update-aliases ${{ needs.get-new-tag.outputs.tag-id }} latest
+          poetry run mike set-default --push latest
