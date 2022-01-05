@@ -46,6 +46,7 @@ nav:
 - Home:
   - Overview: index.md
   - Alternatives and comparisons: alternatives.md
+  - Changelog: https://github.com/datarootsio/databooks/releases
   - License: license.md
 - CLI: CLI.md
 - API:
