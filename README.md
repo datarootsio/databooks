@@ -8,9 +8,9 @@
 [![tests](https://github.com/datarootsio/databooks/actions/workflows/test.yml/badge.svg)](https://github.com/datarootsio/databooks/actions)
 
 
-`databooks` is a package for reducing the friction data scientists while using [Jupyter
-notebooks](https://jupyter.org/), by reducing the number of git conflicts between
-different notebooks and assisting in the resolution of the conflicts.
+`databooks` is a package to ease the collaboration between data scientists using
+[Jupyter notebooks](https://jupyter.org/), by reducing the number of git conflicts between
+different notebooks and resolution of git conflicts when encountered.
 
 The key features include:
 
@@ -33,7 +33,7 @@ The key features include:
 ## Installation
 
 ```
-pip install --i https://test.pypi.org/simple/ databooks
+pip install databooks
 ```
 
 ## Usage
