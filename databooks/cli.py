@@ -109,7 +109,7 @@ def meta(
                 f"Found unwanted metadata in {sum(not eq for eq in are_equal)} out of"
                 f" {len(are_equal)} files"
             )
-            Exit(code=1)
+            raise Exit(code=1)
     else:
         logger.info(
             f"The metadata of {sum(not eq for eq in are_equal)} out of {len(are_equal)}"
