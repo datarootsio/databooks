@@ -69,7 +69,7 @@ def test_meta__check(tmpdir: LocalPath, caplog: LogCaptureFixture) -> None:
     nb_write = JupyterNotebook.parse_file(path=read_path)
 
     logs = list(caplog.records)
-    assert result.exit_code == 0
+    assert result.exit_code == 1
     assert len(logs) == 1
     assert nb_read == nb_write
     assert logs[0].message == "Found unwanted metadata in 1 out of 1 files"
