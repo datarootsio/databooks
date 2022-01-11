@@ -1,11 +1,7 @@
 [tool.poetry]
 name = "databooks"
-version = "0.1.0"
-description = """
-Databooks - set of helpers to ease collaboration of data scientists using Jupyter
- Notebooks. Easily resolve git conflicts and remove metadata to reduce the number of
- conflicts.
-"""
+version = "0.1.0"  # dynamically set in CI
+description = "A CLI tool to resolve git conflicts and remove metadata in notebooks."
 authors = ["Murilo Cunha <murilo@dataroots.io>"]
 license = "MIT"
 readme = "README.md"
@@ -25,7 +21,7 @@ typer = "^0.3.2"
 rich = "^10.6.0"
 pydantic = "^1.8.2"
 GitPython = "^3.1.24"
-mkdocs-coverage = "^0.2.4"
+
 
 [tool.poetry.dev-dependencies]
 black = "^21.7b0"
@@ -40,6 +36,8 @@ mypy = "^0.910"
 mkdocstrings = "^0.16.2"
 mkdocs-material = "^8.0.5"
 mkdocs-autorefs = "^0.3.0"
+mkdocs-coverage = "^0.2.4"
+mike = "^1.1.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

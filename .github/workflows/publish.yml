@@ -1,0 +1,93 @@
+name: 'publish'
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  get-new-tag:
+    runs-on: ubuntu-latest
+    outputs:
+      tag-id: ${{ steps.git-version.outputs.version }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}  # checkout the correct branch name
+          fetch-depth: 0               # fetch the whole repo history
+      - name: Git Version
+        uses: codacy/git-version@2.2.0
+        id: git-version
+        with:
+          release-branch: main
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: get-new-tag
+    env:
+      POETRY_VERSION: 1.1.7
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies and bump version
+        run: |
+          pip install poetry==${{ env.POETRY_VERSION }}
+          poetry install
+          poetry version ${{ needs.get-new-tag.outputs.tag-id }}
+      - name: Configure PiPy, version and build
+        run: |
+          poetry config pypi-token.pypi ${{ secrets.PIPY_TOKEN }}
+          poetry config repositories.test-pypi https://test.pypi.org/legacy/
+          poetry config pypi-token.test-pypi ${{ secrets.TEST_PIPY_TOKEN }}
+          poetry build
+      - name: Publish packages
+        run: |
+          poetry publish -r test-pypi
+          poetry publish
+      - name: Tag and release
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: "refs/tags/${{ needs.get-new-tag.outputs.tag-id }}",
+              sha: context.sha
+            })
+            github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: "${{ needs.get-new-tag.outputs.tag-id }}",
+              generate_release_notes: true
+            })
+
+  docs:
+    runs-on: ubuntu-latest
+    needs: [get-new-tag, publish]
+    env:
+      POETRY_VERSION: 1.1.7
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          pip install poetry==${{ env.POETRY_VERSION }}
+          poetry install
+      - name: Configure git user
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+      - name: Create coverage report
+        run: poetry run pytest --cov-report html --cov=databooks tests/
+      - name: Deploy docs
+        run: |
+          poetry run mike deploy --push --update-aliases ${{ needs.get-new-tag.outputs.tag-id }} latest
+          poetry run mike set-default --push latest
