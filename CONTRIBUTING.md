@@ -93,6 +93,10 @@ You can check the generation of documentation by running from the project root
 mkdocs serve
 ```
 
+### mike
+We also use the [`mike`](https://github.com/jimporter/mike) plugin in `MkDocs` to publish
+and keep different versions of documentation.
+
 ## Tests 🗳
 
 We use unit tests to ensure that our package works as expected. We use
@@ -112,6 +116,12 @@ root
 pytest --cov-report html --cov=databooks tests/
 ```
 
+## Publishing
+
+Publishing is automatically done via [Github Actions](https://github.com/features/actions)
+to PiPy. After published, a new tag and release are created. A new docs version is also
+published if all previous steps are successful.
+
 ## Contributors 👨‍💻👩‍💻
 
 `databooks` was created by [Murilo Cunha](https://github.com/murilo-cunha), and is
@@ -121,4 +131,5 @@ maintained by [dataroots](https://github.com/datarootsio).
 
 Special thanks to:
 
-[Bart](https://github.com/Bart6114) for feedback and support.
+[Bart](https://github.com/Bart6114) and [Nick](https://github.com/NickSchouten) for
+feedback and support.
