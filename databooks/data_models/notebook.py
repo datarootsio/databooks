@@ -10,6 +10,7 @@ from typing import (
     Callable,
     Dict,
     Generator,
+    Iterable,
     List,
     Optional,
     Sequence,
@@ -58,20 +59,34 @@ class Cell(DatabooksBase):
             for v in self.__dict__.values()
         )
 
-    def remove_fields(self, *args: Any, **kwargs: Any) -> None:
+    def remove_fields(
+        self, fields: Iterable[str] = (), missing_ok: bool = True, **kwargs: Any
+    ) -> None:
         """
-        Remove Cell fields with a warning.
+        Remove Cell fields.
 
-        Overwrite `databooks.data_models.DatabooksBase.remove_fields` to raise warning
-         in favour of `Cell.clear_metadata` instead, as it preserves a valid Jupyter
-         Notebook schema.
+        Similar to `databooks.data_models.base.remove_fields`, but include required
+         fields for Jupyter notebook cells.
         """
-        logger.warning(
-            "Removing fields in `databooks.data_models.notebook.Cell` may yield invalid"
-            " notebook. Use `databooks.data_models.notebook.Cell.clear_metadata` with a"
-            " `cell_remove_fields` parameter instead."
-        )
-        super(Cell, self).remove_fields(*args, **kwargs)
+        # Ignore required `Cell` fields
+        cell_fields = self.__fields__  # required fields especified in class definition
+        if any(field in fields for field in cell_fields):
+            logger.debug(
+                "Ignoring removal of "
+                + str([f for f in fields if f in cell_fields])
+                + f" - removing fields yields invalid `{type(self).__name__}`."
+            )
+            fields = [f for f in fields if f not in cell_fields]
+
+        super(Cell, self).remove_fields(fields, missing_ok=missing_ok)
+
+        if self.cell_type == "code":
+            self.outputs: List[Dict[str, Any]] = (
+                [] if "outputs" not in dict(self) else self.outputs
+            )
+            self.execution_count: Optional[PositiveInt] = (
+                None if "execution_count" not in dict(self) else self.execution_count
+            )
 
     def clear_metadata(
         self,
@@ -102,24 +117,7 @@ class Cell(DatabooksBase):
             )
         self.metadata.remove_fields(cell_metadata_remove)  # type: ignore
 
-        cell_fields = self.__fields__  # especified in Class definition
-        if any(field in cell_remove_fields for field in cell_fields):
-            logger.debug(
-                "Ignoring removal of "
-                + str([f for f in cell_remove_fields if f in cell_fields])
-                + f" - removing fields yields invalid `{type(self).__name__}`."
-            )
-            cell_remove_fields = [f for f in cell_remove_fields if f not in cell_fields]
-
-        super(Cell, self).remove_fields(cell_remove_fields, missing_ok=True)
-
-        if self.cell_type == "code":
-            self.outputs: List[Dict[str, Any]] = (
-                [] if "outputs" not in dict(self) else self.outputs
-            )
-            self.execution_count: Optional[PositiveInt] = (
-                None if "execution_count" not in dict(self) else self.execution_count
-            )
+        self.remove_fields(fields=cell_remove_fields, missing_ok=True)
 
     @validator("cell_type")
     def cell_has_valid_type(cls, v: str) -> str:

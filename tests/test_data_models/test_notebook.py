@@ -136,15 +136,15 @@ class TestCell:
         logs = list(caplog.records)
 
         assert cell.dict() == dict(
+            cell_type="code",
             metadata=self.cell_metadata,
             source=["test_source"],
             execution_count=1,
+            outputs=[],
         )
         assert len(logs) == 1
         assert logs[0].message == (
-            "Removing fields in `databooks.data_models.notebook.Cell` may yield invalid"
-            " notebook. Use `databooks.data_models.notebook.Cell.clear_metadata` with a"
-            " `cell_remove_fields` parameter instead."
+             "Ignoring removal of ['cell_type'] - removing fields yields invalid `Cell`."
         )
 
 
