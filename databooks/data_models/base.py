@@ -134,7 +134,7 @@ class DatabooksBase(BaseModel):
         """Return outputs of __repr__."""
         return repr(self)
 
-    def __sub__(self, other: DatabooksBase) -> DatabooksBase:
+    def __sub__(self, other: DatabooksBase) -> DiffModel:
         """
         Subtraction between `databooks.data_models.base.DatabooksBase` objects.
 
@@ -166,11 +166,11 @@ class DatabooksBase(BaseModel):
                 fields_d[name] = (tuple, (self_val, other_val))
 
         # Build Pydantic models dynamically
-        DiffModel = create_model(
+        DiffInstance = create_model(
             "Diff" + type(self).__name__,
             __base__=type(self),
             resolve=resolve,
             is_diff=True,
-            **cast(Dict[str, Any], fields_d),
+            **fields_d,
         )
-        return DiffModel()  # it'll be filled in with the defaults
+        return cast(DiffModel, DiffInstance())  # it'll be filled in with the defaults

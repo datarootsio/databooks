@@ -8,7 +8,6 @@ from typing import Any, Callable, List, Optional, Sequence, Tuple, cast
 from git import Repo
 
 from databooks.common import write_notebook
-from databooks.data_models.base import DiffModel
 from databooks.data_models.notebook import Cell, Cells, JupyterNotebook
 from databooks.git_utils import ConflictFile, get_conflict_blobs, get_repo
 from databooks.logging import get_logger, set_verbose
@@ -76,14 +75,7 @@ def conflict2nb(
         )
         logger.debug(msg)
 
-    if cell_fields_ignore:
-        for cells in (nb_1.cells, nb_2.cells):
-            for cell in cells:
-                cell.clear_metadata(
-                    cell_metadata_remove=[], cell_remove_fields=cell_fields_ignore
-                )
-
-    diff_nb = cast(DiffModel, nb_1 - nb_2)
+    diff_nb = nb_1 - nb_2
     nb = cast(
         JupyterNotebook,
         diff_nb.resolve(
