@@ -1,0 +1,8 @@
+- id: databooks
+  name: databooks
+  description:
+    "Remove notebook metadata using `databooks`."
+  entry: databooks meta
+  language: python
+  require_serial: true
+  types: [jupyter]
