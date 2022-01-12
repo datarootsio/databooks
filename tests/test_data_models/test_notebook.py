@@ -202,7 +202,7 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
         )
         notebook_2.cells = notebook_2.cells + [extra_cell]
 
-        diff = cast(DiffModel, notebook_1 - notebook_2)
+        diff = notebook_1 - notebook_2
         notebook = deepcopy(notebook_1)
 
         # add `tags` since we resolve with default `ignore_none = True`
