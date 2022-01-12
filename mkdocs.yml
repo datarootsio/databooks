@@ -48,7 +48,11 @@ nav:
   - Alternatives and comparisons: alternatives.md
   - Changelog: https://github.com/datarootsio/databooks/releases
   - License: license.md
-- Usage: usage.md
+- Usage:
+  - Overview: usage/overview.md
+  - CLI: usage/cli.md
+  - CI/CD: usage/cicd.md
+  - Pre-commit hooks: usage/precommit.md
 - CLI: CLI.md
 - API:
   - Overview: API.md
