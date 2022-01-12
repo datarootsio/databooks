@@ -129,13 +129,12 @@ def meta(
 def fix(
     paths: List[Path] = Argument(..., help="Path(s) of notebook files with conflicts"),
     ignore: List[str] = Option(["!*"], help="Glob expression(s) of files to ignore"),
-    metadata_first: bool = Option(
-        True, help="Whether or not to keep the metadata from the first/current notebook"
+    metadata_head: bool = Option(
+        True, help="Whether or not to keep the metadata from the head/current notebook"
     ),
-    cells_first: Optional[bool] = Option(
+    cells_head: Optional[bool] = Option(
         None,
-        help="Whether to keep the cells from the first or last notebook."
-        " Omit to keep both",
+        help="Whether to keep the cells from the head/base notebook. Omit to keep both",
     ),
     cell_fields_ignore: List[str] = Option(
         [
@@ -180,8 +179,8 @@ def fix(
         )
         conflicts2nbs(
             conflict_files=conflict_files,
-            keep_first=metadata_first,
-            cells_first=cells_first,
+            meta_first=metadata_head,
+            cells_first=cells_head,
             cell_fields_ignore=cell_fields_ignore,
             verbose=verbose,
             progress_callback=lambda: progress.update(conflicts, advance=1),

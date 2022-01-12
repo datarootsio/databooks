@@ -51,7 +51,7 @@ def path2conflicts(
 def conflict2nb(
     conflict_file: ConflictFile,
     *,
-    keep_first: bool = True,
+    meta_first: bool = True,
     cells_first: Optional[bool] = None,
     cell_fields_ignore: Sequence[str] = ("id", "execution_count"),
     ignore_none: bool = True,
@@ -61,7 +61,7 @@ def conflict2nb(
     Merge diffs from conflicts and return valid a notebook.
 
     :param conflict_file: A `databooks.git_utils.ConflictFile` with conflicts
-    :param keep_first: Whether to keep the metadata of the first or last notebook
+    :param meta_first: Whether to keep the metadata of the first or last notebook
     :param cells_first: Whether to keep the cells of the first or last notebook
     :param ignore_none: Keep all metadata fields even if it's included in only one
      notebook
@@ -80,7 +80,7 @@ def conflict2nb(
         msg = (
             f"Notebook metadata conflict for {conflict_file.filename}. Keeping "
             + "first."
-            if keep_first
+            if meta_first
             else "last."
         )
         logger.debug(msg)
@@ -97,7 +97,7 @@ def conflict2nb(
         JupyterNotebook,
         diff_nb.resolve(
             ignore_none=ignore_none,
-            keep_first=keep_first,
+            keep_first=meta_first,
             keep_first_cells=cells_first,
             first_id=conflict_file.first_log,
             last_id=conflict_file.last_log,
