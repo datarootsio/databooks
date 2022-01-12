@@ -112,7 +112,7 @@ class TestCell:
         )
         assert len(logs) == 1
         assert logs[0].message == (
-            "Ignoring removal of ['source'] - removing fields yields invalid `Cell`."
+            "Ignoring removal of required fields ['source'] in `Cell`."
         )
 
     def test_cells_sub(self) -> None:
@@ -144,7 +144,7 @@ class TestCell:
         )
         assert len(logs) == 1
         assert logs[0].message == (
-             "Ignoring removal of ['cell_type'] - removing fields yields invalid `Cell`."
+            "Ignoring removal of required fields ['cell_type'] in `Cell`."
         )
 
 

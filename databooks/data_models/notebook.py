@@ -72,9 +72,9 @@ class Cell(DatabooksBase):
         cell_fields = self.__fields__  # required fields especified in class definition
         if any(field in fields for field in cell_fields):
             logger.debug(
-                "Ignoring removal of "
+                "Ignoring removal of required fields "
                 + str([f for f in fields if f in cell_fields])
-                + f" - removing fields yields invalid `{type(self).__name__}`."
+                + f" in `{type(self).__name__}`."
             )
             fields = [f for f in fields if f not in cell_fields]
 
