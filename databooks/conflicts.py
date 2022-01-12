@@ -3,26 +3,17 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, cast
+from typing import Any, Callable, List, Optional, Sequence, Tuple, cast
 
 from git import Repo
 
 from databooks.common import write_notebook
-from databooks.data_models.base import BaseCells, DiffModel
+from databooks.data_models.base import DiffModel
 from databooks.data_models.notebook import Cell, Cells, JupyterNotebook
 from databooks.git_utils import ConflictFile, get_conflict_blobs, get_repo
 from databooks.logging import get_logger, set_verbose
 
 logger = get_logger(__file__)
-
-
-class DiffJupyterNotebook(DiffModel):
-    """Protocol for mypy static type checking."""
-
-    nbformat: int
-    nbformat_minor: int
-    metadata: Dict[str, Any]
-    cells: BaseCells[Any]
 
 
 def path2conflicts(
