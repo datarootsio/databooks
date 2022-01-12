@@ -47,7 +47,7 @@ jobs:
         run: |
           poetry publish -r test-pypi
           poetry publish
-      - name: Tag and release
+      - name: Tag
         uses: actions/github-script@v5
         with:
           github-token: ${{ github.token }}
@@ -58,6 +58,11 @@ jobs:
               ref: "refs/tags/${{ needs.get-new-tag.outputs.tag-id }}",
               sha: context.sha
             })
+      - name: Release
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ github.token }}
+          script: |
             github.rest.repos.createRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -89,5 +94,5 @@ jobs:
         run: poetry run pytest --cov-report html --cov=databooks tests/
       - name: Deploy docs
         run: |
-          poetry run mike deploy --push --update-aliases ${{ needs.get-new-tag.outputs.tag-id }} latest
+          poetry run mike deploy --update-aliases ${{ needs.get-new-tag.outputs.tag-id }} latest
           poetry run mike set-default --push latest
