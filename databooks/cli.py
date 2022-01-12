@@ -2,7 +2,6 @@
 from importlib.metadata import metadata
 from itertools import compress
 from pathlib import Path
-from textwrap import dedent
 from typing import List, Optional
 
 from rich.progress import (
@@ -43,7 +42,7 @@ def callback(  # noqa: D103
 
 
 # add docs dynamically from `pyproject.toml`
-callback.__doc__ = dedent(_DISTRIBUTION_METADATA["Summary"])
+callback.__doc__ = _DISTRIBUTION_METADATA["Summary"]
 
 
 @app.command()
