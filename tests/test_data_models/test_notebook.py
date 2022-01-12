@@ -2,12 +2,11 @@
 import logging
 from copy import deepcopy
 from importlib import resources
-from typing import List, Tuple, cast
+from typing import List, Tuple
 
 import pytest
 from _pytest.logging import LogCaptureFixture
 
-from databooks.data_models.base import DiffModel
 from databooks.data_models.notebook import (
     Cell,
     CellMetadata,

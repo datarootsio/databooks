@@ -83,7 +83,7 @@ def resolve(
     if not is_diff:
         raise TypeError("Can only resolve dynamic 'diff models' (when `is_diff=True`).")
 
-    res_vals = cast(Dict[str, Any], {})
+    res_vals: Dict[str, Any] = {}
     for name, value in field_d.items():
         if isinstance(value, (DiffModel, BaseCells)):
             res_vals[name] = value.resolve(
@@ -152,7 +152,7 @@ class DatabooksBase(BaseModel):
         other_d = dict(other)
 
         # Build dict with {field: (type, value)} for each field
-        fields_d = {}
+        fields_d: Dict[str, Any] = {}
         for name in self_d.keys() | other_d.keys():
             self_val = self_d.get(name)
             other_val = other_d.get(name)

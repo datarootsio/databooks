@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import cast
 
 from py._path.local import LocalPath
 
@@ -38,7 +37,8 @@ def test_path2diff(tmpdir: LocalPath) -> None:
         commit_message_main="Commit message from main",
         commit_message_other="Commit message from other",
     )
-    git_repo.working_dir = cast(Path, git_repo.working_dir)
+
+    assert isinstance(git_repo.working_dir, (Path, str))
 
     conflict_files = path2conflicts(nb_paths=[nb_filepath], repo=git_repo)
 
