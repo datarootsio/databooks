@@ -15,7 +15,7 @@ def clear(
     write_path: Optional[Path] = None,
     notebook_metadata_keep: Sequence[str] = (),
     cell_metadata_keep: Sequence[str] = (),
-    cell_keep_fields: List[str] = [],
+    cell_fields_keep: List[str] = [],
     check: bool = False,
     verbose: bool = False,
     **kwargs: Any,
@@ -29,7 +29,7 @@ def clear(
     :param write_path: Path of notebook file with metadata to be cleaned
     :param notebook_metadata_keep: Notebook metadata fields to keep
     :param cell_metadata_keep: Cell metadata fields to keep
-    :param cell_keep_fields: Cell fields to keep
+    :param cell_fields_keep: Cell fields to keep
     :param check: Don't write any files, check whether there is unwanted metadata
     :param verbose: Log written files
     :param kwargs: Additional keyword arguments to pass to
@@ -45,10 +45,10 @@ def clear(
 
     # Get fields to remove from cells
     cell_fields = {field for cell in notebook.cells for field, _ in cell if field}
-    cell_keep_fields += list(Cell.__fields__)  # required field for notebook schema
+    cell_fields_keep += list(Cell.__fields__)  # required field for notebook schema
 
     cell_remove_fields = [
-        field for field in cell_fields if field not in cell_keep_fields
+        field for field in cell_fields if field not in cell_fields_keep
     ]
 
     notebook.clear_metadata(

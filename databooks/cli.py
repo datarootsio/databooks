@@ -87,7 +87,7 @@ def meta(
             logger.warning(f"{len(nb_paths)} files will be overwritten")
 
     write_paths = [p.parent / (prefix + p.stem + suffix + p.suffix) for p in nb_paths]
-    cell_keep_fields = list(
+    cell_fields_keep = list(
         compress(["outputs", "execution_count"], (not v for v in (rm_outs, rm_exec)))
     ) + list(cell_fields_keep)
     with Progress(
@@ -105,7 +105,7 @@ def meta(
             progress_callback=lambda: progress.update(metadata, advance=1),
             notebook_metadata_keep=nb_meta_keep,
             cell_metadata_keep=cell_meta_keep,
-            cell_keep_fields=cell_keep_fields,
+            cell_fields_keep=cell_fields_keep,
             check=check,
             verbose=verbose,
         )
