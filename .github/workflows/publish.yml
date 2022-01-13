@@ -20,6 +20,8 @@ jobs:
         id: git-version
         with:
           release-branch: main
+          minor-identifier: feature/
+          major-identifier: breaking/
 
   publish:
     runs-on: ubuntu-latest
