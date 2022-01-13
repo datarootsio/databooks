@@ -65,8 +65,8 @@ class Cell(DatabooksBase):
         """
         Remove Cell fields.
 
-        Similar to `databooks.data_models.base.remove_fields`, but include required
-         fields for Jupyter notebook cells.
+        Similar to `databooks.data_models.base.remove_fields`, but will ignore required
+         fields for `databooks.data_models.notebook.Cell`.
         """
         # Ignore required `Cell` fields
         cell_fields = self.__fields__  # required fields especified in class definition
@@ -88,7 +88,7 @@ class Cell(DatabooksBase):
                 None if "execution_count" not in dict(self) else self.execution_count
             )
 
-    def clear_metadata(
+    def clear_fields(
         self,
         *,
         cell_metadata_keep: Sequence[str] = None,
@@ -96,8 +96,10 @@ class Cell(DatabooksBase):
         cell_remove_fields: Sequence[str] = (),
     ) -> None:
         """
-        Clear cell metadata, execution count and outputs.
+        Clear cell metadata, execution count, outputs or other desired fields (id, ...).
 
+        You can also specify metadata to keep or remove from the `metadata` property of
+         `databooks.data_models.notebook.Cell`.
         :param cell_metadata_keep: Metadata values to keep - simply pass an empty
          sequence (i.e.: `()`) to remove all extra fields.
         :param cell_metadata_remove: Metadata values to remove
@@ -349,5 +351,5 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
         if len(cell_kwargs) > 0:
             _clean_cells = deepcopy(self.cells)
             for cell in _clean_cells:
-                cell.clear_metadata(**cell_kwargs)
+                cell.clear_fields(**cell_kwargs)
             self.cells = _clean_cells

@@ -96,7 +96,7 @@ class TestCell:
 
         assert cell.metadata is not None
 
-        cell.clear_metadata(
+        cell.clear_fields(
             cell_metadata_keep=[],
             cell_remove_fields=["execution_count", "outputs", "source"],
         )
