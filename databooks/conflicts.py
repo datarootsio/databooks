@@ -3,14 +3,15 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple, cast
+from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, cast
 
 from git import Repo
 
-from databooks.common import get_logger, set_verbose, write_notebook
+from databooks.common import write_notebook
 from databooks.data_models.base import BaseCells, DiffModel
 from databooks.data_models.notebook import Cell, Cells, JupyterNotebook
 from databooks.git_utils import ConflictFile, get_conflict_blobs, get_repo
+from databooks.logging import get_logger, set_verbose
 
 logger = get_logger(__file__)
 
@@ -31,6 +32,7 @@ def path2conflicts(
     Get the difference model from the path based on the git conflict information.
 
     :param nb_paths: Path to file with conflicts (must be notebook paths)
+    :param repo: The git repo to look for conflicts
     :return: Generator of `DiffModel`s, to be resolved
     """
     if any(nb_path.suffix not in ("", ".ipynb") for nb_path in nb_paths):
@@ -49,8 +51,9 @@ def path2conflicts(
 def conflict2nb(
     conflict_file: ConflictFile,
     *,
-    keep_first: bool = True,
+    meta_first: bool = True,
     cells_first: Optional[bool] = None,
+    cell_fields_ignore: Sequence[str] = ("id", "execution_count"),
     ignore_none: bool = True,
     verbose: bool = False,
 ) -> JupyterNotebook:
@@ -58,10 +61,12 @@ def conflict2nb(
     Merge diffs from conflicts and return valid a notebook.
 
     :param conflict_file: A `databooks.git_utils.ConflictFile` with conflicts
-    :param keep_first: Whether to keep the metadata of the first or last notebook
+    :param meta_first: Whether to keep the metadata of the first or last notebook
     :param cells_first: Whether to keep the cells of the first or last notebook
     :param ignore_none: Keep all metadata fields even if it's included in only one
      notebook
+    :param cell_fields_ignore: Fields to remove before comparing notebooks - i.e.: cell
+     IDs or execution counts may not want to be considered
     :param verbose: Log written files and metadata conflicts
     :return: Resolved conflicts as a `databooks.data_models.notebook.JupyterNotebook`
      model
@@ -75,17 +80,24 @@ def conflict2nb(
         msg = (
             f"Notebook metadata conflict for {conflict_file.filename}. Keeping "
             + "first."
-            if keep_first
+            if meta_first
             else "last."
         )
         logger.debug(msg)
+
+    if cell_fields_ignore:
+        for cells in (nb_1.cells, nb_2.cells):
+            for cell in cells:
+                cell.clear_metadata(
+                    cell_metadata_remove=[], cell_remove_fields=cell_fields_ignore
+                )
 
     diff_nb = cast(DiffModel, nb_1 - nb_2)
     nb = cast(
         JupyterNotebook,
         diff_nb.resolve(
             ignore_none=ignore_none,
-            keep_first=keep_first,
+            keep_first=meta_first,
             keep_first_cells=cells_first,
             first_id=conflict_file.first_log,
             last_id=conflict_file.last_log,

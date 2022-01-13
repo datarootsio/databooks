@@ -10,6 +10,7 @@ from typing import (
     Callable,
     Dict,
     Generator,
+    Iterable,
     List,
     Optional,
     Sequence,
@@ -18,10 +19,13 @@ from typing import (
     Union,
 )
 
-from pydantic import Extra, root_validator, validator
+from pydantic import Extra, PositiveInt, root_validator, validator
 from pydantic.generics import GenericModel
 
 from databooks.data_models.base import BaseCells, DatabooksBase
+from databooks.logging import get_logger
+
+logger = get_logger(__file__)
 
 
 class NotebookMetadata(DatabooksBase):
@@ -55,14 +59,41 @@ class Cell(DatabooksBase):
             for v in self.__dict__.values()
         )
 
+    def remove_fields(
+        self, fields: Iterable[str] = (), missing_ok: bool = True, **kwargs: Any
+    ) -> None:
+        """
+        Remove Cell fields.
+
+        Similar to `databooks.data_models.base.remove_fields`, but include required
+         fields for Jupyter notebook cells.
+        """
+        # Ignore required `Cell` fields
+        cell_fields = self.__fields__  # required fields especified in class definition
+        if any(field in fields for field in cell_fields):
+            logger.debug(
+                "Ignoring removal of required fields "
+                + str([f for f in fields if f in cell_fields])
+                + f" in `{type(self).__name__}`."
+            )
+            fields = [f for f in fields if f not in cell_fields]
+
+        super(Cell, self).remove_fields(fields, missing_ok=missing_ok)
+
+        if self.cell_type == "code":
+            self.outputs: List[Dict[str, Any]] = (
+                [] if "outputs" not in dict(self) else self.outputs
+            )
+            self.execution_count: Optional[PositiveInt] = (
+                None if "execution_count" not in dict(self) else self.execution_count
+            )
+
     def clear_metadata(
         self,
         *,
         cell_metadata_keep: Sequence[str] = None,
         cell_metadata_remove: Sequence[str] = None,
-        cell_execution_count: bool = True,
-        cell_outputs: bool = False,
-        remove_fields: List[str] = ["id"],
+        cell_remove_fields: Sequence[str] = (),
     ) -> None:
         """
         Clear cell metadata, execution count and outputs.
@@ -70,8 +101,7 @@ class Cell(DatabooksBase):
         :param cell_metadata_keep: Metadata values to keep - simply pass an empty
          sequence (i.e.: `()`) to remove all extra fields.
         :param cell_metadata_remove: Metadata values to remove
-        :param cell_execution_count: Whether or not to keep the execution count
-        :param cell_outputs: whether or not to keep the cell outputs
+        :param cell_remove_fields: Fields to remove from cell
         :return:
         """
         nargs = sum((cell_metadata_keep is not None, cell_metadata_remove is not None))
@@ -80,18 +110,14 @@ class Cell(DatabooksBase):
                 "Exactly one of `cell_metadata_keep` or `cell_metadata_remove` must"
                 f" be passed, got {nargs} arguments."
             )
+
         if cell_metadata_keep is not None:
             cell_metadata_remove = tuple(
                 field for field, _ in self.metadata if field not in cell_metadata_keep
             )
         self.metadata.remove_fields(cell_metadata_remove)  # type: ignore
 
-        self.remove_fields(remove_fields, missing_ok=True)
-        if self.cell_type == "code":
-            if cell_outputs:
-                self.outputs: List[Dict[str, Any]] = []
-            if cell_execution_count:
-                self.execution_count = None
+        self.remove_fields(fields=cell_remove_fields, missing_ok=True)
 
     @validator("cell_type")
     def cell_has_valid_type(cls, v: str) -> str:
@@ -157,32 +183,26 @@ class Cells(GenericModel, BaseCells[T]):
                 f" `{type(other).__name__}`"
             )
 
-        _self = deepcopy(self)
-        _other = deepcopy(other)
-        for cells in (_self, _other):
-            for cell in cells:
-                cell.remove_fields(["id"], missing_ok=True)
-
         # By setting the context to the max number of cells and using
         #  `pathlib.SequenceMatcher.get_grouped_opcodes` we essentially get the same
         #  result as `pathlib.SequenceMatcher.get_opcodes` but in smaller chunks
-        n_context = max(len(_self), len(_other))
+        n_context = max(len(self), len(other))
         diff_opcodes = list(
             SequenceMatcher(
-                isjunk=None, a=_self, b=_other, autojunk=False
+                isjunk=None, a=self, b=other, autojunk=False
             ).get_grouped_opcodes(n_context)
         )
 
         if len(diff_opcodes) > 1:
             raise RuntimeError(
                 "Expected one group for opcodes when context size is "
-                f" {n_context} for {len(_self)} and {len(_other)} cells in"
+                f" {n_context} for {len(self)} and {len(other)} cells in"
                 " notebooks."
             )
         return Cells[Tuple[List[Cell], List[Cell]]](
             [
                 # https://github.com/python/mypy/issues/9459
-                tuple((_self.data[i1:j1], _other.data[i2:j2]))  # type: ignore
+                tuple((self.data[i1:j1], other.data[i2:j2]))  # type: ignore
                 for _, i1, j1, i2, j2 in chain.from_iterable(diff_opcodes)
             ]
         )

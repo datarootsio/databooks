@@ -1,8 +1,11 @@
+"""Test data models for notebook components."""
+import logging
 from copy import deepcopy
 from importlib import resources
 from typing import List, Tuple, cast
 
 import pytest
+from _pytest.logging import LogCaptureFixture
 
 from databooks.data_models.base import DiffModel
 from databooks.data_models.notebook import (
@@ -86,13 +89,20 @@ class TestCell:
         assert metadata.dict() == {}
         assert metadata == CellMetadata()
 
-    def test_clear(self) -> None:
+    def test_clear(self, caplog: LogCaptureFixture) -> None:
         """Remove metadata specified from notebook `Cell`."""
+        caplog.set_level(logging.DEBUG)
+
         cell = self.cell
+
         assert cell.metadata is not None
+
         cell.clear_metadata(
-            cell_metadata_keep=[], cell_execution_count=True, cell_outputs=True
+            cell_metadata_keep=[],
+            cell_remove_fields=["execution_count", "outputs", "source"],
         )
+        logs = list(caplog.records)
+
         assert cell == Cell(
             cell_type="code",
             metadata=CellMetadata(),
@@ -100,8 +110,12 @@ class TestCell:
             source=["test_source"],
             execution_count=None,
         )
+        assert len(logs) == 1
+        assert logs[0].message == (
+            "Ignoring removal of required fields ['source'] in `Cell`."
+        )
 
-    def test_sub_cells(self) -> None:
+    def test_cells_sub(self) -> None:
         """Get the diff from different `Cells`."""
         dl1 = Cells[Cell]([self.cell])
         dl2 = Cells[Cell]([self.cell] * 2)
@@ -112,6 +126,25 @@ class TestCell:
         assert type(diff) == Cells[Tuple[List[Cell], List[Cell]]]
         assert diff == Cells(
             [([self.cell], [self.cell]), ([], [self.cell])]  # type: ignore
+        )
+
+    def test_cell_remove_fields(self, caplog: LogCaptureFixture) -> None:
+        """Test remove fields with logs."""
+        caplog.set_level(logging.DEBUG)
+        cell = deepcopy(self.cell)
+        cell.remove_fields(["cell_type", "outputs"])  # yields invalid `cell`
+        logs = list(caplog.records)
+
+        assert cell.dict() == dict(
+            cell_type="code",
+            metadata=self.cell_metadata,
+            source=["test_source"],
+            execution_count=1,
+            outputs=[],
+        )
+        assert len(logs) == 1
+        assert logs[0].message == (
+            "Ignoring removal of required fields ['cell_type'] in `Cell`."
         )
 
 
@@ -132,7 +165,9 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
         """Remove metadata specified in JupyterNotebook - cells and notebook levels."""
         notebook = self.jupyter_notebook
         notebook.clear_metadata(
-            notebook_metadata_keep=[], cell_metadata_keep=[], cell_outputs=True
+            notebook_metadata_keep=[],
+            cell_metadata_keep=[],
+            cell_remove_fields=["outputs", "execution_count"],
         )
 
         assert all(cell.metadata == CellMetadata() for cell in notebook.cells)

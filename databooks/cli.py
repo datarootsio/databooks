@@ -1,5 +1,6 @@
 """Main CLI application."""
 from importlib.metadata import metadata
+from itertools import compress
 from pathlib import Path
 from typing import List, Optional
 
@@ -12,11 +13,12 @@ from rich.progress import (
 )
 from typer import Argument, BadParameter, Exit, Option, Typer, echo
 
-from databooks.common import expand_paths, get_logger
+from databooks.common import expand_paths
 from databooks.conflicts import conflicts2nbs, path2conflicts
+from databooks.logging import get_logger
 from databooks.metadata import clear_all
 
-_DISTRIBUTION_METADATA = metadata("databooks")
+_DISTRIBUTION_METADATA = metadata(__package__)
 
 logger = get_logger(__file__)
 
@@ -53,6 +55,10 @@ def meta(
     rm_exec: bool = Option(True, help="Whether to remove the cell execution counts"),
     nb_meta_keep: List[str] = Option([], help="Notebook metadata fields to keep"),
     cell_meta_keep: List[str] = Option([], help="Cells metadata fields to keep"),
+    cell_fields_keep: List[str] = Option(
+        [],
+        help="Other (excluding `execution_counts` and `outputs`) cell fields to keep",
+    ),
     overwrite: bool = Option(
         False, "--overwrite", "-w", help="Confirm overwrite of files"
     ),
@@ -81,6 +87,9 @@ def meta(
             logger.warning(f"{len(nb_paths)} files will be overwritten")
 
     write_paths = [p.parent / (prefix + p.stem + suffix + p.suffix) for p in nb_paths]
+    cell_keep_fields = list(
+        compress(["outputs", "execution_count"], (not v for v in (rm_outs, rm_exec)))
+    ) + list(cell_fields_keep)
     with Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
@@ -96,8 +105,7 @@ def meta(
             progress_callback=lambda: progress.update(metadata, advance=1),
             notebook_metadata_keep=nb_meta_keep,
             cell_metadata_keep=cell_meta_keep,
-            cell_execution_count=rm_exec,
-            cell_outputs=rm_outs,
+            cell_keep_fields=cell_keep_fields,
             check=check,
             verbose=verbose,
         )
@@ -121,13 +129,19 @@ def meta(
 def fix(
     paths: List[Path] = Argument(..., help="Path(s) of notebook files with conflicts"),
     ignore: List[str] = Option(["!*"], help="Glob expression(s) of files to ignore"),
-    metadata_first: bool = Option(
-        True, help="Whether or not to keep the metadata from the first/current notebook"
+    metadata_head: bool = Option(
+        True, help="Whether or not to keep the metadata from the head/current notebook"
     ),
-    cells_first: Optional[bool] = Option(
+    cells_head: Optional[bool] = Option(
         None,
-        help="Whether to keep the cells from the first or last notebook."
-        " Omit to keep both",
+        help="Whether to keep the cells from the head/base notebook. Omit to keep both",
+    ),
+    cell_fields_ignore: List[str] = Option(
+        [
+            "id",
+            "execution_count",
+        ],
+        help="Cell fields to remove before comparing cells",
     ),
     interactive: bool = Option(
         False,
@@ -165,8 +179,9 @@ def fix(
         )
         conflicts2nbs(
             conflict_files=conflict_files,
-            keep_first=metadata_first,
-            cells_first=cells_first,
+            meta_first=metadata_head,
+            cells_first=cells_head,
+            cell_fields_ignore=cell_fields_ignore,
             verbose=verbose,
             progress_callback=lambda: progress.update(conflicts, advance=1),
         )

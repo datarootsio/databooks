@@ -22,7 +22,7 @@ def test_metadata_clear__check_verbose(
     clear(
         read_path=read_path,
         write_path=write_path,
-        cell_outputs=True,
+        cell_keep_fields=["outputs"],
         check=True,
         verbose=True,
     )
@@ -49,7 +49,7 @@ def test_metadata_clear(tmpdir: LocalPath) -> None:
     clear(
         read_path=read_path,
         write_path=write_path,
-        cell_outputs=True,
+        cell_keep_fields=["cell_type", "source", "metadata"],
     )
 
     nb_read = JupyterNotebook.parse_file(path=read_path)

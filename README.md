@@ -1,4 +1,4 @@
-<img align="left" style="padding: 10px" width="120" height="120" src="https://raw.githubusercontent.com/datarootsio/databooks/main/docs/images/logo.png?token=AKUGIEI3HBAW32EUFUD5AT3BXT6BC">
+<img align="left" style="padding: 10px" width="120" height="120" src="https://raw.githubusercontent.com/datarootsio/databooks/main/docs/images/logo.png">
 
 # databooks
 [![maintained by dataroots](https://dataroots.io/maintained-rnd.svg)](https://dataroots.io)
@@ -6,6 +6,7 @@
 [![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
 [![Codecov](https://codecov.io/github/datarootsio/databooks/main/graph/badge.svg)](https://github.com/datarootsio/databooks/actions)
 [![tests](https://github.com/datarootsio/databooks/actions/workflows/test.yml/badge.svg)](https://github.com/datarootsio/databooks/actions)
+[![Downloads](https://pepy.tech/badge/databooks)](https://pepy.tech/project/databooks)
 
 
 `databooks` is a package to ease the collaboration between data scientists using
@@ -47,7 +48,7 @@ already avoid many of the conflicts.
 $ databooks meta [OPTIONS] PATHS...
 ```
 
-![databooks meta demo](https://raw.githubusercontent.com/datarootsio/databooks/main/docs/images/databooks-meta.gif?token=AKUGIEOHIY4XVJK2IRRMNRLBYJBEQ)
+![databooks meta demo](https://raw.githubusercontent.com/datarootsio/databooks/main/docs/images/databooks-meta.gif)
 
 ### Fix git conflicts for notebooks
 
@@ -58,7 +59,7 @@ the source notebooks that caused the conflicts and compares them (so no JSON man
 $ databooks fix [OPTIONS] PATHS...
 ```
 
-![databooks fix demo](https://raw.githubusercontent.com/datarootsio/databooks/main/docs/images/databooks-fix.gif?token=AKUGIELRRMXJMU7RSUUGYUDBYJD5G)
+![databooks fix demo](https://raw.githubusercontent.com/datarootsio/databooks/main/docs/images/databooks-fix.gif)
 
 ## License
 
