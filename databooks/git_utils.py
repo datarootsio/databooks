@@ -1,7 +1,7 @@
 """Git helper functions."""
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, cast
+from typing import Dict, List
 
 from git import Blob, Git, Repo  # type: ignore
 
@@ -55,8 +55,12 @@ def get_conflict_blobs(repo: Repo) -> List[ConflictFile]:
         for k, v in unmerged_blobs.items()
         if 0 not in dict(v).keys()  # only get blobs that could not be merged
     )
-    # Type checking: `repo.working_dir` is not None if repo is passed
-    repo.working_dir = cast(str, repo.working_dir)
+
+    if not isinstance(repo.working_dir, (Path, str)):
+        raise RuntimeError(
+            "Expected `repo` to be `pathlib.Path` or `str`, got"
+            f" {type(repo.working_dir)}."
+        )
     return [
         ConflictFile(
             filename=repo.working_dir / blob.filename,

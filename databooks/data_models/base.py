@@ -83,7 +83,7 @@ def resolve(
     if not is_diff:
         raise TypeError("Can only resolve dynamic 'diff models' (when `is_diff=True`).")
 
-    res_vals = cast(Dict[str, Any], {})
+    res_vals: Dict[str, Any] = {}
     for name, value in field_d.items():
         if isinstance(value, (DiffModel, BaseCells)):
             res_vals[name] = value.resolve(
@@ -134,7 +134,7 @@ class DatabooksBase(BaseModel):
         """Return outputs of __repr__."""
         return repr(self)
 
-    def __sub__(self, other: DatabooksBase) -> DatabooksBase:
+    def __sub__(self, other: DatabooksBase) -> DiffModel:
         """
         Subtraction between `databooks.data_models.base.DatabooksBase` objects.
 
@@ -152,7 +152,7 @@ class DatabooksBase(BaseModel):
         other_d = dict(other)
 
         # Build dict with {field: (type, value)} for each field
-        fields_d = {}
+        fields_d: Dict[str, Any] = {}
         for name in self_d.keys() | other_d.keys():
             self_val = self_d.get(name)
             other_val = other_d.get(name)
@@ -166,11 +166,11 @@ class DatabooksBase(BaseModel):
                 fields_d[name] = (tuple, (self_val, other_val))
 
         # Build Pydantic models dynamically
-        DiffModel = create_model(
+        DiffInstance = create_model(
             "Diff" + type(self).__name__,
             __base__=type(self),
             resolve=resolve,
             is_diff=True,
-            **cast(Dict[str, Any], fields_d),
+            **fields_d,
         )
-        return DiffModel()  # it'll be filled in with the defaults
+        return cast(DiffModel, DiffInstance())  # it'll be filled in with the defaults

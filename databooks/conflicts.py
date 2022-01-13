@@ -3,26 +3,16 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, cast
+from typing import Any, Callable, List, Optional, Sequence, Tuple
 
 from git import Repo
 
 from databooks.common import write_notebook
-from databooks.data_models.base import BaseCells, DiffModel
 from databooks.data_models.notebook import Cell, Cells, JupyterNotebook
 from databooks.git_utils import ConflictFile, get_conflict_blobs, get_repo
 from databooks.logging import get_logger, set_verbose
 
 logger = get_logger(__file__)
-
-
-class DiffJupyterNotebook(DiffModel):
-    """Protocol for mypy static type checking."""
-
-    nbformat: int
-    nbformat_minor: int
-    metadata: Dict[str, Any]
-    cells: BaseCells[Any]
 
 
 def path2conflicts(
@@ -85,24 +75,17 @@ def conflict2nb(
         )
         logger.debug(msg)
 
-    if cell_fields_ignore:
-        for cells in (nb_1.cells, nb_2.cells):
-            for cell in cells:
-                cell.clear_metadata(
-                    cell_metadata_remove=[], cell_remove_fields=cell_fields_ignore
-                )
-
-    diff_nb = cast(DiffModel, nb_1 - nb_2)
-    nb = cast(
-        JupyterNotebook,
-        diff_nb.resolve(
-            ignore_none=ignore_none,
-            keep_first=meta_first,
-            keep_first_cells=cells_first,
-            first_id=conflict_file.first_log,
-            last_id=conflict_file.last_log,
-        ),
+    diff_nb = nb_1 - nb_2
+    nb = diff_nb.resolve(
+        ignore_none=ignore_none,
+        keep_first=meta_first,
+        keep_first_cells=cells_first,
+        first_id=conflict_file.first_log,
+        last_id=conflict_file.last_log,
     )
+    if not isinstance(nb, JupyterNotebook):
+        raise RuntimeError(f"Expected `databooks.JupyterNotebook`, got {type(nb)}.")
+
     logger.debug(f"Resolved conflicts in {conflict_file.filename}.")
     return nb
 

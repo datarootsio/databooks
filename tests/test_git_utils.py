@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import cast
 
 from git import GitCommandError, Repo
 from py._path.local import LocalPath
@@ -18,7 +17,12 @@ def init_repo_conflicts(
 ) -> Repo:
     """Create git repo and create a conflict."""
     git_repo = Repo.init(path=tmpdir)
-    git_repo.working_dir = cast(Path, git_repo.working_dir)
+
+    if not isinstance(git_repo.working_dir, (Path, str)):
+        raise RuntimeError(
+            f"Expected `pathlib.Path` or `str`, got {type(git_repo.working_dir)}."
+        )
+
     git_filepath = git_repo.working_dir / filename
 
     git_repo.git.checkout("-b", "main")
@@ -64,7 +68,9 @@ def test_get_conflict_blobs(tmpdir: LocalPath) -> None:
         commit_message_main="Commit message from main",
         commit_message_other="Commit message from other",
     )
-    git_repo.working_dir = cast(Path, git_repo.working_dir)
+
+    assert isinstance(git_repo.working_dir, (Path, str))
+
     conflicts = get_conflict_blobs(repo=git_repo)
     assert len(conflicts) == 1
 

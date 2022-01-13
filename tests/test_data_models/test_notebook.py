@@ -2,12 +2,11 @@
 import logging
 from copy import deepcopy
 from importlib import resources
-from typing import List, Tuple, cast
+from typing import List, Tuple
 
 import pytest
 from _pytest.logging import LogCaptureFixture
 
-from databooks.data_models.base import DiffModel
 from databooks.data_models.notebook import (
     Cell,
     CellMetadata,
@@ -203,7 +202,7 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
         )
         notebook_2.cells = notebook_2.cells + [extra_cell]
 
-        diff = cast(DiffModel, notebook_1 - notebook_2)
+        diff = notebook_1 - notebook_2
         notebook = deepcopy(notebook_1)
 
         # add `tags` since we resolve with default `ignore_none = True`
