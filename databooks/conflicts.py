@@ -7,7 +7,7 @@ from typing import Any, Callable, List, Optional, Sequence, Tuple
 
 from git import Repo
 
-from databooks.common import write_notebook
+from databooks.common import find_common_parent, write_notebook
 from databooks.data_models.notebook import Cell, Cells, JupyterNotebook
 from databooks.git_utils import ConflictFile, get_conflict_blobs, get_repo
 from databooks.logging import get_logger, set_verbose
@@ -29,7 +29,7 @@ def path2conflicts(
         raise ValueError(
             "Expected either notebook files, a directory or glob expression."
         )
-    common_parent = max(set.intersection(*[set(p.parents) for p in nb_paths]))
+    common_parent = find_common_parent(nb_paths)
     repo = get_repo(common_parent) if repo is None else repo
     return [
         file

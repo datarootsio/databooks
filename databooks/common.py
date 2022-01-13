@@ -2,7 +2,7 @@
 import json
 from itertools import chain
 from pathlib import Path
-from typing import List
+from typing import Iterable, List
 
 from databooks import JupyterNotebook
 
@@ -32,3 +32,8 @@ def expand_paths(paths: List[Path], ignore: List[str]) -> List[Path]:
         for p in paths
         if not any(p.match(i) for i in ignore) and p.exists() and p.suffix == ".ipynb"
     ]
+
+
+def find_common_parent(paths: Iterable[Path]) -> Path:
+    """Find common parent amongst several file paths."""
+    return max(set.intersection(*[set(p.parents) for p in paths]))
