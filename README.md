@@ -3,7 +3,7 @@
 # databooks
 [![maintained by dataroots](https://dataroots.io/maintained-rnd.svg)](https://dataroots.io)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
+[![Checked with mypy](https://img.shields.io/badge/mypy-checked-1f5082.svg)](http://mypy-lang.org/)
 [![Codecov](https://codecov.io/github/datarootsio/databooks/main/graph/badge.svg)](https://github.com/datarootsio/databooks/actions)
 [![tests](https://github.com/datarootsio/databooks/actions/workflows/test.yml/badge.svg)](https://github.com/datarootsio/databooks/actions)
 [![Downloads](https://pepy.tech/badge/databooks)](https://pepy.tech/project/databooks)
