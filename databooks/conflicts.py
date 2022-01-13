@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Callable, List, Optional, Sequence, Tuple, cast
+from typing import Any, Callable, List, Optional, Sequence, Tuple
 
 from git import Repo
 
@@ -76,16 +76,16 @@ def conflict2nb(
         logger.debug(msg)
 
     diff_nb = nb_1 - nb_2
-    nb = cast(
-        JupyterNotebook,
-        diff_nb.resolve(
-            ignore_none=ignore_none,
-            keep_first=meta_first,
-            keep_first_cells=cells_first,
-            first_id=conflict_file.first_log,
-            last_id=conflict_file.last_log,
-        ),
+    nb = diff_nb.resolve(
+        ignore_none=ignore_none,
+        keep_first=meta_first,
+        keep_first_cells=cells_first,
+        first_id=conflict_file.first_log,
+        last_id=conflict_file.last_log,
     )
+    if not isinstance(nb, JupyterNotebook):
+        raise RuntimeError(f"Expected `databooks.JupyterNotebook`, got {type(nb)}.")
+
     logger.debug(f"Resolved conflicts in {conflict_file.filename}.")
     return nb
 
