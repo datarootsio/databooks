@@ -16,7 +16,7 @@ def write_notebook(nb: JupyterNotebook, path: Path) -> None:
         json.dump(nb.dict(), fp=f, indent=2)
 
 
-def expand_paths(paths: List[Path], ignore: List[str]) -> List[Path]:
+def expand_paths(paths: List[Path], ignore: List[str] = ["!*"]) -> List[Path]:
     """
     Get paths of existing file from list of directory or file paths.
 
