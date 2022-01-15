@@ -25,9 +25,9 @@ logger = get_logger(__file__)
 app = Typer()
 
 
-def version_callback(value: bool) -> None:
+def _version_callback(show_version: bool) -> None:
     """Return application version."""
-    if value:
+    if show_version:
         echo("databooks version: " + _DISTRIBUTION_METADATA["Version"])
         raise Exit()
 
@@ -35,7 +35,7 @@ def version_callback(value: bool) -> None:
 @app.callback()
 def callback(  # noqa: D103
     version: Optional[bool] = Option(
-        None, "--version", callback=version_callback, is_eager=True
+        None, "--version", callback=_version_callback, is_eager=True
     )
 ) -> None:
     ...
