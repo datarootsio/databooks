@@ -1,10 +1,6 @@
 """Configuration functions, and settings objects."""
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Union
-
-import tomli
-from pydantic import BaseSettings
-from pydantic.env_settings import SettingsSourceCallable
+from typing import Any, Dict, List, Optional
 
 from databooks.common import find_common_parent
 from databooks.git_utils import get_repo
@@ -18,7 +14,7 @@ ConfigFields = Dict[str, Any]
 logger = get_logger(__file__)
 
 
-def _find_file(filename: str, start: Path, finish: Path) -> Union[Path, None]:
+def _find_file(filename: str, start: Path, finish: Path) -> Optional[Path]:
     """
     Recursively find file along directory path, from the end (child) directory to start.
 
@@ -28,14 +24,31 @@ def _find_file(filename: str, start: Path, finish: Path) -> Union[Path, None]:
     :return: File path
     """
     if not start.is_dir() or not finish.is_dir():
-        raise ValueError("Parameters `start` and `finish` must be directory paths.")
+        raise ValueError("Parameters `start` and `finish` must be directories.")
 
-    if finish.samefile(start):
-        logger.debug(f"No file found between {start} and {finish}.")
+    if start.resolve() not in [finish, *finish.resolve().parents]:
+        logger.debug(
+            f"Parameter `start` is not a parent directory of `finish` (for {start} and"
+            f" {finish}). Cannot find {filename}."
+        )
         return None
-    elif (finish / filename).is_file():
+
+    if (finish / filename).is_file():
         return finish / filename
+    elif finish.samefile(start):
+        logger.debug(f"{filename} not found between {start} and {finish}.")
+        return None
     else:
         return _find_file(filename=filename, start=start, finish=finish.parent)
 
 
+def find_config(target_paths: List[Path], config_filename: str) -> Optional[Path]:
+    """Find configuration file from CLI target paths."""
+    common_parent = find_common_parent(paths=target_paths)
+    repo_dir = get_repo().working_dir
+
+    return _find_file(
+        filename=config_filename,
+        start=Path(repo_dir) if repo_dir is not None else Path(common_parent.anchor),
+        finish=common_parent,
+    )
