@@ -32,7 +32,7 @@ class ConflictFile:
 def get_repo(path: Path = Path.cwd()) -> Repo:
     """Find git repo in current or parent directories."""
     repo = Repo(path=path, search_parent_directories=True)
-    logger.info(f"Repo found at: {repo.working_dir}")
+    logger.debug(f"Repo found at: {repo.working_dir}")
     return repo
 
 
