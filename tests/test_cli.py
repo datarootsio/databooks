@@ -152,7 +152,7 @@ def test_fix(tmpdir: LocalPath) -> None:
     id_other = conflict_files[0].last_log
 
     # Run CLI and check conflict resolution
-    result = runner.invoke(app, ["fix", str(tmpdir), "--cell-fields-ignore", "id"])
+    result = runner.invoke(app, ["fix", str(tmpdir)])
     fixed_notebook = JupyterNotebook.parse_file(path=tmpdir / nb_path)
 
     assert len(conflict_files) == 1
