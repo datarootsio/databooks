@@ -5,6 +5,7 @@ from typing import Dict, List
 
 from git import Blob, Git, Repo  # type: ignore
 
+from databooks.common import find_obj
 from databooks.logging import get_logger
 
 logger = get_logger(name=__file__)
@@ -31,7 +32,10 @@ class ConflictFile:
 
 def get_repo(path: Path = Path.cwd()) -> Repo:
     """Find git repo in current or parent directories."""
-    repo = Repo(path=path, search_parent_directories=True)
+    repo_dir = find_obj(
+        obj_name=".git", start=Path(path.anchor), finish=path, is_dir=True
+    )
+    repo = Repo(path=repo_dir)
     logger.debug(f"Repo found at: {repo.working_dir}")
     return repo
 
