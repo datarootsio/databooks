@@ -1,6 +1,7 @@
 import logging
 from importlib.metadata import version
 from pathlib import Path
+from textwrap import dedent
 
 from _pytest.logging import LogCaptureFixture
 from py._path.local import LocalPath
@@ -17,6 +18,18 @@ from databooks.data_models.notebook import (
 from databooks.git_utils import get_conflict_blobs
 from tests.test_data_models.test_notebook import TestJupyterNotebook  # type: ignore
 from tests.test_git_utils import init_repo_conflicts
+
+SAMPLE_CONFIG = dedent(
+    """
+    [tool.databooks.meta]
+    rm-outs=true
+    rm_exec=false
+    overwrite=true
+
+    [tool.databooks.fix]
+    metadata-head=false
+    """
+)
 
 runner = CliRunner()
 
@@ -73,6 +86,34 @@ def test_meta__check(tmpdir: LocalPath, caplog: LogCaptureFixture) -> None:
     assert len(logs) == 1
     assert nb_read == nb_write
     assert logs[0].message == "Found unwanted metadata in 1 out of 1 files"
+
+
+def test_meta__config(tmpdir: LocalPath) -> None:
+    """Retrieve and parse configuration."""
+    read_path = tmpdir.mkdir("notebooks") / "test_meta_nb.ipynb"  # type: ignore
+    write_notebook(nb=TestJupyterNotebook().jupyter_notebook, path=read_path)
+
+    config_path = tmpdir / "pyproject.toml"  # type: ignore
+    config_path.write_text(SAMPLE_CONFIG, encoding="utf-8")
+
+    nb_read = JupyterNotebook.parse_file(path=read_path)
+    # Take arguments from config file
+    result = runner.invoke(app, ["meta", str(read_path), "--config", str(config_path)])
+    nb_write = JupyterNotebook.parse_file(path=read_path)
+
+    assert result.exit_code == 0
+    assert nb_read != nb_write, "Notebook was not overwritten"
+    assert all(c.outputs == [] for c in nb_write.cells)
+    assert all(c.execution_count is not None for c in nb_write.cells)
+
+    # Override config file arguments
+    result = runner.invoke(
+        app, ["meta", str(read_path), "--rm-exec", "--config", str(config_path)]
+    )
+    nb_write = JupyterNotebook.parse_file(path=read_path)
+
+    assert result.exit_code == 0
+    assert all(c.execution_count is None for c in nb_write.cells)
 
 
 def test_fix(tmpdir: LocalPath) -> None:
