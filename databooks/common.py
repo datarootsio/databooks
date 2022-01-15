@@ -71,4 +71,6 @@ def find_obj(
         logger.debug(f"{obj_name} not found between {start} and {finish}.")
         return None
     else:
-        return find_obj(obj_name=obj_name, start=start, finish=finish.parent)
+        return find_obj(
+            obj_name=obj_name, start=start, finish=finish.parent, is_dir=is_dir
+        )
