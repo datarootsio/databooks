@@ -179,9 +179,11 @@ def meta(
         )
 
 
-@app.command()
+@app.command(add_help_option=False)
 def fix(
-    paths: List[Path] = Argument(..., help="Path(s) of notebook files with conflicts"),
+    paths: List[Path] = Argument(
+        ..., is_eager=True, help="Path(s) of notebook files with conflicts"
+    ),
     ignore: List[str] = Option(["!*"], help="Glob expression(s) of files to ignore"),
     metadata_head: bool = Option(
         True, help="Whether or not to keep the metadata from the head/current notebook"
@@ -204,6 +206,19 @@ def fix(
         help="Interactively resolve the conflicts (not implemented)",
     ),
     verbose: bool = Option(False, help="Log processed files in console"),
+    config: Optional[Path] = Option(
+        None,
+        "--config",
+        "-c",
+        is_eager=True,
+        callback=_config_callback,
+        resolve_path=True,
+        exists=True,
+        help="Get CLI options from configuration file",
+    ),
+    help: Optional[bool] = Option(
+        None, is_eager=True, callback=_help_callback, help="Show this message and exit"
+    ),
 ) -> None:
     """
     Fix git conflicts for notebooks.
