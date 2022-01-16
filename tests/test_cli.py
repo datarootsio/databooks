@@ -185,6 +185,7 @@ def test_fix(tmpdir: LocalPath) -> None:
         ),
     ]
 
+
 def test_fix__config(tmpdir: LocalPath) -> None:
     """Fix notebook conflicts."""
     # Setup
