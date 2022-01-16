@@ -1,4 +1,4 @@
-<img align="left" style="padding: 10px" width="120" height="120" src="https://raw.githubusercontent.com/datarootsio/databooks/main/docs/images/logo.png">
+<img alt="logo" width="120" height="120" src="https://raw.githubusercontent.com/datarootsio/databooks/main/docs/images/logo.png">
 
 # databooks
 [![maintained by dataroots](https://dataroots.io/maintained-rnd.svg)](https://dataroots.io)
