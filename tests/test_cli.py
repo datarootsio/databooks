@@ -126,6 +126,43 @@ def test_meta__config(tmpdir: LocalPath) -> None:
     assert all(c.execution_count is None for c in nb_write.cells)
 
 
+def test_meta__script(tmpdir: LocalPath) -> None:
+    """Raise `typer.BadParameter` when passing a script instead of a notebook."""
+    py_path = tmpdir.mkdir("files") / "a_script.py"  # type: ignore
+    py_path.write_text("# some python code", encoding="utf-8")
+
+    result = runner.invoke(app, ["meta", str(py_path)])
+    assert result.exit_code == 2
+    assert (
+        "Expected either notebook files, a directory or glob expression."
+        in result.output
+    )
+
+
+def test_meta__no_overwrite(tmpdir: LocalPath) -> None:
+    """Raise `typer.BadParameter` when no `--overwrite` and no prefix nor suffix."""
+    nb_path = tmpdir.mkdir("notebooks") / "test_meta_nb.ipynb"  # type: ignore
+    write_notebook(nb=TestJupyterNotebook().jupyter_notebook, path=nb_path)
+
+    result = runner.invoke(app, ["meta", str(nb_path)])
+    assert (
+        "No prefix nor suffix were passed. Please specify `--overwrite` or `-w` to"
+        " overwrite files." in result.output
+    )
+
+
+def test_meta__no_notebooks_found(tmpdir: LocalPath, caplog: LogCaptureFixture) -> None:
+    """Log that no notebook was found in the paths passed."""
+    caplog.set_level(logging.INFO)
+    nb_path = tmpdir.mkdir("notebooks") / "inexistent_nb.ipynb"  # type: ignore
+
+    result = runner.invoke(app, ["meta", str(nb_path), "--check"])
+    logs = list(caplog.records)
+    assert result.exit_code == 0
+    assert len(logs) == 1
+    assert logs[0].message == f"No notebooks found in {[Path(nb_path)]}. Nothing to do."
+
+
 def test_fix(tmpdir: LocalPath) -> None:
     """Fix notebook conflicts."""
     # Setup
