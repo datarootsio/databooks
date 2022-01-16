@@ -16,25 +16,34 @@ def write_notebook(nb: JupyterNotebook, path: Path) -> None:
         json.dump(nb.dict(), fp=f, indent=2)
 
 
-def expand_paths(paths: List[Path], ignore: List[str] = ["!*"]) -> List[Path]:
+def expand_paths(
+    paths: List[Path], *, ignore: List[str] = ["!*"], rglob: str = "*.ipynb"
+) -> List[Path]:
     """
     Get paths of existing file from list of directory or file paths.
 
     :param paths: Paths to consider (can be directories or files)
     :param ignore: Glob expressions of files to ignore
-    :return: List of existing paths for notebooks
+    :param rglob: Glob expression for expanding directory paths and filtering out
+     existing file paths (i.e.: to retrieve only notebooks)
+    :return: List of existing file paths
     """
-    paths = list(
+    filepaths = list(
         chain.from_iterable(
-            list(path.rglob("*.ipynb")) if path.is_dir() else [path] for path in paths
+            list(path.rglob(rglob)) if path.is_dir() else [path] for path in paths
         )
     )
-
-    return [
+    valid_filepaths = [
         p
-        for p in paths
-        if not any(p.match(i) for i in ignore) and p.exists() and p.suffix == ".ipynb"
+        for p in filepaths
+        if not any(p.match(i) for i in ignore) and p.is_file() and p.match(rglob)
     ]
+
+    if not valid_filepaths:
+        logger.debug(
+            f"There are no files in {paths} (ignoring {ignore}) that match `{rglob}`."
+        )
+    return valid_filepaths
 
 
 def find_common_parent(paths: Iterable[Path]) -> Path:
