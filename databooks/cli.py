@@ -130,7 +130,7 @@ def meta(
         )
     nb_paths = expand_paths(paths=paths, ignore=ignore)
     if not nb_paths:
-        logger.info("No notebooks found. Nothing to do.")
+        logger.info(f"No notebooks found in {paths}. Nothing to do.")
         raise Exit()
 
     if not bool(prefix + suffix) and not check:
