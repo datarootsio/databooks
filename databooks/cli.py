@@ -43,12 +43,15 @@ def _help_callback(ctx: Context, show_help: Optional[bool]) -> None:
 
 def _config_callback(ctx: Context, config_path: Optional[Path]) -> Optional[Path]:
     """Get config file and inject values into context to override default args."""
+    target_paths = expand_paths(
+        paths=[Path(p) for p in ctx.params.get("paths", ())], rglob="*"
+    )
     config_path = (
         get_config(
-            target_paths=expand_paths(paths=[Path(p) for p in ctx.params["paths"]]),
+            target_paths=target_paths,
             config_filename=TOML_CONFIG_FILE,
         )
-        if config_path is None and "paths" in ctx.params
+        if config_path is None and target_paths
         else config_path
     )
     logger.debug(f"Loading config file from: {config_path}")
@@ -65,7 +68,6 @@ def _config_callback(ctx: Context, config_path: Optional[Path]) -> Optional[Path
             )
         # Merge configuration
         ctx.default_map.update({k.replace("-", "_"): v for k, v in conf.items()})
-
     return config_path
 
 
