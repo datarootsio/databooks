@@ -1,4 +1,5 @@
 import logging
+from copy import deepcopy
 from importlib.metadata import version
 from pathlib import Path
 from textwrap import dedent
@@ -137,6 +138,8 @@ def test_fix(tmpdir: LocalPath) -> None:
         source="extra",
     )
     notebook_2.cells = notebook_2.cells + [extra_cell]
+    notebook_2.nbformat += 1
+    notebook_2.nbformat_minor += 1
 
     git_repo = init_repo_conflicts(
         tmpdir=tmpdir,
