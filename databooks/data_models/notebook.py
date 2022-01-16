@@ -31,13 +31,9 @@ logger = get_logger(__file__)
 class NotebookMetadata(DatabooksBase):
     """Notebook metadata. Empty by default but can accept extra fields."""
 
-    ...
-
 
 class CellMetadata(DatabooksBase):
     """Cell metadata. Empty by default but can accept extra fields."""
-
-    ...
 
 
 class Cell(DatabooksBase):
