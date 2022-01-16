@@ -184,3 +184,74 @@ def test_fix(tmpdir: LocalPath) -> None:
             cell_type="markdown",
         ),
     ]
+
+def test_fix__config(tmpdir: LocalPath) -> None:
+    """Fix notebook conflicts."""
+    # Setup
+    config_path = tmpdir / "pyproject.toml"  # type: ignore
+    config_path.write_text(SAMPLE_CONFIG, encoding="utf-8")
+
+    nb_path = Path("test_conflicts_nb.ipynb")
+    notebook_1 = TestJupyterNotebook().jupyter_notebook
+    notebook_2 = TestJupyterNotebook().jupyter_notebook
+
+    notebook_1.metadata = NotebookMetadata(
+        kernelspec=dict(
+            display_name="different_kernel_display_name", name="kernel_name"
+        ),
+        field_to_remove=["Field to remove"],
+        another_field_to_remove="another field",
+    )
+
+    extra_cell = Cell(
+        cell_type="raw",
+        metadata=CellMetadata(random_meta=["meta"]),
+        source="extra",
+    )
+    notebook_2.cells = notebook_2.cells + [extra_cell]
+    notebook_2.nbformat += 1
+    notebook_2.nbformat_minor += 1
+
+    git_repo = init_repo_conflicts(
+        tmpdir=tmpdir,
+        filename=nb_path,
+        contents_main=notebook_1.json(),
+        contents_other=notebook_2.json(),
+        commit_message_main="Notebook from main",
+        commit_message_other="Notebook from other",
+    )
+
+    conflict_files = get_conflict_blobs(repo=git_repo)
+    id_main = conflict_files[0].first_log
+    id_other = conflict_files[0].last_log
+
+    # Run CLI and check conflict resolution
+    result = runner.invoke(app, ["fix", str(tmpdir), "--config", str(config_path)])
+    fixed_notebook = JupyterNotebook.parse_file(path=tmpdir / nb_path)
+
+    assert len(conflict_files) == 1
+    assert result.exit_code == 0
+
+    expected_metadata = deepcopy(notebook_1.metadata.dict())
+    expected_metadata.update(notebook_2.metadata.dict())
+    assert fixed_notebook.metadata == NotebookMetadata(**expected_metadata)
+    assert fixed_notebook.nbformat == notebook_2.nbformat
+    assert fixed_notebook.nbformat_minor == notebook_2.nbformat_minor
+    assert fixed_notebook.cells == notebook_1.cells + [
+        Cell(
+            metadata=CellMetadata(git_hash=id_main),
+            source=[f"`<<<<<<< {id_main}`"],
+            cell_type="markdown",
+        ),
+        Cell(
+            source=["`=======`"],
+            cell_type="markdown",
+            metadata=CellMetadata(),
+        ),
+        extra_cell,
+        Cell(
+            metadata=CellMetadata(git_hash=id_other),
+            source=[f"`>>>>>>> {id_other}`"],
+            cell_type="markdown",
+        ),
+    ]
