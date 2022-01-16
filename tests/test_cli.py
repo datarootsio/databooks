@@ -43,7 +43,7 @@ def test_version_callback() -> None:
 
 
 def test_meta(tmpdir: LocalPath) -> None:
-    """Fix notebook conflicts."""
+    """Remove notebook metadata."""
     read_path = tmpdir.mkdir("notebooks") / "test_meta_nb.ipynb"  # type: ignore
     write_notebook(nb=TestJupyterNotebook().jupyter_notebook, path=read_path)
 
@@ -72,7 +72,7 @@ def test_meta(tmpdir: LocalPath) -> None:
 
 
 def test_meta__check(tmpdir: LocalPath, caplog: LogCaptureFixture) -> None:
-    """Fix notebook conflicts."""
+    """Report on existing notebook metadata (both when it is and isn't present)."""
     caplog.set_level(logging.INFO)
 
     read_path = tmpdir.mkdir("notebooks") / "test_meta_nb.ipynb"  # type: ignore
@@ -88,9 +88,18 @@ def test_meta__check(tmpdir: LocalPath, caplog: LogCaptureFixture) -> None:
     assert nb_read == nb_write
     assert logs[0].message == "Found unwanted metadata in 1 out of 1 files"
 
+    # Clean notebook and check again
+    runner.invoke(app, ["meta", str(read_path), "--overwrite"])
+    result = runner.invoke(app, ["meta", str(read_path), "--check"])
+
+    logs = list(caplog.records)
+    assert result.exit_code == 0
+    assert len(logs) == 4
+    assert logs[-1].message == "No unwanted metadata!"
+
 
 def test_meta__config(tmpdir: LocalPath) -> None:
-    """Retrieve and parse configuration."""
+    """Check notebook metadata with configuration overriding defaults."""
     read_path = tmpdir.mkdir("notebooks") / "test_meta_nb.ipynb"  # type: ignore
     write_notebook(nb=TestJupyterNotebook().jupyter_notebook, path=read_path)
 
@@ -187,7 +196,7 @@ def test_fix(tmpdir: LocalPath) -> None:
 
 
 def test_fix__config(tmpdir: LocalPath) -> None:
-    """Fix notebook conflicts."""
+    """Fix notebook conflicts with configuration overriding defaults."""
     # Setup
     config_path = tmpdir / "pyproject.toml"  # type: ignore
     config_path.write_text(SAMPLE_CONFIG, encoding="utf-8")
