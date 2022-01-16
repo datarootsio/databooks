@@ -161,11 +161,9 @@ def test_fix(tmpdir: LocalPath) -> None:
     assert len(conflict_files) == 1
     assert result.exit_code == 0
 
-    # Add `tags` since we use `databooks.data_models.base.resolve` with default
-    #  `ignore_none = True`
-    assert fixed_notebook.metadata == NotebookMetadata(
-        **notebook_1.metadata.dict(), **{"tags": []}
-    )
+    expected_metadata = deepcopy(notebook_2.metadata.dict())
+    expected_metadata.update(notebook_1.metadata.dict())
+    assert fixed_notebook.metadata == NotebookMetadata(**expected_metadata)
     assert fixed_notebook.nbformat == notebook_1.nbformat
     assert fixed_notebook.nbformat_minor == notebook_1.nbformat_minor
     assert fixed_notebook.cells == notebook_1.cells + [
