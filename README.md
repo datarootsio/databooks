@@ -1,16 +1,16 @@
 <p align="center">
-  <img alt="logo" src="https://raw.githubusercontent.com/datarootsio/databooks/main/docs/images/logo.png">
+  <a href="https://datarootsio.github.io/databooks/"><img alt="logo" src="https://raw.githubusercontent.com/datarootsio/databooks/main/docs/images/logo.png"></a>
 </p>
-
-# databooks
-[![maintained by dataroots](https://dataroots.io/maintained-rnd.svg)](https://dataroots.io)
-[![PyPI](https://img.shields.io/pypi/v/databooks)](https://pypi.org/project/databooks/)
-[![Python versions](https://img.shields.io/pypi/pyversions/databooks)](https://pypi.org/project/databooks/)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Checked with mypy](https://img.shields.io/badge/mypy-checked-1f5082.svg)](http://mypy-lang.org/)
-[![Codecov](https://codecov.io/github/datarootsio/databooks/main/graph/badge.svg)](https://github.com/datarootsio/databooks/actions)
-[![tests](https://github.com/datarootsio/databooks/actions/workflows/test.yml/badge.svg)](https://github.com/datarootsio/databooks/actions)
-[![Downloads](https://pepy.tech/badge/databooks)](https://pepy.tech/project/databooks)
+<p align="center">
+  <a href="https://dataroots.io"><img alt="Maintained by dataroots" src="https://dataroots.io/maintained-rnd.svg" /></a>
+  <a href="https://pypi.org/project/databooks/"><img alt="Python versions" src="https://img.shields.io/pypi/pyversions/databooks" /></a>
+  <a href="https://pypi.org/project/databooks/"><img alt="PiPy" src="https://img.shields.io/pypi/v/databooks" /></a>
+  <a href="https://pepy.tech/project/databooks"><img alt="Downloads" src="https://pepy.tech/badge/databooks" /></a>
+  <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg" /></a>
+  <a href="http://mypy-lang.org/"><img alt="Mypy checked" src="https://img.shields.io/badge/mypy-checked-1f5082.svg" /></a>
+  <a href="https://pepy.tech/project/databooks"><img alt="Codecov" src="https://codecov.io/github/datarootsio/databooks/main/graph/badge.svg" /></a>
+  <a href="https://github.com/datarootsio/databooks/actions"><img alt="test" src="https://github.com/datarootsio/databooks/actions/workflows/test.yml/badge.svg" /></a>
+</p>
 
 
 `databooks` is a package to ease the collaboration between data scientists using
