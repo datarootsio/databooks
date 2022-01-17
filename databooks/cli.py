@@ -4,6 +4,7 @@ from itertools import compress
 from pathlib import Path
 from typing import List, Optional
 
+import tomli
 from rich.progress import (
     BarColumn,
     Progress,
@@ -11,9 +12,10 @@ from rich.progress import (
     TextColumn,
     TimeElapsedColumn,
 )
-from typer import Argument, BadParameter, Exit, Option, Typer, echo
+from typer import Argument, BadParameter, Context, Exit, Option, Typer, echo
 
 from databooks.common import expand_paths
+from databooks.config import TOML_CONFIG_FILE, get_config
 from databooks.conflicts import conflicts2nbs, path2conflicts
 from databooks.logging import get_logger
 from databooks.metadata import clear_all
@@ -25,17 +27,54 @@ logger = get_logger(__file__)
 app = Typer()
 
 
-def version_callback(value: bool) -> None:
+def _version_callback(show_version: bool) -> None:
     """Return application version."""
-    if value:
+    if show_version:
         echo("databooks version: " + _DISTRIBUTION_METADATA["Version"])
         raise Exit()
+
+
+def _help_callback(ctx: Context, show_help: Optional[bool]) -> None:
+    """Reimplement `help` command to execute eagerly."""
+    if show_help:
+        echo(ctx.command.get_help(ctx))
+        raise Exit()
+
+
+def _config_callback(ctx: Context, config_path: Optional[Path]) -> Optional[Path]:
+    """Get config file and inject values into context to override default args."""
+    target_paths = expand_paths(
+        paths=[Path(p) for p in ctx.params.get("paths", ())], rglob="*"
+    )
+    config_path = (
+        get_config(
+            target_paths=target_paths,
+            config_filename=TOML_CONFIG_FILE,
+        )
+        if config_path is None and target_paths
+        else config_path
+    )
+    logger.debug(f"Loading config file from: {config_path}")
+
+    ctx.default_map = ctx.default_map or {}  # initialize defaults
+
+    if config_path is not None:  # config may not be specified
+        with config_path.open("r") as f:
+            conf = (
+                tomli.load(f)
+                .get("tool", {})
+                .get("databooks", {})
+                .get(ctx.command.name, {})
+            )
+        # Merge configuration
+        ctx.default_map.update({k.replace("-", "_"): v for k, v in conf.items()})
+    return config_path
 
 
 @app.callback()
 def callback(  # noqa: D103
     version: Optional[bool] = Option(
-        None, "--version", callback=version_callback, is_eager=True
+        None, "--version", callback=_version_callback, is_eager=True
     )
 ) -> None:
     ...
@@ -45,9 +84,9 @@ def callback(  # noqa: D103
 callback.__doc__ = _DISTRIBUTION_METADATA["Summary"]
 
 
-@app.command()
+@app.command(add_help_option=False)
 def meta(
-    paths: List[Path] = Argument(..., help="Path(s) of notebook files"),
+    paths: List[Path] = Argument(..., is_eager=True, help="Path(s) of notebook files"),
     ignore: List[str] = Option(["!*"], help="Glob expression(s) of files to ignore"),
     prefix: str = Option("", help="Prefix to add to filepath when writing files"),
     suffix: str = Option("", help="Suffix to add to filepath when writing files"),
@@ -70,6 +109,19 @@ def meta(
     verbose: bool = Option(
         False, "--verbose", "-v", help="Log processed files in console"
     ),
+    config: Optional[Path] = Option(
+        None,
+        "--config",
+        "-c",
+        is_eager=True,
+        callback=_config_callback,
+        resolve_path=True,
+        exists=True,
+        help="Get CLI options from configuration file",
+    ),
+    help: Optional[bool] = Option(
+        None, is_eager=True, callback=_help_callback, help="Show this message and exit"
+    ),
 ) -> None:
     """Clear both notebook and cell metadata."""
     if any(path.suffix not in ("", ".ipynb") for path in paths):
@@ -77,6 +129,10 @@ def meta(
             "Expected either notebook files, a directory or glob expression."
         )
     nb_paths = expand_paths(paths=paths, ignore=ignore)
+    if not nb_paths:
+        logger.info(f"No notebooks found in {paths}. Nothing to do.")
+        raise Exit()
+
     if not bool(prefix + suffix) and not check:
         if not overwrite:
             raise BadParameter(
@@ -125,9 +181,11 @@ def meta(
         )
 
 
-@app.command()
+@app.command(add_help_option=False)
 def fix(
-    paths: List[Path] = Argument(..., help="Path(s) of notebook files with conflicts"),
+    paths: List[Path] = Argument(
+        ..., is_eager=True, help="Path(s) of notebook files with conflicts"
+    ),
     ignore: List[str] = Option(["!*"], help="Glob expression(s) of files to ignore"),
     metadata_head: bool = Option(
         True, help="Whether or not to keep the metadata from the head/current notebook"
@@ -150,6 +208,19 @@ def fix(
         help="Interactively resolve the conflicts (not implemented)",
     ),
     verbose: bool = Option(False, help="Log processed files in console"),
+    config: Optional[Path] = Option(
+        None,
+        "--config",
+        "-c",
+        is_eager=True,
+        callback=_config_callback,
+        resolve_path=True,
+        exists=True,
+        help="Get CLI options from configuration file",
+    ),
+    help: Optional[bool] = Option(
+        None, is_eager=True, callback=_help_callback, help="Show this message and exit"
+    ),
 ) -> None:
     """
     Fix git conflicts for notebooks.

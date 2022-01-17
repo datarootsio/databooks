@@ -31,6 +31,7 @@ The key features include:
 - [Rich](https://rich.readthedocs.io/en/latest/)
 - [Pydantic](https://pydantic-docs.helpmanual.io/)
 - [GitPython](https://gitpython.readthedocs.io/en/stable/tutorial.html)
+- [Tomli](https://github.com/hukkin/tomli)
 
 ## Installation
 

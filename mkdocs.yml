@@ -8,6 +8,9 @@ repo_name: "datarootsio/databooks"
 
 markdown_extensions:
   - def_list
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
   - pymdownx.snippets:
       check_paths: true
   - pymdownx.tasklist:
@@ -53,6 +56,7 @@ nav:
   - CLI: usage/cli.md
   - CI/CD: usage/cicd.md
   - Pre-commit hooks: usage/precommit.md
+  - Configuration: usage/configuration.md
 - CLI: CLI.md
 - API:
   - Overview: API.md

@@ -5,9 +5,7 @@ hide:
 
 # `databooks`
 
-Databooks - set of helpers to ease collaboration of data scientists
- using Jupyter Notebooks. Easily resolve git conflicts and remove metadata to reduce
- the number of conflicts.
+A CLI tool that minimises friction when versioning and collaborating on Jupyter notebooks.
 
 **Usage**:
 
@@ -24,13 +22,13 @@ $ databooks [OPTIONS] COMMAND [ARGS]...
 
 **Commands**:
 
-* `diff`: Show differences between notebooks (not...
-* `fix`: Fix git conflicts for notebooks by getting...
-* `meta`: Clear both notebook and cell metadata
+* `diff`: Show differences between notebooks (not implemented)
+* `fix`: Fix git conflicts for notebooks.
+* `meta`: Clear both notebook and cell metadata.
 
 ## `databooks diff`
 
-Show differences between notebooks (not implemented)
+Show differences between notebooks (not implemented).
 
 **Usage**:
 
@@ -44,9 +42,11 @@ $ databooks diff [OPTIONS]
 
 ## `databooks fix`
 
-Fix git conflicts for notebooks by getting unmerged blobs from git index
- comparing them and returning a valid notebook with the differences -
- see [git docs](https://git-scm.com/docs/git-ls-files)
+Fix git conflicts for notebooks.
+
+Perform by getting the unmerged blobs from git index, comparing them and returning
+ a valid notebook summarizing the differences - see
+ [git docs](https://git-scm.com/docs/git-ls-files).
 
 **Usage**:
 
@@ -61,15 +61,17 @@ $ databooks fix [OPTIONS] PATHS...
 **Options**:
 
 * `--ignore TEXT`: Glob expression(s) of files to ignore  [default: !*]
-* `--metadata-first / --no-metadata-first`: Whether or not to keep the metadata from the first/current notebook  [default: True]
-* `--cells-first / --no-cells-first`: Whether to keep the cells from the first or last notebook. Omit to keep both
+* `--metadata-head / --no-metadata-head`: Whether or not to keep the metadata from the head/current notebook  [default: True]
+* `--cells-head / --no-cells-head`: Whether to keep the cells from the head/base notebook. Omit to keep both
+* `--cell-fields-ignore TEXT`: Cell fields to remove before comparing cells  [default: id, execution_count]
 * `-i, --interactive`: Interactively resolve the conflicts (not implemented)  [default: False]
 * `--verbose / --no-verbose`: Log processed files in console  [default: False]
-* `--help`: Show this message and exit.
+* `-c, --config PATH`: Get CLI options from configuration file
+* `--help / --no-help`: Show this message and exit
 
 ## `databooks meta`
 
-Clear both notebook and cell metadata
+Clear both notebook and cell metadata.
 
 **Usage**:
 
@@ -90,7 +92,9 @@ $ databooks meta [OPTIONS] PATHS...
 * `--rm-exec / --no-rm-exec`: Whether to remove the cell execution counts  [default: True]
 * `--nb-meta-keep TEXT`: Notebook metadata fields to keep  [default: ]
 * `--cell-meta-keep TEXT`: Cells metadata fields to keep  [default: ]
+* `--cell-fields-keep TEXT`: Other (excluding `execution_counts` and `outputs`) cell fields to keep  [default: ]
 * `-w, --overwrite`: Confirm overwrite of files  [default: False]
 * `--check`: Don't write files but check whether there is unwanted metadata  [default: False]
 * `-v, --verbose`: Log processed files in console  [default: False]
-* `--help`: Show this message and exit.
+* `-c, --config PATH`: Get CLI options from configuration file
+* `--help / --no-help`: Show this message and exit

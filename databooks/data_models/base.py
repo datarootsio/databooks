@@ -28,8 +28,7 @@ class DiffModel(Protocol, Iterable):
     is_diff: bool
 
     def resolve(self, *args: Any, **kwargs: Any) -> DatabooksBase:
-        """Return a valid base object."""
-        ...
+        """Protocol method that returns a valid base object."""
 
 
 class BaseCells(UserList, Generic[T]):
@@ -39,8 +38,6 @@ class BaseCells(UserList, Generic[T]):
     def resolve(self, **kwargs: Any) -> list:
         """Return valid notebook cells from differences."""
         raise NotImplementedError
-
-    ...
 
 
 @overload

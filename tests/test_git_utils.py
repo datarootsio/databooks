@@ -50,8 +50,8 @@ def init_repo_conflicts(
 
 def test_get_repo() -> None:
     """Find git repository."""
-    filepath = Path(__file__)
-    repo = get_repo(filepath)
+    curr_dir = Path(__file__).parent
+    repo = get_repo(curr_dir)
     assert repo.working_dir is not None
     assert isinstance(repo, Repo)
     assert Path(repo.working_dir).stem == "databooks"
