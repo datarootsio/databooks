@@ -1,7 +1,8 @@
-<img align="left" style="padding: 10px" width="120" height="120" src="https://raw.githubusercontent.com/datarootsio/databooks/main/docs/images/logo.png">
+<img alt="logo" width="120" height="120" src="https://raw.githubusercontent.com/datarootsio/databooks/main/docs/images/logo.png">
 
 # databooks
 [![maintained by dataroots](https://dataroots.io/maintained-rnd.svg)](https://dataroots.io)
+[![PyPI](https://img.shields.io/pypi/v/databooks)](https://pypi.org/project/databooks/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Checked with mypy](https://img.shields.io/badge/mypy-checked-1f5082.svg)](http://mypy-lang.org/)
 [![Codecov](https://codecov.io/github/datarootsio/databooks/main/graph/badge.svg)](https://github.com/datarootsio/databooks/actions)
