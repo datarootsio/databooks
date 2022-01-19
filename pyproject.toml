@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "databooks"
-version = "0.1.0"  # dynamically set in CI
+version = "0.0.0-dev"  # dynamically set in CI
 description = "A CLI tool to resolve git conflicts and remove metadata in notebooks."
 authors = ["Murilo Cunha <murilo@dataroots.io>"]
 license = "MIT"
@@ -16,7 +16,7 @@ include = [
 databooks = "databooks.cli:app"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.7"
 typer = "^0.3.2"
 rich = "^10.6.0"
 pydantic = "^1.8.2"
