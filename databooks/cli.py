@@ -1,5 +1,4 @@
 """Main CLI application."""
-from importlib.metadata import metadata
 from itertools import compress
 from pathlib import Path
 from typing import List, Optional
@@ -19,8 +18,7 @@ from databooks.config import TOML_CONFIG_FILE, get_config
 from databooks.conflicts import conflicts2nbs, path2conflicts
 from databooks.logging import get_logger
 from databooks.metadata import clear_all
-
-_DISTRIBUTION_METADATA = metadata(__package__)
+from databooks.version import __version__
 
 logger = get_logger(__file__)
 
@@ -30,7 +28,7 @@ app = Typer()
 def _version_callback(show_version: bool) -> None:
     """Return application version."""
     if show_version:
-        echo("databooks version: " + _DISTRIBUTION_METADATA["Version"])
+        echo("databooks version: " + __version__)
         raise Exit()
 
 
@@ -77,11 +75,7 @@ def callback(  # noqa: D103
         None, "--version", callback=_version_callback, is_eager=True
     )
 ) -> None:
-    ...
-
-
-# add docs dynamically from `pyproject.toml`
-callback.__doc__ = _DISTRIBUTION_METADATA["Summary"]
+    """CLI tool to resolve git conflicts and remove metadata in notebooks."""
 
 
 @app.command(add_help_option=False)

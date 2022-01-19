@@ -123,8 +123,8 @@ class TestCell:
 
         assert type(dl1) == type(dl2) == Cells[Cell]
         assert type(diff) == Cells[Tuple[List[Cell], List[Cell]]]
-        assert diff == Cells(
-            [([self.cell], [self.cell]), ([], [self.cell])]  # type: ignore
+        assert diff == Cells(  # type: ignore
+            [([self.cell], [self.cell]), ([], [self.cell])]
         )
 
     def test_cell_remove_fields(self, caplog: LogCaptureFixture) -> None:
