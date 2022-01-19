@@ -11,5 +11,6 @@ exclude =
 per-file-ignores =
     __init__.py:F401,D104
     tests/*:D100,D104
+    databooks/version.py:D100
 max-line-length = 88
 ignore = E203,W503 # conflicts with black
