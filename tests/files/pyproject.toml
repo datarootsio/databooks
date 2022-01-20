@@ -1,0 +1,10 @@
+[tool.databooks.meta]
+rm-outs=true
+rm_exec=false
+overwrite=true
+
+[tool.databooks.fix]
+metadata-head=false
+
+[tool.databooks.test-config]
+config-default = "config-value"
