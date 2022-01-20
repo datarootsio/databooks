@@ -47,6 +47,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.black]
 include = "(databooks/|tests/)"
+extend-exclude = "tests/files/"
 
 [tool.mypy]
 files = ["databooks"]
