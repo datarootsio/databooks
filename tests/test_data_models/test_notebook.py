@@ -238,7 +238,7 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
 
 def test_parse_file() -> None:
     """Deserialize `ipynb` file to `databooks.JupyterNotebook` models."""
-    with resources.path("tests.notebooks", "demo.ipynb") as nb_path:
+    with resources.path("tests.files", "demo.ipynb") as nb_path:
         notebook = JupyterNotebook.parse_file(nb_path)
 
     assert notebook.nbformat == 4
