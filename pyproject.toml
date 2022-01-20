@@ -35,11 +35,11 @@ pytest-cov = "^3.0.0"
 coverage = "^6.2"
 typer-cli = "^0.0.12"
 mypy = "^0.910"
-mkdocstrings = "^0.16.2"
 mkdocs-material = "^8.0.5"
 mkdocs-autorefs = "^0.3.0"
 mkdocs-coverage = "^0.2.4"
 mike = "^1.1.2"
+mkdocstrings = "^0.17.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
