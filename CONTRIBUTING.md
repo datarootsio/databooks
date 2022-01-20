@@ -131,5 +131,5 @@ maintained by [dataroots](https://github.com/datarootsio).
 
 Special thanks to:
 
-[Bart](https://github.com/Bart6114) and [Nick](https://github.com/NickSchouten) for
-feedback and support.
+[Bart](https://github.com/Bart6114), [Nick](https://github.com/NickSchouten) and
+[Freddy](https://github.com/frederikdesmedt) for feedback and support.
