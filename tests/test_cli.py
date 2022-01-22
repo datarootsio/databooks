@@ -209,6 +209,11 @@ def test_fix(tmpdir: LocalPath) -> None:
 
     expected_metadata = deepcopy(notebook_2.metadata.dict())
     expected_metadata.update(notebook_1.metadata.dict())
+    notebook_1.clear_metadata(
+        notebook_metadata_remove=(),
+        cell_metadata_remove=(),
+        cell_remove_fields=["execution_count"],
+    )
     assert fixed_notebook.metadata == NotebookMetadata(**expected_metadata)
     assert fixed_notebook.nbformat == notebook_1.nbformat
     assert fixed_notebook.nbformat_minor == notebook_1.nbformat_minor
@@ -281,6 +286,11 @@ def test_fix__config(tmpdir: LocalPath) -> None:
 
     expected_metadata = deepcopy(notebook_1.metadata.dict())
     expected_metadata.update(notebook_2.metadata.dict())
+    notebook_1.clear_metadata(
+        notebook_metadata_remove=(),
+        cell_metadata_remove=(),
+        cell_remove_fields=["execution_count"],
+    )
     assert fixed_notebook.metadata == NotebookMetadata(**expected_metadata)
     assert fixed_notebook.nbformat == notebook_2.nbformat
     assert fixed_notebook.nbformat_minor == notebook_2.nbformat_minor

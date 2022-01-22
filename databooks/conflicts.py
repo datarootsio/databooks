@@ -75,6 +75,13 @@ def conflict2nb(
         )
         logger.debug(msg)
 
+    if cell_fields_ignore:
+        for cells in (nb_1.cells, nb_2.cells):
+            for cell in cells:
+                cell.clear_fields(
+                    cell_metadata_remove=[], cell_remove_fields=cell_fields_ignore
+                )
+
     diff_nb = nb_1 - nb_2
     nb = diff_nb.resolve(
         ignore_none=ignore_none,
