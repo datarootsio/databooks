@@ -64,8 +64,10 @@ nav:
     - Base: data_models/base.md
     - Notebooks: data_models/notebook.md
   - Common utils: common.md
+  - Configuration: config.md
   - Conflicts: conflicts.md
   - Git: git_utils.md
+  - Logging: logging.md
   - Metadata: metadata.md
 - Development:
   - Contributing: contrib.md
