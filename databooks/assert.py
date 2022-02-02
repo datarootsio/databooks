@@ -66,14 +66,14 @@ class Recipe(Enum):
     """Common user recipes for the `assert` command."""
 
     seq_exec = (
-        "[c.execution_count for c in code_cells if c.execution_count is not None]"
-        " == list(range(1, len(code_cells) - 1))"
+        "[c.execution_count for c in exec_cells] == list(range(1, len(exec_cells) + 1))"
     )
     seq_increase = (
-        "[cell.execution_count for cell in code_cells] =="
-        " sorted([cell.execution_count for cell in code_cells])"
+        "[c.execution_count for c in exec_cells] =="
+        " sorted([c.execution_count for c in exec_cells])"
     )
     has_tags = "any('tags' in cell.metadata for cell in nb.cells)"
+    max_cells = "len(nb.cells) < 128"
 
 
 def safe_eval(src: str, /, _globals: Dict[str, Any]) -> Any:
