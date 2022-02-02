@@ -108,9 +108,9 @@ def ensure(
     """
     Return whether notebook passed all checks (expressions).
 
-    :param nb_path:
-    :param exprs:
-    :param verbose:
+    :param nb_path: Path of notebook file
+    :param exprs: Expression with check to be evaluated on notebook
+    :param verbose: Log failed tests for notebook
     :return:
     """
     if verbose:
