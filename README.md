@@ -29,7 +29,7 @@ The key features include:
 
 `databooks` is built on top of:
 
-- Python 3.8+
+- Python 3.7+
 - [Typer](https://typer.tiangolo.com/)
 - [Rich](https://rich.readthedocs.io/en/latest/)
 - [Pydantic](https://pydantic-docs.helpmanual.io/)

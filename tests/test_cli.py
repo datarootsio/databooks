@@ -1,6 +1,5 @@
 import logging
 from copy import deepcopy
-from importlib.metadata import version
 from pathlib import Path
 from textwrap import dedent
 
@@ -17,6 +16,7 @@ from databooks.data_models.notebook import (
     NotebookMetadata,
 )
 from databooks.git_utils import get_conflict_blobs
+from databooks.version import __version__
 from tests.test_data_models.test_notebook import TestJupyterNotebook  # type: ignore
 from tests.test_git_utils import init_repo_conflicts
 
@@ -39,7 +39,7 @@ def test_version_callback() -> None:
     """Print version and help."""
     result = runner.invoke(app, ["--version"])
     assert result.exit_code == 0
-    assert f"databooks version: {version('databooks')}\n" == result.stdout
+    assert f"databooks version: {__version__}\n" == result.stdout
 
 
 def test_meta(tmpdir: LocalPath) -> None:

@@ -3,20 +3,10 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from collections import UserList
-from typing import (
-    Any,
-    Dict,
-    Generic,
-    Iterable,
-    List,
-    Protocol,
-    TypeVar,
-    cast,
-    overload,
-    runtime_checkable,
-)
+from typing import Any, Dict, Generic, Iterable, List, TypeVar, cast, overload
 
 from pydantic import BaseModel, Extra, create_model
+from typing_extensions import Protocol, runtime_checkable
 
 T = TypeVar("T")
 
