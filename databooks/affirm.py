@@ -1,7 +1,9 @@
 """Functions to safely evaluate strings and inspect notebook."""
+
 import ast
 from copy import deepcopy
-from itertools import chain, compress, zip_longest
+from functools import reduce
+from itertools import compress
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Union
 
@@ -13,7 +15,7 @@ from databooks.recipes import Recipe
 
 logger = get_logger(__file__)
 
-_ALLOWED_BUILTINS = (all, any, enumerate, filter, len, range, sorted)
+_ALLOWED_BUILTINS = (all, any, enumerate, filter, hasattr, len, list, range, sorted)
 _ALLOWED_NODES = (
     ast.Add,
     ast.And,
@@ -111,14 +113,11 @@ class DatabooksParser:
                 f" `ast.Attribute`, got `ast.{type(node.iter).__name__}`."
             )
         iterable = self._get_iter(node.iter)
-        has_databooks = any(isinstance(el, DatabooksBase) for el in iterable)
-        if has_databooks:
-            attrs = chain.from_iterable(
-                dict(el).keys() for el in iterable if isinstance(el, DatabooksBase)
-            )
-            d_attrs = dict(zip_longest(attrs, (), fillvalue=...))
-        self.names[node.target.id] = DatabooksBase(**d_attrs) if has_databooks else ...
-        return node
+        databooks_el = [el for el in iterable if isinstance(el, DatabooksBase)]
+        if databooks_el:
+            d_attrs = reduce(lambda a, b: {**a, **b}, [dict(el) for el in databooks_el])
+        self.names[node.target.id] = DatabooksBase(**d_attrs) if databooks_el else ...
+        self.generic_visit(node)
 
     def visit_Attribute(self, node: ast.Attribute) -> ast.Attribute:
         """Allow attributes for Pydantic fields only."""
@@ -140,11 +139,10 @@ class DatabooksParser:
 
     def visit_Name(self, node: ast.Name) -> ast.Name:
         """Only allow names from scope or comprehension variables."""
-        names = list(self.names.keys())
-        builtins = list(self.builtins.keys())
-        if node.id not in names + builtins:
+        valid_names = {**self.names, **self.builtins}
+        if node.id not in valid_names:
             raise ValueError(
-                f"Expected `name` to be one of `{names + builtins}`, got `{node.id}`."
+                f"Expected `name` to be one of `{valid_names.keys()}`, got `{node.id}`."
             )
         return node
 
