@@ -69,7 +69,7 @@ _ALLOWED_NODES = (
 )
 
 
-class DatabooksParser:
+class DatabooksParser(ast.NodeVisitor):
     """AST parser that disallows unsafe nodes/values."""
 
     def __init__(self, **variables: Any) -> None:
@@ -82,23 +82,34 @@ class DatabooksParser:
             "__builtins__": self.builtins,
         }
 
-    def _get_iter(self, node: Union[ast.Attribute, ast.Call, ast.Name]) -> Iterable:
-        if not isinstance(node, (ast.Attribute, ast.Call, ast.Name)):
-            raise ValueError(
-                "Expected comprehension to be of an  `ast.Name` or `ast.Attribute`, got"
-                f" `ast.{type(node).__name__}`."
-            )
+    def _get_iter(self, node: ast.AST) -> Iterable:
+        """Use `DatabooksParser.safe_eval_ast` to get the iterable object."""
         tree = ast.Expression(body=node)
         return iter(self.safe_eval_ast(tree))
 
-    @staticmethod
-    def generic_visit(node: ast.AST) -> ast.AST:
-        """Raise error if AST node is not amongst allowed ones."""
+    def generic_visit(self, node: ast.AST) -> None:
+        """
+        Prioritize `ast.comprehension` nodes when expanding tree.
+
+        Similar to `NodeVisitor.generic_visit`, but favor comprehensions when multiple
+         nodes on the same level. In comprehensions, we have a generator argument that
+         includes names that are stored. By visiting them first we avoid 'running into'
+         unknown names.
+        """
         if not isinstance(node, _ALLOWED_NODES):
             raise ValueError(f"Invalid node `{node}`.")
-        return node
 
-    def visit_comprehension(self, node: ast.comprehension) -> ast.comprehension:
+        for field, value in sorted(
+            ast.iter_fields(node), key=lambda f: f[0] != "generators"
+        ):
+            if isinstance(value, list):
+                for item in value:
+                    if isinstance(item, ast.AST):
+                        self.visit(item)
+            elif isinstance(value, ast.AST):
+                self.visit(value)
+
+    def visit_comprehension(self, node: ast.comprehension) -> None:
         """Add variable from a comprehension to list of allowed names."""
         if not isinstance(node.target, ast.Name):
             raise RuntimeError(
@@ -107,11 +118,6 @@ class DatabooksParser:
             )
         # If any elements in the comprehension are a `DatabooksBase` instance, then
         #  pass down the attributes as valid
-        if not isinstance(node.iter, (ast.Attribute, ast.Call, ast.Name)):
-            raise RuntimeError(
-                "Expected comprehension iterator to be of an  `ast.Name` or"
-                f" `ast.Attribute`, got `ast.{type(node.iter).__name__}`."
-            )
         iterable = self._get_iter(node.iter)
         databooks_el = [el for el in iterable if isinstance(el, DatabooksBase)]
         if databooks_el:
@@ -119,48 +125,38 @@ class DatabooksParser:
         self.names[node.target.id] = DatabooksBase(**d_attrs) if databooks_el else ...
         self.generic_visit(node)
 
-    def visit_Attribute(self, node: ast.Attribute) -> ast.Attribute:
+    def visit_Attribute(self, node: ast.Attribute) -> None:
         """Allow attributes for Pydantic fields only."""
         if not isinstance(node.value, (ast.Attribute, ast.Name)):
             raise ValueError(
                 "Expected attribute to be one of `ast.Name` or `ast.Attribute`, got"
                 f" `ast.{type(node.value).__name__}`"
             )
-        if isinstance(node.value, ast.Attribute):
-            return node
-        obj = self.names[node.value.id]
-        allowed_attrs = get_keys(obj.dict()) if isinstance(obj, DatabooksBase) else ()
-        if node.attr not in allowed_attrs:
-            raise ValueError(
-                "Expected attribute to be one of"
-                f" `{allowed_attrs}`, got `{node.attr}`"
+        if not isinstance(node.value, ast.Attribute):
+            obj = self.names[node.value.id]
+            allowed_attrs = (
+                get_keys(obj.dict()) if isinstance(obj, DatabooksBase) else ()
             )
-        return node
+            if node.attr not in allowed_attrs:
+                raise ValueError(
+                    "Expected attribute to be one of"
+                    f" `{allowed_attrs}`, got `{node.attr}`"
+                )
+        self.generic_visit(node)
 
-    def visit_Name(self, node: ast.Name) -> ast.Name:
+    def visit_Name(self, node: ast.Name) -> None:
         """Only allow names from scope or comprehension variables."""
         valid_names = {**self.names, **self.builtins}
         if node.id not in valid_names:
             raise ValueError(
                 f"Expected `name` to be one of `{valid_names.keys()}`, got `{node.id}`."
             )
-        return node
-
-    def visit(self, node: ast.AST) -> ast.AST:
-        """Visit an AST node."""
-        method = "visit_" + node.__class__.__name__
-        visitor = getattr(self, method, self.generic_visit)
-        return visitor(node)
-
-    def validate(self, ast_tree: ast.AST) -> List[ast.AST]:
-        """Visit every node in tree recursively and ensure that AST tree is safe."""
-        nodes = ast.walk(ast_tree)
-        return [self.visit(node) for node in nodes]
+        self.generic_visit(node)
 
     def safe_eval_ast(self, ast_tree: ast.AST) -> Any:
         """Evaluate safe AST trees only (raise errors otherwise)."""
-        self.validate(ast_tree=ast_tree)
-        exe = compile(ast_tree, filename="_", mode="eval")
+        self.visit(ast_tree)
+        exe = compile(ast_tree, filename="", mode="eval")
         return eval(exe, self.scope)
 
     def safe_eval(self, src: str) -> Any:
