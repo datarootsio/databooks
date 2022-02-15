@@ -216,3 +216,24 @@ def affirm(
         )
     )
     return all(is_ok)
+
+
+def affirm_all(
+    nb_paths: List[Path],
+    *,
+    progress_callback: Callable[[], None] = lambda: None,
+    **affirm_kwargs: Any,
+) -> List[bool]:
+    """
+    Clear metadata for multiple notebooks at notebooks and cell level.
+
+    :param nb_paths: Paths of notebooks to assert metadata
+    :param progress_callback: Callback function to report progress
+    :param affirm_kwargs: Keyword arguments to be passed to `databooks.affirm.affirm`
+    :return: Whether the notebooks contained or not the desired metadata
+    """
+    checks = []
+    for nb_path in nb_paths:
+        checks.append(affirm(nb_path, **affirm_kwargs))
+        progress_callback()
+    return checks
