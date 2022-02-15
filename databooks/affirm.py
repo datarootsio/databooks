@@ -1,5 +1,4 @@
 """Functions to safely evaluate strings and inspect notebook."""
-
 import ast
 from copy import deepcopy
 from functools import reduce
