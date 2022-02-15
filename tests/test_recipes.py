@@ -1,4 +1,5 @@
 from importlib import resources
+from pathlib import Path
 
 from databooks.affirm import affirm
 from databooks.recipes import Recipe
@@ -8,7 +9,7 @@ class TestRecipe:
     """Ensure desired effect for recipes."""
 
     @property
-    def nb(self) -> None:
+    def nb(self) -> Path:
         """Notebook file for easy access."""
         with resources.path("tests.notebooks", "demo.ipynb") as nb:
             return nb
