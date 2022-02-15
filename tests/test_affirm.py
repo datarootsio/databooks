@@ -110,6 +110,11 @@ class TestSafeEval:
         with pytest.raises(ValueError):
             parser.safe_eval("().__class__.__bases__[0].__subclasses__()")
 
+    def test_comp_attr(self) -> None:
+        """Accessing attributes in comprehensions is valid."""
+        parser = DatabooksParser(l=[DatabooksBase(a=1, b=2)] * 2)
+        parser.safe_eval("[e.a for e in l]") == [1, 1]
+
 
 def test_affirm(caplog: LogCaptureFixture) -> None:
     """Affirm values in notebooks using string expressions."""
