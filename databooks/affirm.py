@@ -4,13 +4,13 @@ from copy import deepcopy
 from functools import reduce
 from itertools import compress
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Union
+from typing import Any, Callable, Dict, Iterable, List, Union
 
 from databooks import JupyterNotebook
 from databooks.common import get_keys
 from databooks.data_models.base import DatabooksBase
 from databooks.logging import get_logger, set_verbose
-from databooks.recipes import Recipe
+from databooks.recipes import Flavor
 
 logger = get_logger(__file__)
 
@@ -171,7 +171,7 @@ class DatabooksParser(ast.NodeVisitor):
 
 
 def affirm(
-    nb_path: Path, exprs: List[Union[str, Recipe]], verbose: bool = False
+    nb_path: Path, exprs: List[Union[str, Flavor]], verbose: bool = False
 ) -> bool:
     """
     Return whether notebook passed all checks (expressions).
