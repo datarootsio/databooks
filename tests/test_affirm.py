@@ -119,7 +119,7 @@ class TestSafeEval:
 def test_affirm(caplog: LogCaptureFixture) -> None:
     """Affirm values in notebooks using string expressions."""
     caplog.set_level(logging.DEBUG)
-    with resources.path("tests.notebooks", "demo.ipynb") as nb:
+    with resources.path("tests.files", "demo.ipynb") as nb:
         assert (
             affirm(
                 nb,

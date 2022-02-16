@@ -171,7 +171,7 @@ def test_assert(caplog: LogCaptureFixture) -> None:
         "[c.execution_count for c in exec_cells] == list(range(1, len(exec_cells) + 1))"
     )
     recipe = "seq-increase"
-    with resources.path("tests.notebooks", "demo.ipynb") as nb_path:
+    with resources.path("tests.files", "demo.ipynb") as nb_path:
         result = runner.invoke(
             app, ["assert", str(nb_path), "--expr", exprs, "--recipe", recipe]
         )

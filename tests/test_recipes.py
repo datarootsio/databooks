@@ -11,7 +11,7 @@ class TestCookBookGood:
     @property
     def nb(self) -> Path:
         """Notebook file for easy access."""
-        with resources.path("tests.notebooks", "demo.ipynb") as nb:
+        with resources.path("tests.files", "demo.ipynb") as nb:
             return nb
 
     def test_has_tags(self) -> None:
@@ -56,7 +56,7 @@ class TestCookBookBad:
     @property
     def nb(self) -> Path:
         """Notebook file for easy access."""
-        with resources.path("tests.notebooks", "bad-demo.ipynb") as nb:
+        with resources.path("tests.files", "bad-demo.ipynb") as nb:
             return nb
 
     def test_has_tags(self) -> None:
