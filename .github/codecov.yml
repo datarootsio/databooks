@@ -6,6 +6,10 @@ coverage:
     project:
       default:
         target: 95%
+      recipes:
+        target: 100%
+        paths:
+        - "databooks/recipes.py$"
     patch:
       default:
         informational: true
