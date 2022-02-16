@@ -212,7 +212,7 @@ def affirm_meta(
      `nb` (notebook), `raw_cells` (notebook cells of `raw` type), `md_cells` (notebook
      cells of `markdown` type), `code_cells` (notebook cells of `code` type) and
      `exec_cells` (notebook cells of `code` type that were executed - have an `execution
-     count` value).
+     count` value). Recipes can be found on `databooks.recipes.CookBook`.
     """
     nb_paths = _check_paths(paths=paths, ignore=ignore)
     exprs = [r.name for r in recipe] + list(check_expr)
