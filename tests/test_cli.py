@@ -189,9 +189,10 @@ def test_assert__config(caplog: LogCaptureFixture) -> None:
     """Assert notebook based on statements from configuration file."""
     caplog.set_level(logging.INFO)
 
-    with resources.path("tests", "files") as filedir:
+    with resources.path("tests.files", "pyproject.toml") as config:
+        nb_dirpath = config.parent
         result = runner.invoke(
-            app, ["assert", str(filedir), "--config", str(filedir / "pyproject.toml")]
+            app, ["assert", str(nb_dirpath), "--config", str(config)]
         )
     logs = list(caplog.records)
     assert result.exit_code == 1
