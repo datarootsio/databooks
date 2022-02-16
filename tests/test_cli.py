@@ -86,7 +86,7 @@ def test_meta__check(tmpdir: LocalPath, caplog: LogCaptureFixture) -> None:
     assert result.exit_code == 1
     assert len(logs) == 1
     assert nb_read == nb_write
-    assert logs[0].message == "Found unwanted metadata in 1 out of 1 files"
+    assert logs[0].message == "Found unwanted metadata in 1 out of 1 files."
 
     # Clean notebook and check again
     runner.invoke(app, ["meta", str(read_path), "--overwrite"])
@@ -164,7 +164,7 @@ def test_meta__no_notebooks_found(tmpdir: LocalPath, caplog: LogCaptureFixture) 
 
 
 def test_assert(caplog: LogCaptureFixture) -> None:
-    """Assert notebook has."""
+    """Assert that notebook has sequential and increasing cell execution."""
     caplog.set_level(logging.INFO)
 
     exprs = (
@@ -183,6 +183,23 @@ def test_assert(caplog: LogCaptureFixture) -> None:
         f"{nb_path} failed 0 of 2 checks.",
         "All notebooks comply with the desired metadata!",
     ]
+
+
+def test_assert__config(caplog: LogCaptureFixture) -> None:
+    """Assert notebook based on statements from configuration file."""
+    caplog.set_level(logging.INFO)
+
+    with resources.path("tests", "files") as filedir:
+        result = runner.invoke(
+            app, ["assert", str(filedir), "--config", str(filedir / "pyproject.toml")]
+        )
+    logs = list(caplog.records)
+    assert result.exit_code == 1
+    assert len(logs) == 3
+    assert (
+        logs[-1].message
+        == "Found issues in notebook metadata for 1 out of 2 notebooks."
+    )
 
 
 def test_fix(tmpdir: LocalPath) -> None:
