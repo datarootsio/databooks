@@ -63,7 +63,7 @@ nav:
   - Data models:
     - Base: data_models/base.md
     - Notebooks: data_models/notebook.md
-  - Assert: assert.md
+  - Affirm: affirm.md
   - Common utils: common.md
   - Configuration: config.md
   - Conflicts: conflicts.md
