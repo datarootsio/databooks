@@ -163,6 +163,28 @@ def test_meta__no_notebooks_found(tmpdir: LocalPath, caplog: LogCaptureFixture) 
     assert logs[0].message == f"No notebooks found in {[Path(nb_path)]}. Nothing to do."
 
 
+def test_assert(caplog: LogCaptureFixture) -> None:
+    """Assert notebook has."""
+    caplog.set_level(logging.INFO)
+
+    exprs = (
+        "[c.execution_count for c in exec_cells] == list(range(1, len(exec_cells) + 1))"
+    )
+    recipe = "seq-increase"
+    with resources.path("tests.notebooks", "demo.ipynb") as nb_path:
+        result = runner.invoke(
+            app, ["assert", str(nb_path), "--expr", exprs, "--recipe", recipe]
+        )
+
+    logs = list(caplog.records)
+    assert result.exit_code == 0
+    assert len(logs) == 2
+    assert [log.message for log in logs] == [
+        f"{nb_path} failed 0 of 2 checks.",
+        "All notebooks comply with the desired metadata!",
+    ]
+
+
 def test_fix(tmpdir: LocalPath) -> None:
     """Fix notebook conflicts."""
     # Setup
