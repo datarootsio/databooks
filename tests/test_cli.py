@@ -4,7 +4,7 @@ from importlib import resources
 from pathlib import Path
 
 from _pytest.logging import LogCaptureFixture
-from click import Command  # type: ignore
+from click import Command
 from py._path.local import LocalPath
 from typer import Context
 from typer.testing import CliRunner
@@ -19,7 +19,7 @@ from databooks.data_models.notebook import (
 )
 from databooks.git_utils import get_conflict_blobs
 from databooks.version import __version__
-from tests.test_data_models.test_notebook import TestJupyterNotebook  # type: ignore
+from tests.test_data_models.test_notebook import TestJupyterNotebook
 from tests.test_git_utils import init_repo_conflicts
 
 runner = CliRunner()

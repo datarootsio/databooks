@@ -7,7 +7,7 @@ from py._path.local import LocalPath
 from databooks.common import write_notebook
 from databooks.data_models.notebook import CellMetadata, JupyterNotebook
 from databooks.metadata import clear
-from tests.test_data_models.test_notebook import TestJupyterNotebook  # type: ignore
+from tests.test_data_models.test_notebook import TestJupyterNotebook
 
 
 def test_metadata_clear__check_verbose(

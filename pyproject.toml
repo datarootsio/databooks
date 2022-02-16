@@ -51,9 +51,10 @@ include = "(databooks/|tests/)"
 extend-exclude = "tests/files/"
 
 [tool.mypy]
-files = ["databooks"]
+files = ["databooks", "tests"]
 disallow_untyped_calls = true
 disallow_untyped_defs = true
+ignore_missing_imports = true
 
 [tool.isort]
 skip_glob = ["docs/*"]
