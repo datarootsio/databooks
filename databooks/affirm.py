@@ -4,7 +4,7 @@ from copy import deepcopy
 from functools import reduce
 from itertools import compress
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, List, Union
+from typing import Any, Callable, Dict, Iterable, List, Tuple, Union
 
 from databooks import JupyterNotebook
 from databooks.common import get_keys
@@ -81,6 +81,14 @@ class DatabooksParser(ast.NodeVisitor):
             "__builtins__": self.builtins,
         }
 
+    @staticmethod
+    def _prioritize(field: Tuple[str, Any]) -> bool:
+        """Prioritize `ast.comprehension` nodes when expanding the AST tree."""
+        _, value = field
+        if not isinstance(value, list):
+            return True
+        return not any(isinstance(f, ast.comprehension) for f in value)
+
     def _get_iter(self, node: ast.AST) -> Iterable:
         """Use `DatabooksParser.safe_eval_ast` to get the iterable object."""
         tree = ast.Expression(body=node)
@@ -98,9 +106,7 @@ class DatabooksParser(ast.NodeVisitor):
         if not isinstance(node, _ALLOWED_NODES):
             raise ValueError(f"Invalid node `{node}`.")
 
-        for field, value in sorted(
-            ast.iter_fields(node), key=lambda f: f[0] != "generators"
-        ):
+        for field, value in sorted(ast.iter_fields(node), key=self._prioritize):
             if isinstance(value, list):
                 for item in value:
                     if isinstance(item, ast.AST):
