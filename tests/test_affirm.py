@@ -113,7 +113,7 @@ class TestSafeEval:
     def test_comp_attr(self) -> None:
         """Accessing attributes in comprehensions is valid."""
         parser = DatabooksParser(l=[DatabooksBase(a=1, b=2)] * 2)
-        parser.safe_eval("[e.a for e in l]") == [1, 1]
+        assert parser.safe_eval("[e.a for e in l]") == [1, 1]
 
 
 def test_affirm(caplog: LogCaptureFixture) -> None:
