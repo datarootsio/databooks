@@ -186,7 +186,7 @@ def meta(
 def affirm_meta(
     paths: List[Path] = Argument(..., is_eager=True, help="Path(s) of notebook files"),
     ignore: List[str] = Option(["!*"], help="Glob expression(s) of files to ignore"),
-    check_expr: List[str] = Option((), help="Expressions to assert on notebooks"),
+    expr: List[str] = Option((), help="Expressions to assert on notebooks"),
     recipe: List[Recipe] = Option((), help="Common recipes of expressions"),
     verbose: bool = Option(
         False, "--verbose", "-v", help="Log processed files in console"
@@ -215,9 +215,9 @@ def affirm_meta(
      count` value). Recipes can be found on `databooks.recipes.CookBook`.
     """
     nb_paths = _check_paths(paths=paths, ignore=ignore)
-    exprs = [r.name for r in recipe] + list(check_expr)
+    exprs = [r.name for r in recipe] + list(expr)
     if not exprs:
-        raise BadParameter("Must specify one of `paths` or `recipe`.")
+        raise BadParameter("Must specify at least one of `expr` or `recipe`.")
 
     with Progress(
         SpinnerColumn(),
