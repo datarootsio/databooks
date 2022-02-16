@@ -126,7 +126,7 @@ def test_affirm(caplog: LogCaptureFixture) -> None:
                 [
                     "len(nb.cells) == 6",
                     "len(code_cells) == 5",
-                    "len(markdown_cells) == 1",
+                    "len(md_cells) == 1",
                 ],
             )
             is True

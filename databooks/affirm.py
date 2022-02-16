@@ -194,7 +194,7 @@ def affirm(
     variables: Dict[str, Any] = {
         "nb": nb,
         "raw_cells": [c for c in nb.cells if c.cell_type == "raw"],
-        "markdown_cells": [c for c in nb.cells if c.cell_type == "markdown"],
+        "md_cells": [c for c in nb.cells if c.cell_type == "markdown"],
         "code_cells": [c for c in nb.cells if c.cell_type == "code"],
         "exec_cells": [
             c
