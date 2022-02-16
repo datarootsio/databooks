@@ -13,11 +13,13 @@ from rich.progress import (
 )
 from typer import Argument, BadParameter, Context, Exit, Option, Typer, echo
 
+from databooks.affirm import affirm_all
 from databooks.common import expand_paths
 from databooks.config import TOML_CONFIG_FILE, get_config
 from databooks.conflicts import conflicts2nbs, path2conflicts
 from databooks.logging import get_logger
 from databooks.metadata import clear_all
+from databooks.recipes import Recipe
 from databooks.version import __version__
 
 logger = get_logger(__file__)
@@ -69,6 +71,18 @@ def _config_callback(ctx: Context, config_path: Optional[Path]) -> Optional[Path
     return config_path
 
 
+def _check_paths(paths: List[Path], ignore: List[str]) -> List[Path]:
+    if any(path.suffix not in ("", ".ipynb") for path in paths):
+        raise BadParameter(
+            "Expected either notebook files, a directory or glob expression."
+        )
+    nb_paths = expand_paths(paths=paths, ignore=ignore)
+    if not nb_paths:
+        logger.info(f"No notebooks found in {paths}. Nothing to do.")
+        raise Exit()
+    return nb_paths
+
+
 @app.callback()
 def callback(  # noqa: D103
     version: Optional[bool] = Option(
@@ -118,14 +132,7 @@ def meta(
     ),
 ) -> None:
     """Clear both notebook and cell metadata."""
-    if any(path.suffix not in ("", ".ipynb") for path in paths):
-        raise BadParameter(
-            "Expected either notebook files, a directory or glob expression."
-        )
-    nb_paths = expand_paths(paths=paths, ignore=ignore)
-    if not nb_paths:
-        logger.info(f"No notebooks found in {paths}. Nothing to do.")
-        raise Exit()
+    nb_paths = _check_paths(paths=paths, ignore=ignore)
 
     if not bool(prefix + suffix) and not check:
         if not overwrite:
@@ -173,6 +180,71 @@ def meta(
             f"The metadata of {sum(not eq for eq in are_equal)} out of {len(are_equal)}"
             " notebooks were removed!"
         )
+
+
+@app.command("assert", add_help_option=False)
+def affirm_meta(
+    paths: List[Path] = Argument(..., is_eager=True, help="Path(s) of notebook files"),
+    ignore: List[str] = Option(["!*"], help="Glob expression(s) of files to ignore"),
+    check_expr: List[str] = Option((), help="Expressions to assert on notebooks"),
+    recipe: List[Recipe] = Option((), help="Common recipes of expressions"),
+    verbose: bool = Option(
+        False, "--verbose", "-v", help="Log processed files in console"
+    ),
+    config: Optional[Path] = Option(
+        None,
+        "--config",
+        "-c",
+        is_eager=True,
+        callback=_config_callback,
+        resolve_path=True,
+        exists=True,
+        help="Get CLI options from configuration file",
+    ),
+    help: Optional[bool] = Option(
+        None, is_eager=True, callback=_help_callback, help="Show this message and exit"
+    ),
+) -> None:
+    """
+    Assert notebook metadata has desired values.
+
+    Pass one (or multiple) strings or recipes. The available variables in scope include
+     `nb` (notebook), `raw_cells` (notebook cells of `raw` type), `md_cells` (notebook
+     cells of `markdown` type), `code_cells` (notebook cells of `code` type) and
+     `exec_cells` (notebook cells of `code` type that were executed - have an `execution
+     count` value).
+    """
+    nb_paths = _check_paths(paths=paths, ignore=ignore)
+    exprs = [r.name for r in recipe] + list(check_expr)
+    if not exprs:
+        raise BadParameter("Must specify one of `paths` or `recipe`.")
+
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        BarColumn(),
+        TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
+        TimeElapsedColumn(),
+    ) as progress:
+        assert_checks = progress.add_task(
+            "[yellow]Running assert checks", total=len(nb_paths)
+        )
+
+        are_ok = affirm_all(
+            nb_paths=nb_paths,
+            progress_callback=lambda: progress.update(assert_checks, advance=1),
+            exprs=exprs,
+            verbose=verbose,
+        )
+
+    if all(are_ok):
+        logger.info("All notebooks comply with the desired metadata!")
+    else:
+        logger.info(
+            f"Found unwanted metadata in {sum(not ok for ok in are_ok)} out of"
+            f" {len(are_ok)} files"
+        )
+        raise Exit(code=1)
 
 
 @app.command(add_help_option=False)
