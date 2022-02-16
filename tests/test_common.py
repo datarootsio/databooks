@@ -2,7 +2,7 @@ from pathlib import Path
 
 from py._path.local import LocalPath
 
-from databooks.common import find_obj, get_keys
+from databooks.common import find_obj
 
 
 def test_find_obj(tmpdir: LocalPath) -> None:
@@ -29,8 +29,3 @@ def test_find_obj__missing(tmpdir: LocalPath) -> None:
 
     filepath = find_obj(obj_name=filename, start=start_dir, finish=end_dir)
     assert filepath is None
-
-
-def test_get_keys() -> None:
-    """Get keys from neted dictionary."""
-    assert get_keys({"a": 1, "b": {"c": 2, "d": {"e": 3}}}) == {"a", "b", "c", "d", "e"}

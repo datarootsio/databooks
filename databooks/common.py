@@ -2,7 +2,7 @@
 import json
 from itertools import chain
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Set
+from typing import Iterable, List, Optional
 
 from databooks import JupyterNotebook
 from databooks.logging import get_logger
@@ -85,12 +85,3 @@ def find_obj(
         return find_obj(
             obj_name=obj_name, start=start, finish=finish.parent, is_dir=is_dir
         )
-
-
-def get_keys(d: Dict[str, Any]) -> Set[str]:
-    """Recursively get all the keys in a nested dictionary."""
-    flat_keys = list(d.keys())
-    nested_keys = list(
-        chain.from_iterable([get_keys(v) for v in d.values() if isinstance(v, dict)])
-    )
-    return set(flat_keys + nested_keys)

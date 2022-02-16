@@ -7,7 +7,6 @@ from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, List, Tuple
 
 from databooks import JupyterNotebook
-from databooks.common import get_keys
 from databooks.data_models.base import DatabooksBase
 from databooks.logging import get_logger, set_verbose
 
@@ -149,9 +148,7 @@ class DatabooksParser(ast.NodeVisitor):
             )
         if not isinstance(node.value, ast.Attribute):
             obj = self.names[node.value.id]
-            allowed_attrs = (
-                get_keys(obj.dict()) if isinstance(obj, DatabooksBase) else ()
-            )
+            allowed_attrs = dict(obj).keys() if isinstance(obj, DatabooksBase) else ()
             if node.attr not in allowed_attrs:
                 raise ValueError(
                     "Expected attribute to be one of"
