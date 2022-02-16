@@ -1,6 +1,7 @@
 """Recipe on `databooks assert ...`."""
 from dataclasses import dataclass
 from enum import Enum
+from typing import Dict
 
 
 @dataclass
@@ -43,3 +44,21 @@ class CookBook:
         src="nb.cells[0].cell_type == 'markdown'",
         description="Assert that the first cell in notebook is a markdown cell.",
     )
+    no_empty_code = RecipeInfo(
+        src="all(cell.source for cell in code_cells)",
+        description="Assert that the first cell in notebook is a markdown cell.",
+    )
+
+    @classmethod
+    def _recipes(cls) -> Dict[str, str]:
+        """
+        Get the recipes as a {`recipe-value`: `recipe-name`} dictionary.
+
+        `Typer` expects the user to pass `Enum.value`, not `Enum.name`.
+        """
+        names = (attr for attr in dir(cls) if not attr.startswith("_"))
+        return {getattr(cls, name).src: name.replace("_", "-") for name in names}
+
+
+# https://github.com/python/mypy/issues/5317
+Recipe = Enum("Recipe", CookBook._recipes())  # type: ignore
