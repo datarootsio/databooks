@@ -172,7 +172,7 @@ def meta(
         else:
             logger.info(
                 f"Found unwanted metadata in {sum(not eq for eq in are_equal)} out of"
-                f" {len(are_equal)} files"
+                f" {len(are_equal)} files."
             )
             raise Exit(code=1)
     else:
@@ -241,8 +241,8 @@ def affirm_meta(
         logger.info("All notebooks comply with the desired metadata!")
     else:
         logger.info(
-            f"Found unwanted metadata in {sum(not ok for ok in are_ok)} out of"
-            f" {len(are_ok)} files"
+            f"Found issues in notebook metadata for {sum(not ok for ok in are_ok)} out"
+            f" of {len(are_ok)} notebooks."
         )
         raise Exit(code=1)
 
