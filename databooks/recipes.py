@@ -29,7 +29,7 @@ class CookBook:
         " order.",
     )
     has_tags = RecipeInfo(
-        src="any(getattr(cell.metadata, 'tags', []) for cell in code_cells)",
+        src="any(getattr(cell.metadata, 'tags', []) for cell in nb.cells)",
         description="Assert that there is at least one cell with tags.",
     )
     has_tags_code = RecipeInfo(
