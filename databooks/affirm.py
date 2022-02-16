@@ -13,7 +13,18 @@ from databooks.logging import get_logger, set_verbose
 
 logger = get_logger(__file__)
 
-_ALLOWED_BUILTINS = (all, any, enumerate, filter, hasattr, len, list, range, sorted)
+_ALLOWED_BUILTINS = (
+    all,
+    any,
+    enumerate,
+    filter,
+    getattr,
+    hasattr,
+    len,
+    list,
+    range,
+    sorted,
+)
 _ALLOWED_NODES = (
     ast.Add,
     ast.And,
