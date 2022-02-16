@@ -4,13 +4,12 @@ from copy import deepcopy
 from functools import reduce
 from itertools import compress
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, List, Tuple, Union
+from typing import Any, Callable, Dict, Iterable, List, Tuple
 
 from databooks import JupyterNotebook
 from databooks.common import get_keys
 from databooks.data_models.base import DatabooksBase
 from databooks.logging import get_logger, set_verbose
-from databooks.recipes import Flavor
 
 logger = get_logger(__file__)
 
@@ -176,16 +175,14 @@ class DatabooksParser(ast.NodeVisitor):
         return self.safe_eval_ast(ast_tree)
 
 
-def affirm(
-    nb_path: Path, exprs: List[Union[str, Flavor]], verbose: bool = False
-) -> bool:
+def affirm(nb_path: Path, exprs: List[str], verbose: bool = False) -> bool:
     """
     Return whether notebook passed all checks (expressions).
 
     :param nb_path: Path of notebook file
     :param exprs: Expression with check to be evaluated on notebook
     :param verbose: Log failed tests for notebook
-    :return: Evaluated expression casted as a `bool`
+    :return: Evaluated expression cast as a `bool`
     """
     if verbose:
         set_verbose(logger)
@@ -203,15 +200,9 @@ def affirm(
         ],
     }
     databooks_parser = DatabooksParser(**variables)
-    is_ok = [
-        bool(
-            databooks_parser.safe_eval(
-                expr if isinstance(expr, str) else expr.src,
-            )
-        )
-        for expr in exprs
-    ]
+    is_ok = [bool(databooks_parser.safe_eval(expr)) for expr in exprs]
     n_fail = sum([not ok for ok in is_ok])
+
     logger.info(f"{nb_path} failed {n_fail} of {len(is_ok)} checks.")
     logger.debug(
         str(nb_path)
