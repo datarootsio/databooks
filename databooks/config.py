@@ -7,7 +7,6 @@ from databooks.git_utils import get_repo
 from databooks.logging import get_logger
 
 TOML_CONFIG_FILE = "pyproject.toml"
-INI_CONFIG_FILE = "settings.ini"
 
 ConfigFields = Dict[str, Any]
 

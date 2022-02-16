@@ -1,13 +1,15 @@
 import logging
 from copy import deepcopy
+from importlib import resources
 from pathlib import Path
-from textwrap import dedent
 
 from _pytest.logging import LogCaptureFixture
+from click import Command  # type: ignore
 from py._path.local import LocalPath
+from typer import Context
 from typer.testing import CliRunner
 
-from databooks.cli import app
+from databooks.cli import _config_callback, app
 from databooks.common import write_notebook
 from databooks.data_models.notebook import (
     Cell,
@@ -20,18 +22,6 @@ from databooks.version import __version__
 from tests.test_data_models.test_notebook import TestJupyterNotebook  # type: ignore
 from tests.test_git_utils import init_repo_conflicts
 
-SAMPLE_CONFIG = dedent(
-    """
-    [tool.databooks.meta]
-    rm-outs=true
-    rm_exec=false
-    overwrite=true
-
-    [tool.databooks.fix]
-    metadata-head=false
-    """
-)
-
 runner = CliRunner()
 
 
@@ -40,6 +30,16 @@ def test_version_callback() -> None:
     result = runner.invoke(app, ["--version"])
     assert result.exit_code == 0
     assert f"databooks version: {__version__}\n" == result.stdout
+
+
+def test_config_callback() -> None:
+    """Overwrite default parameters from `typer.Context`."""
+    cmd = Command(name="test-config")
+    with Context(cmd) as ctx, resources.path("tests.files", "pyproject.toml") as conf:
+        assert ctx.default_map is None
+        parsed_config = _config_callback(ctx=ctx, config_path=conf)
+        assert ctx.default_map == dict(config_default="config-value")
+        assert parsed_config == conf
 
 
 def test_meta(tmpdir: LocalPath) -> None:
@@ -103,12 +103,12 @@ def test_meta__config(tmpdir: LocalPath) -> None:
     read_path = tmpdir.mkdir("notebooks") / "test_meta_nb.ipynb"  # type: ignore
     write_notebook(nb=TestJupyterNotebook().jupyter_notebook, path=read_path)
 
-    config_path = tmpdir / "pyproject.toml"  # type: ignore
-    config_path.write_text(SAMPLE_CONFIG, encoding="utf-8")
-
     nb_read = JupyterNotebook.parse_file(path=read_path)
-    # Take arguments from config file
-    result = runner.invoke(app, ["meta", str(read_path), "--config", str(config_path)])
+    with resources.path("tests.files", "pyproject.toml") as config_path:
+        # Take arguments from config file
+        result = runner.invoke(
+            app, ["meta", str(read_path), "--config", str(config_path)]
+        )
     nb_write = JupyterNotebook.parse_file(path=read_path)
 
     assert result.exit_code == 0
@@ -240,9 +240,6 @@ def test_fix(tmpdir: LocalPath) -> None:
 def test_fix__config(tmpdir: LocalPath) -> None:
     """Fix notebook conflicts with configuration overriding defaults."""
     # Setup
-    config_path = tmpdir / "pyproject.toml"  # type: ignore
-    config_path.write_text(SAMPLE_CONFIG, encoding="utf-8")
-
     nb_path = Path("test_conflicts_nb.ipynb")
     notebook_1 = TestJupyterNotebook().jupyter_notebook
     notebook_2 = TestJupyterNotebook().jupyter_notebook
@@ -277,8 +274,9 @@ def test_fix__config(tmpdir: LocalPath) -> None:
     id_main = conflict_files[0].first_log
     id_other = conflict_files[0].last_log
 
-    # Run CLI and check conflict resolution
-    result = runner.invoke(app, ["fix", str(tmpdir), "--config", str(config_path)])
+    with resources.path("tests.files", "pyproject.toml") as config_path:
+        # Run CLI and check conflict resolution
+        result = runner.invoke(app, ["fix", str(tmpdir), "--config", str(config_path)])
     fixed_notebook = JupyterNotebook.parse_file(path=tmpdir / nb_path)
 
     assert len(conflict_files) == 1
