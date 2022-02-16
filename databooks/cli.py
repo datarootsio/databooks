@@ -100,10 +100,10 @@ def meta(
     suffix: str = Option("", help="Suffix to add to filepath when writing files"),
     rm_outs: bool = Option(False, help="Whether to remove cell outputs"),
     rm_exec: bool = Option(True, help="Whether to remove the cell execution counts"),
-    nb_meta_keep: List[str] = Option([], help="Notebook metadata fields to keep"),
-    cell_meta_keep: List[str] = Option([], help="Cells metadata fields to keep"),
+    nb_meta_keep: List[str] = Option((), help="Notebook metadata fields to keep"),
+    cell_meta_keep: List[str] = Option((), help="Cells metadata fields to keep"),
     cell_fields_keep: List[str] = Option(
-        [],
+        (),
         help="Other (excluding `execution_counts` and `outputs`) cell fields to keep",
     ),
     overwrite: bool = Option(
@@ -312,7 +312,7 @@ def fix(
         TimeElapsedColumn(),
     ) as progress:
         conflicts = progress.add_task(
-            "[yellow]Removing metadata", total=len(conflict_files)
+            "[yellow]Resolving conflicts", total=len(conflict_files)
         )
         conflicts2nbs(
             conflict_files=conflict_files,
