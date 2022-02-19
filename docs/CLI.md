@@ -2,7 +2,29 @@
 hide:
   - navigation
 ---
+<!-- [[[cog
+import subprocess
 
+import cog
+from typer_cli.main import app
+
+result = subprocess.run(
+    [
+        "python",
+        "-m",
+        "typer_cli",
+        "databooks.cli",
+        "utils",
+        "docs",
+        "--name",
+        "databooks",
+    ],
+    stdout=subprocess.PIPE,
+    stderr=subprocess.PIPE,
+    encoding="utf-8",
+)
+cog.out(result.stdout)
+]]] -->
 # `databooks`
 
 CLI tool to resolve git conflicts and remove metadata in notebooks.
@@ -50,8 +72,8 @@ $ databooks assert [OPTIONS] PATHS...
 **Options**:
 
 * `--ignore TEXT`: Glob expression(s) of files to ignore  [default: !*]
-* `--check-expr TEXT`: Expressions to assert on notebooks  [default: ]
-* `--recipe [has-tags-code|max-cells|no-empty-code|seq-exec|seq-increase|startswith-md]`: Common recipes of expressions  [default: ]
+* `--expr TEXT`: Expressions to assert on notebooks  [default: ]
+* `--recipe [has-tags|has-tags-code|max-cells|no-empty-code|seq-exec|seq-increase|startswith-md]`: Common recipes of expressions  [default: ]
 * `-v, --verbose`: Log processed files in console  [default: False]
 * `-c, --config PATH`: Get CLI options from configuration file
 * `--help / --no-help`: Show this message and exit
@@ -128,3 +150,5 @@ $ databooks meta [OPTIONS] PATHS...
 * `-v, --verbose`: Log processed files in console  [default: False]
 * `-c, --config PATH`: Get CLI options from configuration file
 * `--help / --no-help`: Show this message and exit
+
+<!-- [[[end]]] -->

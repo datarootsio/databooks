@@ -35,3 +35,20 @@ repos:
           - GitPython==3.1.26
           - typing-extensions==4.0.1
           - tomli==2.0.1
+  - repo: local
+    hooks:
+      - id: update-docs
+        name: update-docs
+        entry: cog -r
+        language: python
+        files: .*\.md
+        always_run: true
+        additional_dependencies:
+          - cogapp==3.3.0
+          - typer-cli==0.0.12
+          - typer==0.3.2
+          - rich==10.16.2
+          - pydantic==1.9.0
+          - GitPython==3.1.26
+          - typing-extensions==4.0.1
+          - tomli==2.0.1
