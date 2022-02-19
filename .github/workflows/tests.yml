@@ -20,10 +20,7 @@ jobs:
           poetry install --no-interaction --no-ansi
       - name: QA with flake8, black, isort and mypy
         run: |
-          black . --check
-          isort . --check
-          flake8 .
-          mypy
+          pre-commit run --all-files
       - name: Configure git user for git unit tests
         run: |
           git config --global user.name 'github-actions[bot]'
