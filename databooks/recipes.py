@@ -46,7 +46,7 @@ class CookBook:
     )
     no_empty_code = RecipeInfo(
         src="all(cell.source for cell in code_cells)",
-        description="Assert that the first cell in notebook is a markdown cell.",
+        description="Assert that there are no empty code cells in the notebook.",
     )
 
     @classmethod
