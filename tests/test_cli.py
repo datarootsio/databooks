@@ -4,9 +4,9 @@ from importlib import resources
 from pathlib import Path
 
 from _pytest.logging import LogCaptureFixture
-from click import Command
 from py._path.local import LocalPath
 from typer import Context
+from typer.core import TyperCommand
 from typer.testing import CliRunner
 
 from databooks.cli import _config_callback, app
@@ -34,8 +34,8 @@ def test_version_callback() -> None:
 
 def test_config_callback() -> None:
     """Overwrite default parameters from `typer.Context`."""
-    cmd = Command(name="test-config")
-    with Context(cmd) as ctx, resources.path("tests.files", "pyproject.toml") as conf:
+    ctx: Context = Context(TyperCommand(name="test-config"))
+    with resources.path("tests.files", "pyproject.toml") as conf:
         assert ctx.default_map is None
         parsed_config = _config_callback(ctx=ctx, config_path=conf)
         assert ctx.default_map == dict(config_default="config-value")

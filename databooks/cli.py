@@ -56,10 +56,8 @@ def _config_callback(ctx: Context, config_path: Optional[Path]) -> Optional[Path
     )
     logger.debug(f"Loading config file from: {config_path}")
 
-    ctx.default_map = ctx.default_map or {}  # initialize defaults
-
     if config_path is not None:  # config may not be specified
-        with config_path.open("r") as f:
+        with config_path.open("rb") as f:
             conf = (
                 tomli.load(f)
                 .get("tool", {})
@@ -67,7 +65,10 @@ def _config_callback(ctx: Context, config_path: Optional[Path]) -> Optional[Path
                 .get(ctx.command.name, {})
             )
         # Merge configuration
-        ctx.default_map.update({k.replace("-", "_"): v for k, v in conf.items()})
+        ctx.default_map = {
+            **(ctx.default_map or {}),
+            **{k.replace("-", "_"): v for k, v in conf.items()},
+        }
     return config_path
 
 
