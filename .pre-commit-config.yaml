@@ -1,4 +1,3 @@
-files: (databooks/|tests/)
 default_language_version:
     python: python3.7
 repos:
@@ -11,14 +10,17 @@ repos:
     rev: 22.1.0
     hooks:
       - id: black
+        files: (databooks/|tests/)
   - repo: https://github.com/pycqa/isort
     rev: 5.10.1
     hooks:
       - id: isort
+        files: (databooks/|tests/)
   - repo: https://github.com/pycqa/flake8
     rev: 4.0.1
     hooks:
       - id: flake8
+        files: (databooks/|tests/)
         additional_dependencies: [flake8-docstrings==1.6.0]
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v0.931

@@ -46,7 +46,7 @@ pip install databooks
 
 ### Clear metadata
 
-Simply specify the paths for notebook files to remove metadata. By doing so, we can 
+Simply specify the paths for notebook files to remove metadata. By doing so, we can
 already avoid many of the conflicts.
 
 ```console

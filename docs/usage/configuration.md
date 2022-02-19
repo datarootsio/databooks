@@ -14,7 +14,7 @@ So it's still possible to override the configuration file via CLI parameters (as
 
 All CLI parameters are actually configurable, so you can pass specify anything that is
 also available to you via the UI, with one exception: the required `PATHS` argument.
-This is because the `PATHS` argument is also used for finding your configuration (see 
+This is because the `PATHS` argument is also used for finding your configuration (see
 [how can I use it](#how-can-i-use-it) for more information).
 
 !!! info
