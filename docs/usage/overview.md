@@ -184,38 +184,38 @@ DOC_TEMPLATE = """#### `{recipe.name}`
 recipe_names = [name for name in dir(recipes.CookBook) if not name.startswith("_")]
 recipe_infos = [getattr(recipes.CookBook, recipe) for recipe in recipe_names]
 recipe_docs = [
-    RecipeDoc(name=name, src=info.src, desc=info.description)
+    RecipeDoc(name=name.replace("_","-"), src=info.src, desc=info.description)
     for name, info in zip(recipe_names, recipe_infos)
 ]
 
 cog.out("\n".join(DOC_TEMPLATE.format(recipe=recipe) for recipe in recipe_docs))
 
 ]]] -->
-#### `has_tags`
+#### `has-tags`
 - **Description:** Assert that there is at least one cell with tags.
 - **Source:** `any(getattr(cell.metadata, 'tags', []) for cell in nb.cells)`
 
-#### `has_tags_code`
+#### `has-tags-code`
 - **Description:** Assert that there is at least one code cell with tags.
 - **Source:** `any(getattr(cell.metadata, 'tags', []) for cell in code_cells)`
 
-#### `max_cells`
+#### `max-cells`
 - **Description:** Assert that there are less than 128 cells in the notebook.
 - **Source:** `len(nb.cells) < 128`
 
-#### `no_empty_code`
+#### `no-empty-code`
 - **Description:** Assert that there are no empty code cells in the notebook.
 - **Source:** `all(cell.source for cell in code_cells)`
 
-#### `seq_exec`
+#### `seq-exec`
 - **Description:** Assert that the executed code cells were executed sequentially (similar effect to when you 'restart kernel and run all cells').
 - **Source:** `[c.execution_count for c in exec_cells] == list(range(1, len(exec_cells) + 1))`
 
-#### `seq_increase`
+#### `seq-increase`
 - **Description:** Assert that the executed code cells were executed in increasing order.
 - **Source:** `[c.execution_count for c in exec_cells] == sorted([c.execution_count for c in exec_cells])`
 
-#### `startswith_md`
+#### `startswith-md`
 - **Description:** Assert that the first cell in notebook is a markdown cell.
 - **Source:** `nb.cells[0].cell_type == 'markdown'`
 <!-- [[[end]]] -->
