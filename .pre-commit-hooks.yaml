@@ -1,8 +1,16 @@
-- id: databooks
-  name: databooks
+- id: databooks-meta
+  name: databooks-meta
   description:
-    "Remove notebook metadata using `databooks`."
-  entry: databooks meta
+    "Remove Jupyter notebook metadata using `databooks`."
+  entry: databooks meta --overwrite
   language: python
   minimum_pre_commit_version: 2.9.2
   types: [jupyter]
+- id: databooks-assert
+  name: databooks-assert
+  description:
+    "Assert Jupyter notebook metadata values using `databooks`."
+  entry: databooks assert --expr "True"
+  language: python
+  minimum_pre_commit_version: 2.9.2
+  types: [ jupyter ]
