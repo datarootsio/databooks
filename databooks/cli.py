@@ -192,7 +192,11 @@ def affirm_meta(
     paths: List[Path] = Argument(..., is_eager=True, help="Path(s) of notebook files"),
     ignore: List[str] = Option(["!*"], help="Glob expression(s) of files to ignore"),
     expr: List[str] = Option((), help="Expressions to assert on notebooks"),
-    recipe: List[Recipe] = Option((), help="Common recipes of expressions"),
+    recipe: List[Recipe] = Option(
+        (),
+        help="Common recipes of expressions - see"
+        " https://databooks.dev/0.1.15/usage/overview/#recipes",
+    ),
     verbose: bool = Option(
         False, "--verbose", "-v", help="Log processed files in console"
     ),
