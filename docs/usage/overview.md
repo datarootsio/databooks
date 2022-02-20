@@ -88,7 +88,7 @@ ensure that the metadata is present and has the desired values.
 must pass a path and a string with the expression to be evaluated for each notebook.
 
 ```bash
-databooks assert path/to/notebooks "python expression to assert on notebooks"
+databooks assert path/to/notebooks --expr "python expression to assert on notebooks"
 ```
 
 This can be used, for example, to make sure that the notebook cells were executed in
