@@ -129,7 +129,11 @@ def meta(
         help="Get CLI options from configuration file",
     ),
     help: Optional[bool] = Option(
-        None, is_eager=True, callback=_help_callback, help="Show this message and exit"
+        None,
+        "--help",
+        is_eager=True,
+        callback=_help_callback,
+        help="Show this message and exit",
     ),
 ) -> None:
     """Clear both notebook and cell metadata."""
@@ -203,7 +207,11 @@ def affirm_meta(
         help="Get CLI options from configuration file",
     ),
     help: Optional[bool] = Option(
-        None, is_eager=True, callback=_help_callback, help="Show this message and exit"
+        None,
+        "--help",
+        is_eager=True,
+        callback=_help_callback,
+        help="Show this message and exit",
     ),
 ) -> None:
     """
@@ -286,7 +294,11 @@ def fix(
         help="Get CLI options from configuration file",
     ),
     help: Optional[bool] = Option(
-        None, is_eager=True, callback=_help_callback, help="Show this message and exit"
+        None,
+        "--help",
+        is_eager=True,
+        callback=_help_callback,
+        help="Show this message and exit",
     ),
 ) -> None:
     """

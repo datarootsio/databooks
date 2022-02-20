@@ -76,7 +76,7 @@ $ databooks assert [OPTIONS] PATHS...
 * `--recipe [has-tags|has-tags-code|max-cells|no-empty-code|seq-exec|seq-increase|startswith-md]`: Common recipes of expressions  [default: ]
 * `-v, --verbose`: Log processed files in console  [default: False]
 * `-c, --config PATH`: Get CLI options from configuration file
-* `--help / --no-help`: Show this message and exit
+* `--help`: Show this message and exit
 
 ## `databooks diff`
 
@@ -119,7 +119,7 @@ $ databooks fix [OPTIONS] PATHS...
 * `-i, --interactive`: Interactively resolve the conflicts (not implemented)  [default: False]
 * `--verbose / --no-verbose`: Log processed files in console  [default: False]
 * `-c, --config PATH`: Get CLI options from configuration file
-* `--help / --no-help`: Show this message and exit
+* `--help`: Show this message and exit
 
 ## `databooks meta`
 
@@ -149,6 +149,6 @@ $ databooks meta [OPTIONS] PATHS...
 * `--check`: Don't write files but check whether there is unwanted metadata  [default: False]
 * `-v, --verbose`: Log processed files in console  [default: False]
 * `-c, --config PATH`: Get CLI options from configuration file
-* `--help / --no-help`: Show this message and exit
+* `--help`: Show this message and exit
 
 <!-- [[[end]]] -->
