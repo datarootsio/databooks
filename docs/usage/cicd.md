@@ -39,10 +39,11 @@ jobs:
 ```
 
 Alternatively, one can choose to avoid having CI systems making code changes. In that
-case, we can only check whether notebooks have any undesired metadata.
+case, we can only check whether notebooks have any unwanted metadata. While running
+checks, one can also use `databooks assert` to check for any desired metadata.
 
 ```yml
-name: 'nb-meta'
+name: 'nb-checks'
 on: [push]
 
 jobs:
@@ -57,4 +58,5 @@ jobs:
         run: |
           pip install databooks
           databooks meta . --check
+          databooks assert . --recipe seq-exec
 ```
