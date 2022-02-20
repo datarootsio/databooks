@@ -34,6 +34,8 @@ So if, for example, the desired behavior is
   - Always overwrite files
 - `databooks fix`
   - Keep notebook metadata from `base` (not `head`)
+- `databooks assert`
+  - Always check that notebook has less than 10 cells
 
 The `pyproject.toml` file would look like
 
@@ -45,6 +47,9 @@ overwrite = true
 
 [tool.databooks.fix]
 metadata-head = false
+
+[tool.databooks.assert]
+expr = ["len(nb.cells) < 10"]
 ```
 
 ## How can I use it?
