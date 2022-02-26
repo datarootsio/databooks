@@ -72,8 +72,8 @@ $ databooks assert [OPTIONS] PATHS...
 **Options**:
 
 * `--ignore TEXT`: Glob expression(s) of files to ignore  [default: !*]
-* `--expr TEXT`: Expressions to assert on notebooks  [default: ]
-* `--recipe [has-tags|has-tags-code|max-cells|no-empty-code|seq-exec|seq-increase|startswith-md]`: Common recipes of expressions - see https://databooks.dev/0.1.15/usage/overview/#recipes  [default: ]
+* `-x, --expr TEXT`: Expressions to assert on notebooks  [default: ]
+* `-r, --recipe [has-tags|has-tags-code|max-cells|no-empty-code|seq-exec|seq-increase|startswith-md]`: Common recipes of expressions - see https://databooks.dev/0.1.15/usage/overview/#recipes  [default: ]
 * `-v, --verbose`: Log processed files in console  [default: False]
 * `-c, --config PATH`: Get CLI options from configuration file
 * `--help`: Show this message and exit
