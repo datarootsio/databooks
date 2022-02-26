@@ -66,6 +66,21 @@ $ databooks fix [OPTIONS] PATHS...
 
 ![databooks fix demo](https://raw.githubusercontent.com/datarootsio/databooks/main/docs/images/databooks-fix.gif)
 
+### Assert notebook metadata
+
+Specify paths of notebooks to be checked, an expression or recipe of what you'd like to
+enforce. `databooks` will run your checks and raise errors if any notebook does not
+comply with the desired metadata values. This advanced feature allows users to enforce
+cell tags, sequential cell execution, maximum number of cells, among many other things!
+
+Check out our [docs](https://databooks.dev/latest/usage/overview/#databooks-assert) for more!
+
+```console
+$ databooks assert [OPTIONS] PATHS...
+```
+
+![databooks fix demo](https://raw.githubusercontent.com/datarootsio/databooks/main/docs/images/databooks-assert.gif)
+
 ## License
 
 This project is licensed under the terms of the MIT license.
