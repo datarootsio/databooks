@@ -15,7 +15,7 @@ def clear(
     write_path: Optional[Path] = None,
     notebook_metadata_keep: Sequence[str] = (),
     cell_metadata_keep: Sequence[str] = (),
-    cell_fields_keep: List[str] = [],
+    cell_fields_keep: Sequence[str] = (),
     check: bool = False,
     verbose: bool = False,
     **kwargs: Any,
@@ -43,9 +43,9 @@ def clear(
         write_path = read_path
     notebook = JupyterNotebook.parse_file(read_path)
 
-    # Get fields to remove from cells
+    # Get fields to remove from cells and keep notebook schema
     cell_fields = {field for cell in notebook.cells for field, _ in cell if field}
-    cell_fields_keep += list(Cell.__fields__)  # required field for notebook schema
+    cell_fields_keep = list(cell_fields_keep) + list(Cell.__fields__)
 
     cell_remove_fields = [
         field for field in cell_fields if field not in cell_fields_keep

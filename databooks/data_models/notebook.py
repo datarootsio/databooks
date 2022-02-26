@@ -218,9 +218,8 @@ class Cells(GenericModel, BaseCells[T]):
         else:
             return v
 
-    @classmethod
+    @staticmethod
     def wrap_git(
-        cls,
         first_cells: List[Cell],
         last_cells: List[Cell],
         hash_first: Optional[str] = None,

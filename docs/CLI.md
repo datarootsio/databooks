@@ -5,7 +5,7 @@ hide:
 
 # `databooks`
 
-A CLI tool that minimises friction when versioning and collaborating on Jupyter notebooks.
+CLI tool to resolve git conflicts and remove metadata in notebooks.
 
 **Usage**:
 
@@ -22,9 +22,39 @@ $ databooks [OPTIONS] COMMAND [ARGS]...
 
 **Commands**:
 
-* `diff`: Show differences between notebooks (not implemented)
+* `assert`: Assert notebook metadata has desired values.
+* `diff`: Show differences between notebooks (not...
 * `fix`: Fix git conflicts for notebooks.
 * `meta`: Clear both notebook and cell metadata.
+
+## `databooks assert`
+
+Assert notebook metadata has desired values.
+
+Pass one (or multiple) strings or recipes. The available variables in scope include
+ `nb` (notebook), `raw_cells` (notebook cells of `raw` type), `md_cells` (notebook
+ cells of `markdown` type), `code_cells` (notebook cells of `code` type) and
+ `exec_cells` (notebook cells of `code` type that were executed - have an `execution
+ count` value). Recipes can be found on `databooks.recipes.CookBook`.
+
+**Usage**:
+
+```console
+$ databooks assert [OPTIONS] PATHS...
+```
+
+**Arguments**:
+
+* `PATHS...`: Path(s) of notebook files  [required]
+
+**Options**:
+
+* `--ignore TEXT`: Glob expression(s) of files to ignore  [default: !*]
+* `--check-expr TEXT`: Expressions to assert on notebooks  [default: ]
+* `--recipe [has-tags-code|max-cells|no-empty-code|seq-exec|seq-increase|startswith-md]`: Common recipes of expressions  [default: ]
+* `-v, --verbose`: Log processed files in console  [default: False]
+* `-c, --config PATH`: Get CLI options from configuration file
+* `--help / --no-help`: Show this message and exit
 
 ## `databooks diff`
 

@@ -4,7 +4,7 @@ from importlib import resources
 from pathlib import Path
 
 from _pytest.logging import LogCaptureFixture
-from click import Command  # type: ignore
+from click import Command
 from py._path.local import LocalPath
 from typer import Context
 from typer.testing import CliRunner
@@ -19,7 +19,7 @@ from databooks.data_models.notebook import (
 )
 from databooks.git_utils import get_conflict_blobs
 from databooks.version import __version__
-from tests.test_data_models.test_notebook import TestJupyterNotebook  # type: ignore
+from tests.test_data_models.test_notebook import TestJupyterNotebook
 from tests.test_git_utils import init_repo_conflicts
 
 runner = CliRunner()
@@ -86,7 +86,7 @@ def test_meta__check(tmpdir: LocalPath, caplog: LogCaptureFixture) -> None:
     assert result.exit_code == 1
     assert len(logs) == 1
     assert nb_read == nb_write
-    assert logs[0].message == "Found unwanted metadata in 1 out of 1 files"
+    assert logs[0].message == "Found unwanted metadata in 1 out of 1 files."
 
     # Clean notebook and check again
     runner.invoke(app, ["meta", str(read_path), "--overwrite"])
@@ -161,6 +161,46 @@ def test_meta__no_notebooks_found(tmpdir: LocalPath, caplog: LogCaptureFixture) 
     assert result.exit_code == 0
     assert len(logs) == 1
     assert logs[0].message == f"No notebooks found in {[Path(nb_path)]}. Nothing to do."
+
+
+def test_assert(caplog: LogCaptureFixture) -> None:
+    """Assert that notebook has sequential and increasing cell execution."""
+    caplog.set_level(logging.INFO)
+
+    exprs = (
+        "[c.execution_count for c in exec_cells] == list(range(1, len(exec_cells) + 1))"
+    )
+    recipe = "seq-increase"
+    with resources.path("tests.files", "demo.ipynb") as nb_path:
+        result = runner.invoke(
+            app, ["assert", str(nb_path), "--expr", exprs, "--recipe", recipe]
+        )
+
+    logs = list(caplog.records)
+    assert result.exit_code == 0
+    assert len(logs) == 2
+    assert [log.message for log in logs] == [
+        f"{nb_path} failed 0 of 2 checks.",
+        "All notebooks comply with the desired metadata!",
+    ]
+
+
+def test_assert__config(caplog: LogCaptureFixture) -> None:
+    """Assert notebook based on statements from configuration file."""
+    caplog.set_level(logging.INFO)
+
+    with resources.path("tests.files", "pyproject.toml") as config:
+        nb_dirpath = config.parent
+        result = runner.invoke(
+            app, ["assert", str(nb_dirpath), "--config", str(config)]
+        )
+    logs = list(caplog.records)
+    assert result.exit_code == 1
+    assert len(logs) == 3
+    assert (
+        logs[-1].message
+        == "Found issues in notebook metadata for 1 out of 2 notebooks."
+    )
 
 
 def test_fix(tmpdir: LocalPath) -> None:

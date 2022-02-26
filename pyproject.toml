@@ -36,7 +36,7 @@ coverage = "^6.2"
 typer-cli = "^0.0.12"
 mypy = "^0.910"
 mkdocs-material = "^8.0.5"
-mkdocs-autorefs = "^0.3.0"
+mkdocs-autorefs = "^0.3.1"
 mkdocs-coverage = "^0.2.4"
 mike = "^1.1.2"
 mkdocstrings = "^0.17.0"
@@ -51,9 +51,10 @@ include = "(databooks/|tests/)"
 extend-exclude = "tests/files/"
 
 [tool.mypy]
-files = ["databooks"]
+files = ["databooks", "tests"]
 disallow_untyped_calls = true
 disallow_untyped_defs = true
+ignore_missing_imports = true
 
 [tool.isort]
 skip_glob = ["docs/*"]

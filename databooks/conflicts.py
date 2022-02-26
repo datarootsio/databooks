@@ -3,12 +3,12 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Callable, List, Optional, Sequence, Tuple
+from typing import Any, Callable, List, Optional, Sequence
 
 from git import Repo
 
 from databooks.common import find_common_parent, write_notebook
-from databooks.data_models.notebook import Cell, Cells, JupyterNotebook
+from databooks.data_models.notebook import JupyterNotebook
 from databooks.git_utils import ConflictFile, get_conflict_blobs, get_repo
 from databooks.logging import get_logger, set_verbose
 
@@ -118,8 +118,3 @@ def conflicts2nbs(
         nb = conflict2nb(conflict, **conflict2nb_kwargs)
         write_notebook(nb=nb, path=conflict.filename)
         progress_callback()
-
-
-def cells_equals(diff_cells: Cells[Tuple[List[Cell], List[Cell]]]) -> List[bool]:
-    """Return if cells in `DiffCells` are equal."""
-    return [cell_first == cell_last for cell_first, cell_last in diff_cells]

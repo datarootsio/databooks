@@ -4,7 +4,7 @@ from py._path.local import LocalPath
 
 from databooks.conflicts import path2conflicts
 from databooks.data_models.notebook import Cell, CellMetadata, NotebookMetadata
-from tests.test_data_models.test_notebook import TestJupyterNotebook  # type: ignore
+from tests.test_data_models.test_notebook import TestJupyterNotebook
 from tests.test_git_utils import ConflictFile, init_repo_conflicts
 
 
