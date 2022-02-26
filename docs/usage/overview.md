@@ -7,6 +7,7 @@ unnecessary for many users. When committing notebooks you commit all the metadat
 may cause some issues down the line. This is where `databooks` comes in.
 
 The package currently has 3 main features, exposed as CLI commands
+
 1. `databooks meta`: to remove unnecessary notebook metadata that can cause git conflicts
 2. `databooks fix`: to fix conflicts after they've occurred, by parsing versions of the
 conflicting file and computing its difference in a Jupyter-friendly way, so you (user) can
@@ -84,8 +85,9 @@ metadata (such as cell tags), or more than that, we may want the metadata to hav
 certain values. This is where `databooks assert` comes in. We can use this command to
 ensure that the metadata is present and has the desired values.
 
-`databooks assert` is akin (and inspired by) to Python's `assert`. Therefore, the user
-must pass a path and a string with the expression to be evaluated for each notebook.
+`databooks assert` is akin to (and inspired by) Python's [`assert`](https://docs.python.org/3/reference/simple_stmts.html#the-assert-statement).
+Therefore, the user must pass a path and a string with the expression to be evaluated
+for each notebook.
 
 ```bash
 databooks assert path/to/notebooks --expr "python expression to assert on notebooks"
@@ -105,10 +107,10 @@ as regular python objects (i.e.: to access the cell types, one could write
 in scope:
 
 - `nb`: Jupyter notebook found in path
-- `raw_cells`: notebook cells of raw type
-- `md_cells`: notebook cells of markdown type
-- `code_cells`: notebook cells of code type
-- `exec_cells`: notebook cells of executed code type
+- `raw_cells`: notebook "raw" cells
+- `md_cells`: notebook markdown cells
+- `code_cells`: notebook code cells
+- `exec_cells`: executed notebook code cells
 
 **Built-in functions:**
 <!-- [[[cog
@@ -145,8 +147,9 @@ cog.out("\n".join(DOC_TEMPLATE.format(func=func) for func in allowed_builtins))
 - [`sorted`](https://docs.python.org/3/library/functions.html#sorted)
 <!-- [[[end]]] -->
 
-These limitations are designed to allow anyone to use `databooks assert` freely. This is
-because we use built-in's `eval`, and [`eval` is really dangerous](https://nedbatchelder.com/blog/201206/eval_really_is_dangerous.html).
+These limitations are designed to allow anyone to use `databooks assert` safely. This is
+because we use built-in's [`eval`](https://docs.python.org/3/library/functions.html#eval),
+and [`eval` is really dangerous](https://nedbatchelder.com/blog/201206/eval_really_is_dangerous.html).
 To mitigate that (and for your safety), we actually parse the string and only allow a
 couple of operations to happen. Check out our [tests](https://github.com/datarootsio/databooks/blob/main/tests/test_affirm.py)
 to see what is and isn't allowed and see the [source](https://github.com/datarootsio/databooks/blob/main/databooks/affirm.py)
@@ -161,7 +164,7 @@ or CI/CD. Check out the rest of the "Usage" section for more info!
 It can be a bit repetitive and tedious to write out expressions to be asserted. Or
 even hard to think of how to express these assertions about notebooks. With that in mind,
 we also include "user recipes". These recipes store some useful expressions to be checked,
-to be used both as short-hand of other expressions and inspiration for you to come up
+to be used both as shorthand of other expressions and inspiration for you to come up
 with your own recipe! Feel free to submit a PR with your recipe or open an issue if
 you're  having issues coming up with it.
 

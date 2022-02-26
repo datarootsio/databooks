@@ -19,11 +19,11 @@ To install, simply run:
 pip install pre-commit
 ```
 
-### Usage
+## Usage
 
-#### Configuration
+### Configuration
 
-##### `databooks meta`
+#### `databooks meta`
 
 To use `pre-commit` with `databooks meta`, create a `.pre-commit-config.yaml` in the root of your project.
 There, include
@@ -31,10 +31,10 @@ There, include
 ```yaml
 repos:
 -   repo: https://github.com/datarootsio/databooks
-    rev: 0.2.1
+    rev: 1.0.1
     hooks:
     -   id: databooks-meta
-````
+```
 
 [`databooks` repo](https://github.com/datarootsio/databooks) has minimal configuration
 (such as the `meta` command). The `rev` parameter indicates the version to use and `args`
@@ -46,7 +46,7 @@ the files would be modified, no commit would be made, and it'd be up to the deve
 inspect the changes, add them and commit. That's why we specify `args: ["--overwrite"]`
 by default.
 
-##### `databooks assert`
+#### `databooks assert`
 
 To use `databooks assert` you must pass similar values, added with an `args` field to
 write your checks. Those can be a `recipe` or an `expression`, similarly to what would
@@ -57,13 +57,13 @@ there are no tests in the configuration file.
 ```yaml
 repos:
 -   repo: https://github.com/datarootsio/databooks
-    rev: 0.2.1
+    rev: 1.0.1
     hooks:
     -   id: databooks-assert
         args: ['--expr', 'len(nb.cells) < 10', '--recipe', 'seq-exec']
 ```
 
-#### Running
+### Running
 
 Once the configuration is in place all the user needs to do to trigger `pre-commit` is
 to commit changes normally
