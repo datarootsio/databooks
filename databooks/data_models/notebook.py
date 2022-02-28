@@ -126,13 +126,16 @@ class Cell(DatabooksBase):
         return v
 
     @root_validator
-    def must_not_be_list_for_code_cells(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+    def code_cell_has_valid_outputs(cls, values: Dict[str, Any]) -> Dict[str, Any]:
         """Check that code cells have list-type outputs."""
-        if values["cell_type"] == "code" and not isinstance(values["outputs"], list):
+        if values.get("cell_type") == "code" and "outputs" not in values:
             raise ValueError(
-                "All code cells must have a list output property, got"
-                f" {type(values.get('outputs'))}"
+                f"All code cells must have an `outputs` property, got {values}"
             )
+            if not isinstance(values["outputs"], list):
+                raise ValueError(
+                    f"Cell outputs must be a list, got {type(values['outputs'])}"
+                )
         return values
 
     @root_validator
@@ -140,7 +143,7 @@ class Cell(DatabooksBase):
         cls, values: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Check that only code cells have outputs and execution count."""
-        if values["cell_type"] != "code" and (
+        if values.get("cell_type") != "code" and (
             ("outputs" in values) or ("execution_count" in values)
         ):
             raise ValueError(
