@@ -24,7 +24,7 @@ def clear(
     Clear Jupyter Notebook metadata.
 
     Clear metadata (at notebook and cell level) and write clean
-     notebook. By default remove all metadata.
+     notebook. By default, remove all metadata.
     :param read_path: Path of notebook file with metadata to be cleaned
     :param write_path: Path of notebook file with metadata to be cleaned
     :param notebook_metadata_keep: Notebook metadata fields to keep
@@ -32,6 +32,7 @@ def clear(
     :param cell_fields_keep: Cell fields to keep
     :param check: Don't write any files, check whether there is unwanted metadata
     :param verbose: Log written files
+    :param overwrite: Whether to overwrite files (if exists)
     :param kwargs: Additional keyword arguments to pass to
      `databooks.data_models.JupyterNotebook.clear_metadata`
     :return: Whether notebooks are equal
