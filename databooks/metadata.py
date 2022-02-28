@@ -3,7 +3,6 @@ from pathlib import Path
 from typing import Any, Callable, List, Optional, Sequence
 
 from databooks import JupyterNotebook
-from databooks.common import write_notebook
 from databooks.data_models.notebook import Cell
 from databooks.logging import get_logger, set_verbose
 
@@ -18,6 +17,7 @@ def clear(
     cell_fields_keep: Sequence[str] = (),
     check: bool = False,
     verbose: bool = False,
+    overwrite: bool = False,
     **kwargs: Any,
 ) -> bool:
     """
@@ -67,7 +67,7 @@ def clear(
         )
         logger.debug(f"No action taken for {read_path} - " + msg)
     else:
-        write_notebook(nb=notebook, path=write_path)
+        notebook.write(path=write_path, overwrite=overwrite)
         logger.debug(f"Removed metadata from {read_path}, saved as {write_path}")
 
     return nb_equals
