@@ -1,6 +1,7 @@
 """Data models - Jupyter Notebooks and components."""
 from __future__ import annotations
 
+import json
 from copy import deepcopy
 from difflib import SequenceMatcher
 from itertools import chain
@@ -19,7 +20,7 @@ from typing import (
     Union,
 )
 
-from pydantic import Extra, PositiveInt, root_validator, validator
+from pydantic import Extra, PositiveInt, root_validator, validate_model, validator
 from pydantic.generics import GenericModel
 
 from databooks.data_models.base import BaseCells, DatabooksBase
@@ -312,6 +313,20 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
         return super(JupyterNotebook, cls).parse_file(
             path=path, content_type="json", **parse_kwargs
         )
+
+    def write(self, path: Path | str, overwrite: bool = False, **kwargs: Any) -> None:
+        """Write notebook to disk."""
+        path = Path(path) if not isinstance(path, Path) else path
+        if path.is_file() and not overwrite:
+            raise ValueError(
+                f"File exists at {path} exists. Specify `overwrite = True`."
+            )
+
+        _, _, validation_error = validate_model(self.__class__, self.dict())
+        if validation_error:
+            raise validation_error
+        with path.open("w") as f:
+            json.dump(self.dict(), fp=f, **kwargs)
 
     def clear_metadata(
         self,
