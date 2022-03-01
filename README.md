@@ -79,7 +79,7 @@ Check out our [docs](https://databooks.dev/latest/usage/overview/#databooks-asse
 $ databooks assert [OPTIONS] PATHS...
 ```
 
-![databooks fix demo](https://raw.githubusercontent.com/datarootsio/databooks/main/docs/images/databooks-assert.gif)
+![databooks assert demo](https://raw.githubusercontent.com/datarootsio/databooks/main/docs/images/databooks-assert.gif)
 
 ## License
 
