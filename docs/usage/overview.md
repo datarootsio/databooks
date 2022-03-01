@@ -27,7 +27,7 @@ With that, for each notebook in the path, by default:
 
 - It will remove execution counts
 - It **won't** remove cell outputs
-- It will remove metadata from all cells (like cell tags or ids)
+- It will remove metadata from all cells (such as cell tags or ids)
 - It will remove all metadata from your notebook (including kernel information)
 - It **won't** overwrite files for you
 
@@ -40,8 +40,8 @@ will be added before writing the file, or you can simply overwrite the source fi
 
 ## `databooks fix`
 
-In `datbooks meta` we try to avoid git conflicts. In `databooks fix` we fix conflicts after
-they have occurred. Similarly to `databooks meta ...`, the only required argument here
+In `databooks meta` we try to avoid git conflicts. In `databooks fix` we fix conflicts after
+they have occurred. Similar to `databooks meta ...`, the only required argument here
 is a path.
 
 ```bash
@@ -54,14 +54,14 @@ For each notebook in the path _that has git conflicts_:
 - For the conflicting cells, it will wrap some special cells around the differences, like
 in normal git conflicts
 
-Similarly to what we saw above, the default behavior can be changed by passing a
+Similarly to `databooks meta`, the default behavior can be changed by passing a
 configuration `pyproject.toml` file or specifying the CLI arguments. You could, for
 instance, keep the metadata from the notebook in `BASE` (as opposed to `HEAD`). If you
 know you only care about the notebook cells in `HEAD` or `BASE`, then you could pass
 `--cells-head` or `--no-cells-head` and not worry about fixing conflicted cells in Jupyter.
 
 You can also pass a special `--cell-fields-ignore parameter`, that will remove the cell
-metadata from both versions fo the conflicting notebook before comparing them. This is
+metadata from both versions of the conflicting notebook before comparing them. This is
 because depending on your Jupyter version you may have an `id` field, that will be unique
 for each cell. That is, all the cells will be considered different even if they have the
 same `source` and `outputs` as their `id`s are different. By removing `id` and
@@ -70,7 +70,7 @@ to determine if the cells have changed or not.
 
 !!! note
 
-    If a notebook with conflicts (i.e.: not valid JSON/Jupyter) is committed to the repo,
+    If a notebook with conflicts (thus not valid JSON/Jupyter) is committed to the repo,
     `databooks fix` will not consider the file as something to fix - same behavior as `git`.
 
 !!! info "Fun fact"
@@ -101,10 +101,11 @@ Evidently, there are some limitations to the expressions that a user can pass.
 
 **Variables in scope:**
 
-All the variables in scope are a subclass of Pydantic models. Therefore, you can use them
-as regular python objects (i.e.: to access the cell types, one could write
-`[cell.cell_type for cell in nb.cells]`). For convenience, are available the variables
-in scope:
+All the variables available for in your assert expressions are [subclasses of Pydantic
+models](https://pydantic-docs.helpmanual.io/usage/models/). Therefore, you can use these
+models as regular python objects (i.e.: to access the cell types, one could write
+`[cell.cell_type for cell in nb.cells]`). For convenience's sake, follows a list of
+currently supported variables that can be used in assert expressions:
 
 - `nb`: Jupyter notebook found in path
 - `raw_cells`: notebook "raw" cells
@@ -155,8 +156,8 @@ couple of operations to happen. Check out our [tests](https://github.com/dataroo
 to see what is and isn't allowed and see the [source](https://github.com/datarootsio/databooks/blob/main/databooks/affirm.py)
 to see how that happens!
 
-It's also relevant to mention that to avoid repetitive typing one configure the tool to
-omit the source string. Even more powerful is to combine it with [`pre-commit`](https://pre-commit.com/)
+It's also relevant to mention that to avoid repetitive typing you can configure the tool to
+omit the source string. An even more powerful method is to combine it with [`pre-commit`](https://pre-commit.com/)
 or CI/CD. Check out the rest of the "Usage" section for more info!
 
 ### Recipes
@@ -166,7 +167,7 @@ even hard to think of how to express these assertions about notebooks. With that
 we also include "user recipes". These recipes store some useful expressions to be checked,
 to be used both as shorthand of other expressions and inspiration for you to come up
 with your own recipe! Feel free to submit a PR with your recipe or open an issue if
-you're  having issues coming up with it.
+you're having issues coming up with a recipe for your goal.
 
 <!-- [[[cog
 import importlib.util
