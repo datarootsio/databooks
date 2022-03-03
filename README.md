@@ -46,7 +46,7 @@ pip install databooks
 
 ### Clear metadata
 
-Simply specify the paths for notebook files to remove metadata. By doing so, we can 
+Simply specify the paths for notebook files to remove metadata. By doing so, we can
 already avoid many of the conflicts.
 
 ```console
@@ -65,6 +65,21 @@ $ databooks fix [OPTIONS] PATHS...
 ```
 
 ![databooks fix demo](https://raw.githubusercontent.com/datarootsio/databooks/main/docs/images/databooks-fix.gif)
+
+### Assert notebook metadata
+
+Specify paths of notebooks to be checked, an expression or recipe of what you'd like to
+enforce. `databooks` will run your checks and raise errors if any notebook does not
+comply with the desired metadata values. This advanced feature allows users to enforce
+cell tags, sequential cell execution, maximum number of cells, among many other things!
+
+Check out our [docs](https://databooks.dev/latest/usage/overview/#databooks-assert) for more!
+
+```console
+$ databooks assert [OPTIONS] PATHS...
+```
+
+![databooks assert demo](https://raw.githubusercontent.com/datarootsio/databooks/main/docs/images/databooks-assert.gif)
 
 ## License
 

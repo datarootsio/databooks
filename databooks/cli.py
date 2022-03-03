@@ -56,10 +56,8 @@ def _config_callback(ctx: Context, config_path: Optional[Path]) -> Optional[Path
     )
     logger.debug(f"Loading config file from: {config_path}")
 
-    ctx.default_map = ctx.default_map or {}  # initialize defaults
-
     if config_path is not None:  # config may not be specified
-        with config_path.open("r") as f:
+        with config_path.open("rb") as f:
             conf = (
                 tomli.load(f)
                 .get("tool", {})
@@ -67,7 +65,10 @@ def _config_callback(ctx: Context, config_path: Optional[Path]) -> Optional[Path
                 .get(ctx.command.name, {})
             )
         # Merge configuration
-        ctx.default_map.update({k.replace("-", "_"): v for k, v in conf.items()})
+        ctx.default_map = {
+            **(ctx.default_map or {}),
+            **{k.replace("-", "_"): v for k, v in conf.items()},
+        }
     return config_path
 
 
@@ -128,7 +129,11 @@ def meta(
         help="Get CLI options from configuration file",
     ),
     help: Optional[bool] = Option(
-        None, is_eager=True, callback=_help_callback, help="Show this message and exit"
+        None,
+        "--help",
+        is_eager=True,
+        callback=_help_callback,
+        help="Show this message and exit",
     ),
 ) -> None:
     """Clear both notebook and cell metadata."""
@@ -186,8 +191,16 @@ def meta(
 def affirm_meta(
     paths: List[Path] = Argument(..., is_eager=True, help="Path(s) of notebook files"),
     ignore: List[str] = Option(["!*"], help="Glob expression(s) of files to ignore"),
-    expr: List[str] = Option((), help="Expressions to assert on notebooks"),
-    recipe: List[Recipe] = Option((), help="Common recipes of expressions"),
+    expr: List[str] = Option(
+        (), "--expr", "-x", help="Expressions to assert on notebooks"
+    ),
+    recipe: List[Recipe] = Option(
+        (),
+        "--recipe",
+        "-r",
+        help="Common recipes of expressions - see"
+        " https://databooks.dev/0.1.15/usage/overview/#recipes",
+    ),
     verbose: bool = Option(
         False, "--verbose", "-v", help="Log processed files in console"
     ),
@@ -202,7 +215,11 @@ def affirm_meta(
         help="Get CLI options from configuration file",
     ),
     help: Optional[bool] = Option(
-        None, is_eager=True, callback=_help_callback, help="Show this message and exit"
+        None,
+        "--help",
+        is_eager=True,
+        callback=_help_callback,
+        help="Show this message and exit",
     ),
 ) -> None:
     """
@@ -285,7 +302,11 @@ def fix(
         help="Get CLI options from configuration file",
     ),
     help: Optional[bool] = Option(
-        None, is_eager=True, callback=_help_callback, help="Show this message and exit"
+        None,
+        "--help",
+        is_eager=True,
+        callback=_help_callback,
+        help="Show this message and exit",
     ),
 ) -> None:
     """

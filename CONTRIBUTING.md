@@ -73,6 +73,7 @@ As for documentation, the `databooks` documentation "lives" both on the code its
 supporting documentation (markdown) files.
 
 ### Code
+
 Code docs include annotating [type hints](#mypy) as well as function docstrings. For
 that, we use the [reStructuredText](https://www.python.org/dev/peps/pep-0287/) -like
 format.
@@ -94,8 +95,20 @@ mkdocs serve
 ```
 
 ### mike
+
 We also use the [`mike`](https://github.com/jimporter/mike) plugin in `MkDocs` to publish
 and keep different versions of documentation.
+
+### Cog
+
+We use [`cog`](https://nedbatchelder.com/code/cog) to dynamically generate parts of the
+documentation. That way, code changes trigger markdown changes as well.
+
+### Pre-commit
+
+[`Pre-commit`](https://pre-commit.com/) is the tool that automates everything, eases the
+workflow and run checks in CI/CD. It's highly recommended installing `pre-commit` and the
+hooks during development.
 
 ## Tests 🗳
 

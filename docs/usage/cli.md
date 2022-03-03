@@ -1,7 +1,9 @@
 # CLI tool
 
-The most straightforward way is to use it in the terminal, whenever desired. That can be
-error-prone and have "dirty" notebooks in your git repo. Check [CLI documentation](../CLI)
-for more information.
+The most straightforward way to start using databooks is by using the terminal. It's the
+default way of running the commands and how you've probably seen `databooks` being used
+before. However, using the terminal can be error-prone and result in "dirty" notebooks
+in your git repo. Check [CLI documentation](../CLI) for more information.
 
-A safer alternative is to automate this step, by setting up CI in your repo or a pre-commit hook.
+A safer alternative is to automate your databooks commands, by setting up CI in your
+repo or pre-commit hooks.
