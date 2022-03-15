@@ -10,7 +10,6 @@ from typer.core import TyperCommand
 from typer.testing import CliRunner
 
 from databooks.cli import _config_callback, app
-from databooks.common import write_notebook
 from databooks.data_models.notebook import (
     Cell,
     CellMetadata,
@@ -45,7 +44,7 @@ def test_config_callback() -> None:
 def test_meta(tmpdir: LocalPath) -> None:
     """Remove notebook metadata."""
     read_path = tmpdir.mkdir("notebooks") / "test_meta_nb.ipynb"  # type: ignore
-    write_notebook(nb=TestJupyterNotebook().jupyter_notebook, path=read_path)
+    TestJupyterNotebook().jupyter_notebook.write(read_path)
 
     nb_read = JupyterNotebook.parse_file(path=read_path)
     result = runner.invoke(app, ["meta", str(read_path), "--overwrite"])
@@ -76,7 +75,7 @@ def test_meta__check(tmpdir: LocalPath, caplog: LogCaptureFixture) -> None:
     caplog.set_level(logging.INFO)
 
     read_path = tmpdir.mkdir("notebooks") / "test_meta_nb.ipynb"  # type: ignore
-    write_notebook(nb=TestJupyterNotebook().jupyter_notebook, path=read_path)
+    TestJupyterNotebook().jupyter_notebook.write(read_path)
 
     nb_read = JupyterNotebook.parse_file(path=read_path)
     result = runner.invoke(app, ["meta", str(read_path), "--check"])
@@ -101,7 +100,7 @@ def test_meta__check(tmpdir: LocalPath, caplog: LogCaptureFixture) -> None:
 def test_meta__config(tmpdir: LocalPath) -> None:
     """Check notebook metadata with configuration overriding defaults."""
     read_path = tmpdir.mkdir("notebooks") / "test_meta_nb.ipynb"  # type: ignore
-    write_notebook(nb=TestJupyterNotebook().jupyter_notebook, path=read_path)
+    TestJupyterNotebook().jupyter_notebook.write(read_path)
 
     nb_read = JupyterNotebook.parse_file(path=read_path)
     with resources.path("tests.files", "pyproject.toml") as config_path:
@@ -142,7 +141,7 @@ def test_meta__script(tmpdir: LocalPath) -> None:
 def test_meta__no_overwrite(tmpdir: LocalPath) -> None:
     """Raise `typer.BadParameter` when no `--overwrite` and no prefix nor suffix."""
     nb_path = tmpdir.mkdir("notebooks") / "test_meta_nb.ipynb"  # type: ignore
-    write_notebook(nb=TestJupyterNotebook().jupyter_notebook, path=nb_path)
+    TestJupyterNotebook().jupyter_notebook.write(nb_path)
 
     result = runner.invoke(app, ["meta", str(nb_path)])
     assert (

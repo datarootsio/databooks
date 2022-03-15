@@ -170,6 +170,7 @@ def meta(
             cell_fields_keep=cell_fields_keep,
             check=check,
             verbose=verbose,
+            overwrite=overwrite,
         )
     if check:
         if all(are_equal):

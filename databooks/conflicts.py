@@ -7,7 +7,7 @@ from typing import Any, Callable, List, Optional, Sequence
 
 from git import Repo
 
-from databooks.common import find_common_parent, write_notebook
+from databooks.common import find_common_parent
 from databooks.data_models.notebook import JupyterNotebook
 from databooks.git_utils import ConflictFile, get_conflict_blobs, get_repo
 from databooks.logging import get_logger, set_verbose
@@ -116,5 +116,5 @@ def conflicts2nbs(
     """
     for conflict in conflict_files:
         nb = conflict2nb(conflict, **conflict2nb_kwargs)
-        write_notebook(nb=nb, path=conflict.filename)
+        nb.write(path=conflict.filename, overwrite=True)
         progress_callback()

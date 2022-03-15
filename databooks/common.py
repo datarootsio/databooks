@@ -1,19 +1,11 @@
 """Common set of miscellaneous functions."""
-import json
 from itertools import chain
 from pathlib import Path
 from typing import Iterable, List, Optional
 
-from databooks import JupyterNotebook
 from databooks.logging import get_logger
 
 logger = get_logger(__file__)
-
-
-def write_notebook(nb: JupyterNotebook, path: Path) -> None:
-    """Write notebook to a path."""
-    with path.open("w") as f:
-        json.dump(nb.dict(), fp=f, indent=2)
 
 
 def expand_paths(

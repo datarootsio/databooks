@@ -3,7 +3,6 @@ from pathlib import Path
 from typing import Any, Callable, List, Optional, Sequence
 
 from databooks import JupyterNotebook
-from databooks.common import write_notebook
 from databooks.data_models.notebook import Cell
 from databooks.logging import get_logger, set_verbose
 
@@ -18,13 +17,14 @@ def clear(
     cell_fields_keep: Sequence[str] = (),
     check: bool = False,
     verbose: bool = False,
+    overwrite: bool = False,
     **kwargs: Any,
 ) -> bool:
     """
     Clear Jupyter Notebook metadata.
 
     Clear metadata (at notebook and cell level) and write clean
-     notebook. By default remove all metadata.
+     notebook. By default, remove all metadata.
     :param read_path: Path of notebook file with metadata to be cleaned
     :param write_path: Path of notebook file with metadata to be cleaned
     :param notebook_metadata_keep: Notebook metadata fields to keep
@@ -32,6 +32,7 @@ def clear(
     :param cell_fields_keep: Cell fields to keep
     :param check: Don't write any files, check whether there is unwanted metadata
     :param verbose: Log written files
+    :param overwrite: Whether to overwrite files (if exists)
     :param kwargs: Additional keyword arguments to pass to
      `databooks.data_models.JupyterNotebook.clear_metadata`
     :return: Whether notebooks are equal
@@ -67,7 +68,7 @@ def clear(
         )
         logger.debug(f"No action taken for {read_path} - " + msg)
     else:
-        write_notebook(nb=notebook, path=write_path)
+        notebook.write(path=write_path, overwrite=overwrite)
         logger.debug(f"Removed metadata from {read_path}, saved as {write_path}")
 
     return nb_equals

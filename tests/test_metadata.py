@@ -4,7 +4,6 @@ from pathlib import Path
 from _pytest.logging import LogCaptureFixture
 from py._path.local import LocalPath
 
-from databooks.common import write_notebook
 from databooks.data_models.notebook import CellMetadata, JupyterNotebook
 from databooks.metadata import clear
 from tests.test_data_models.test_notebook import TestJupyterNotebook
@@ -16,7 +15,7 @@ def test_metadata_clear__check_verbose(
     """Clear metadata from a notebook and write clean notebook."""
     caplog.set_level(logging.DEBUG)
     read_path = Path(tmpdir.mkdir("notebooks") / "test_nb.ipynb")  # type: ignore
-    write_notebook(nb=TestJupyterNotebook().jupyter_notebook, path=read_path)
+    TestJupyterNotebook().jupyter_notebook.write(read_path)
     write_path = read_path.parent / ("clean_" + read_path.name)
 
     clear(
@@ -43,7 +42,7 @@ def test_metadata_clear__check_verbose(
 def test_metadata_clear(tmpdir: LocalPath) -> None:
     """Clear metadata from a notebook and write clean notebook."""
     read_path = Path(tmpdir.mkdir("notebooks") / "test_nb.ipynb")  # type: ignore
-    write_notebook(nb=TestJupyterNotebook().jupyter_notebook, path=read_path)
+    TestJupyterNotebook().jupyter_notebook.write(read_path)
     write_path = read_path.parent / ("clean_" + read_path.name)
 
     clear(

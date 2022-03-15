@@ -1,6 +1,7 @@
 """Data models - Jupyter Notebooks and components."""
 from __future__ import annotations
 
+import json
 from copy import deepcopy
 from difflib import SequenceMatcher
 from itertools import chain
@@ -19,7 +20,7 @@ from typing import (
     Union,
 )
 
-from pydantic import Extra, PositiveInt, root_validator, validator
+from pydantic import Extra, PositiveInt, root_validator, validate_model, validator
 from pydantic.generics import GenericModel
 
 from databooks.data_models.base import BaseCells, DatabooksBase
@@ -126,13 +127,16 @@ class Cell(DatabooksBase):
         return v
 
     @root_validator
-    def must_not_be_list_for_code_cells(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+    def code_cell_has_valid_outputs(cls, values: Dict[str, Any]) -> Dict[str, Any]:
         """Check that code cells have list-type outputs."""
-        if values["cell_type"] == "code" and not isinstance(values["outputs"], list):
+        if values.get("cell_type") == "code" and "outputs" not in values:
             raise ValueError(
-                "All code cells must have a list output property, got"
-                f" {type(values.get('outputs'))}"
+                f"All code cells must have an `outputs` property, got {values}"
             )
+            if not isinstance(values["outputs"], list):
+                raise ValueError(
+                    f"Cell outputs must be a list, got {type(values['outputs'])}"
+                )
         return values
 
     @root_validator
@@ -140,7 +144,7 @@ class Cell(DatabooksBase):
         cls, values: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Check that only code cells have outputs and execution count."""
-        if values["cell_type"] != "code" and (
+        if values.get("cell_type") != "code" and (
             ("outputs" in values) or ("execution_count" in values)
         ):
             raise ValueError(
@@ -309,6 +313,20 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
         return super(JupyterNotebook, cls).parse_file(
             path=path, content_type="json", **parse_kwargs
         )
+
+    def write(self, path: Path | str, overwrite: bool = False, **kwargs: Any) -> None:
+        """Write notebook to disk."""
+        path = Path(path) if not isinstance(path, Path) else path
+        if path.is_file() and not overwrite:
+            raise ValueError(
+                f"File exists at {path} exists. Specify `overwrite = True`."
+            )
+
+        _, _, validation_error = validate_model(self.__class__, self.dict())
+        if validation_error:
+            raise validation_error
+        with path.open("w") as f:
+            json.dump(self.dict(), fp=f, **kwargs)
 
     def clear_metadata(
         self,
