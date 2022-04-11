@@ -4,9 +4,7 @@ hide:
 ---
 <!-- [[[cog
 import subprocess
-
 import cog
-from typer_cli.main import app
 
 result = subprocess.run(
     [
