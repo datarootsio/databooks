@@ -2,12 +2,12 @@ default_language_version:
     python: python3
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.1.0
+    rev: v4.2.0
     hooks:
       - id: end-of-file-fixer
       - id: trailing-whitespace
   - repo: https://github.com/psf/black
-    rev: 22.1.0
+    rev: 22.3.0
     hooks:
       - id: black
         files: (databooks/|tests/)
@@ -23,7 +23,7 @@ repos:
         files: (databooks/|tests/)
         additional_dependencies: [flake8-docstrings==1.6.0]
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v0.931
+    rev: v0.942
     hooks:
       - id: mypy
         files: databooks/
@@ -41,8 +41,8 @@ repos:
         name: update-docs
         entry: cog -r
         language: python
-        files: (.*\.md)
-        args: ["**/*.md"]
+        files: (.*\.md$)
+        args: ["*/*/*.md", "*/*.md", "*.md"]
         always_run: true
         additional_dependencies:
           - cogapp==3.3.0
