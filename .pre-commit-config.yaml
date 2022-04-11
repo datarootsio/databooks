@@ -41,8 +41,8 @@ repos:
         name: update-docs
         entry: cog -r
         language: python
-        files: (.*\.md)
-        args: ["**/*.md"]
+        files: (.*\.md$)
+        args: ["*/*/*.md", "*/*.md", "*.md"]
         always_run: true
         additional_dependencies:
           - cogapp==3.3.0
