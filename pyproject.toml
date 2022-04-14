@@ -34,6 +34,7 @@ mkdocstrings = "^0.17.0"
 mkdocs-material = "^8.0.5"
 mkdocs-autorefs = "^0.3.1"
 mkdocs-coverage = "^0.2.4"
+Jinja2 = "3.0.3"  # older versions have breaking changes for `mike`
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
