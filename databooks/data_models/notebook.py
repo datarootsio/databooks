@@ -37,6 +37,102 @@ class CellMetadata(DatabooksBase):
     """Cell metadata. Empty by default but can accept extra fields."""
 
 
+class CellStreamOutput(DatabooksBase):
+    """Cell output of type `stream`."""
+
+    output_type: str
+    name: str
+    text: List[str]
+
+    @validator("output_type")
+    def output_type_must_be_stream(cls, v: str) -> str:
+        """Check if stream has `stream` type."""
+        if v != "stream":
+            raise ValueError(f"Invalid output type. Expected `stream`, got {v}.")
+        return v
+
+    @validator("name")
+    def stream_name_must_match(cls, v: str) -> str:
+        """Check if stream name is either `stdout` or `stderr`."""
+        valid_names = ("stdout", "stderr")
+        if v not in valid_names:
+            raise ValueError(
+                f"Invalid stream name. Expected one of {valid_names}, got {v}."
+            )
+        return v
+
+
+class CellDisplayDataOutput(DatabooksBase):
+    """Cell output of type `display_data`."""
+
+    output_type: str
+    data: Dict[str, Any]
+    metadata: Dict[str, Any]
+
+    @validator("output_type")
+    def output_type_must_match(cls, v: str) -> str:
+        """Check if stream has `display_data` type."""
+        if v != "display_data":
+            raise ValueError(f"Invalid output type. Expected `display_data`, got {v}.")
+        return v
+
+
+class CellExecuteResultOutput(CellDisplayDataOutput):
+    """Cell output of type `execute_result`."""
+
+    execution_count: PositiveInt
+
+    @validator("output_type")
+    def output_type_must_match(cls, v: str) -> str:
+        """Check if stream has `execute_result` type."""
+        if v != "execute_result":
+            raise ValueError(
+                f"Invalid output type. Expected `execute_result`, got {v}."
+            )
+        return v
+
+
+class CellErrorOutput(DatabooksBase):
+    """Cell output of type `error`."""
+
+    output_type: str
+    ename: str
+    evalue: str
+    traceback: List[str]
+
+    @validator("output_type")
+    def output_type_must_match(cls, v: str) -> str:
+        """Check if stream has `error` type."""
+        if v != "error":
+            raise ValueError(f"Invalid output type. Expected `error`, got {v}.")
+        return v
+
+
+class CellOutputs(DatabooksBase):
+    """Outputs of notebook code cells."""
+
+    __root__: List[
+        Union[
+            CellStreamOutput,
+            CellDisplayDataOutput,
+            CellExecuteResultOutput,
+            CellErrorOutput,
+        ]
+    ]
+
+    @property
+    def values(
+        self,
+    ) -> List[
+        CellStreamOutput
+        | CellDisplayDataOutput
+        | CellExecuteResultOutput
+        | CellErrorOutput
+    ]:
+        """Alias `__root__` with outputs for easy referencing."""
+        return self.__root__
+
+
 class Cell(DatabooksBase):
     """
     Jupyter notebook cells.
@@ -127,16 +223,20 @@ class Cell(DatabooksBase):
         return v
 
     @root_validator
-    def code_cell_has_valid_outputs(cls, values: Dict[str, Any]) -> Dict[str, Any]:
-        """Check that code cells have list-type outputs."""
+    def code_cell_has_outputs(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+        """Check that code cells have outputs."""
         if values.get("cell_type") == "code" and "outputs" not in values:
             raise ValueError(
                 f"All code cells must have an `outputs` property, got {values}"
             )
-            if not isinstance(values["outputs"], list):
-                raise ValueError(
-                    f"Cell outputs must be a list, got {type(values['outputs'])}"
-                )
+        return values
+
+    @root_validator
+    def outputs_are_valid(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+        """Check and parse that cell outputs are valid."""
+        outputs = values.get("outputs")
+        if outputs is not None:
+            values["outputs"] = CellOutputs(__root__=outputs)
         return values
 
     @root_validator

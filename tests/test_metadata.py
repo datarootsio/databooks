@@ -4,7 +4,7 @@ from pathlib import Path
 from _pytest.logging import LogCaptureFixture
 from py._path.local import LocalPath
 
-from databooks.data_models.notebook import CellMetadata, JupyterNotebook
+from databooks.data_models.notebook import CellMetadata, CellOutputs, JupyterNotebook
 from databooks.metadata import clear
 from tests.test_data_models.test_notebook import TestJupyterNotebook
 
@@ -58,7 +58,9 @@ def test_metadata_clear(tmpdir: LocalPath) -> None:
     assert len(nb_write.cells) == len(nb_read.cells)
     assert all(cell.metadata == CellMetadata() for cell in nb_write.cells)
     assert all(
-        cell.outputs == [] for cell in nb_write.cells if cell.cell_type == "code"
+        cell.outputs == CellOutputs(__root__=[])
+        for cell in nb_write.cells
+        if cell.cell_type == "code"
     )
     assert all(
         cell.execution_count is None
