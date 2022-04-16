@@ -60,9 +60,9 @@ def resolve(
     :param model: DiffModel that is to be resolved (self when added as a method to a
      class
     :param keep_first: Whether to keep the information from the prior in the
-     'diff model' or the later
-    :param ignore_none: Whether or not to ignore `None` values if encountered, and
-     use the other field value
+     'diff model' or the latter
+    :param ignore_none: Whether to ignore `None` values if encountered, and use the
+     other field value
     :return: Model with selected fields from the differences
     """
     field_d = dict(model)
@@ -105,8 +105,9 @@ class DatabooksBase(BaseModel):
         Remove selected fields.
 
         :param fields: Fields to remove
-        :param recursive: Whether or not to remove the fields recursively in case of
-         nested models
+        :param recursive: Whether to remove the fields recursively in case of nested
+         models
+        :param missing_ok: Whether to raise errors in case field is missing
         :return:
         """
         d_model = dict(self)
