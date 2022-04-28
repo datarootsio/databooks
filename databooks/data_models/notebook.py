@@ -314,9 +314,12 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
             path=path, content_type="json", **parse_kwargs
         )
 
-    def write(self, path: Path | str, overwrite: bool = False, **kwargs: Any) -> None:
+    def write(
+        self, path: Path | str, overwrite: bool = False, **json_kwargs: Any
+    ) -> None:
         """Write notebook to disk."""
         path = Path(path) if not isinstance(path, Path) else path
+        json_kwargs = {"indent": 2, **json_kwargs}
         if path.is_file() and not overwrite:
             raise ValueError(
                 f"File exists at {path} exists. Specify `overwrite = True`."
@@ -326,7 +329,7 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
         if validation_error:
             raise validation_error
         with path.open("w") as f:
-            json.dump(self.dict(), fp=f, **kwargs)
+            json.dump(self.dict(), fp=f, **json_kwargs)
 
     def clear_metadata(
         self,
