@@ -47,7 +47,7 @@ def test_meta(tmpdir: LocalPath) -> None:
     TestJupyterNotebook().jupyter_notebook.write(read_path)
 
     nb_read = JupyterNotebook.parse_file(path=read_path)
-    result = runner.invoke(app, ["meta", str(read_path), "--overwrite"])
+    result = runner.invoke(app, ["meta", str(read_path), "--yes"])
     nb_write = JupyterNotebook.parse_file(path=read_path)
 
     assert result.exit_code == 0
@@ -88,7 +88,7 @@ def test_meta__check(tmpdir: LocalPath, caplog: LogCaptureFixture) -> None:
     assert logs[0].message == "Found unwanted metadata in 1 out of 1 files."
 
     # Clean notebook and check again
-    runner.invoke(app, ["meta", str(read_path), "--overwrite"])
+    runner.invoke(app, ["meta", str(read_path), "--yes"])
     result = runner.invoke(app, ["meta", str(read_path), "--check"])
 
     logs = list(caplog.records)
@@ -138,15 +138,33 @@ def test_meta__script(tmpdir: LocalPath) -> None:
     )
 
 
-def test_meta__no_overwrite(tmpdir: LocalPath) -> None:
-    """Raise `typer.BadParameter` when no `--overwrite` and no prefix nor suffix."""
+def test_meta__no_confirm(tmpdir: LocalPath) -> None:
+    """Don't make any changes without confirmation to overwrite files (prompt)."""
     nb_path = tmpdir.mkdir("notebooks") / "test_meta_nb.ipynb"  # type: ignore
     TestJupyterNotebook().jupyter_notebook.write(nb_path)
 
     result = runner.invoke(app, ["meta", str(nb_path)])
+
+    assert result.exit_code == 1
+    assert JupyterNotebook.parse_file(nb_path) == TestJupyterNotebook().jupyter_notebook
     assert (
-        "No prefix nor suffix were passed. Please specify `--overwrite` or `-w` to"
-        " overwrite files." in result.output
+        result.output == "1 files may be overwritten (no prefix nor suffix was passed)."
+        " Continue? [y/n]: \nAborted!\n"
+    )
+
+
+def test_meta__confirm(tmpdir: LocalPath) -> None:
+    """Make changes when confirming overwrite via the prompt."""
+    nb_path = tmpdir.mkdir("notebooks") / "test_meta_nb.ipynb"  # type: ignore
+    TestJupyterNotebook().jupyter_notebook.write(nb_path)
+
+    result = runner.invoke(app, ["meta", str(nb_path)], input="y")
+
+    assert result.exit_code == 0
+    assert JupyterNotebook.parse_file(nb_path) != TestJupyterNotebook().jupyter_notebook
+    assert result.output == (
+        "1 files may be overwritten (no prefix nor suffix was passed). Continue? [y/n]:"
+        "   Removing metadata ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00\n"
     )
 
 
