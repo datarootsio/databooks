@@ -69,6 +69,7 @@ _ALLOWED_NODES = (
     ast.slice,
     ast.Str,
     ast.Sub,
+    ast.Subscript,
     ast.Tuple,
     ast.UAdd,
     ast.UnaryOp,
@@ -141,12 +142,12 @@ class DatabooksParser(ast.NodeVisitor):
 
     def visit_Attribute(self, node: ast.Attribute) -> None:
         """Allow attributes for Pydantic fields only."""
-        if not isinstance(node.value, (ast.Attribute, ast.Name)):
+        if not isinstance(node.value, (ast.Attribute, ast.Name, ast.Subscript)):
             raise ValueError(
-                "Expected attribute to be one of `ast.Name` or `ast.Attribute`, got"
-                f" `ast.{type(node.value).__name__}`"
+                "Expected attribute to be one of `ast.Name`, `ast.Attribute` or"
+                f" `ast.Subscript`, got `ast.{type(node.value).__name__}`."
             )
-        if not isinstance(node.value, ast.Attribute):
+        if isinstance(node.value, ast.Name):
             obj = self.names[node.value.id]
             allowed_attrs = dict(obj).keys() if isinstance(obj, DatabooksBase) else ()
             if node.attr not in allowed_attrs:

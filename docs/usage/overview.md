@@ -204,8 +204,8 @@ cog.out("\n".join(DOC_TEMPLATE.format(recipe=recipe) for recipe in recipe_docs))
 - **Source:** `any(getattr(cell.metadata, 'tags', []) for cell in code_cells)`
 
 #### `max-cells`
-- **Description:** Assert that there are less than 128 cells in the notebook.
-- **Source:** `len(nb.cells) < 128`
+- **Description:** Assert that there are less than 64 cells in the notebook.
+- **Source:** `len(nb.cells) < 64`
 
 #### `no-empty-code`
 - **Description:** Assert that there are no empty code cells in the notebook.

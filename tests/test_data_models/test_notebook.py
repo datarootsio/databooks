@@ -256,7 +256,7 @@ def test_parse_file() -> None:
             "name": "python",
             "nbconvert_exporter": "python",
             "pygments_lexer": "ipython3",
-            "version": "3.8.12",
+            "version": "3.8.13",
         },
         **{
             "toc-showtags": False,
@@ -331,14 +331,6 @@ def test_parse_file() -> None:
                 ],
                 execution_count=4,
                 id="53cd4d06-b52e-4fbb-9ae1-d55babe2f3a2",
-            ),
-            Cell(
-                metadata=CellMetadata(),
-                source=[],
-                cell_type="code",
-                outputs=[],
-                execution_count=None,
-                id="3916ae93-d4da-4deb-88d5-fb1c26c83d76",
             ),
         ]
     )
