@@ -41,7 +41,7 @@ class TestCookBookGood:
 
     def test_startswith_md(self) -> None:
         """Ensure that the notebook's first cell is a markdown cell."""
-        recipe = CookBook.seq_increase.src
+        recipe = CookBook.startswith_md.src
         assert affirm(nb_path=self.nb, exprs=[recipe]) is True
 
     def test_no_empty_code(self) -> None:
@@ -86,7 +86,7 @@ class TestCookBookBad:
 
     def test_startswith_md(self) -> None:
         """Ensure that the notebook's first cell is a markdown cell."""
-        recipe = CookBook.seq_increase.src
+        recipe = CookBook.startswith_md.src
         assert affirm(nb_path=self.nb, exprs=[recipe]) is False
 
     def test_no_empty_code(self) -> None:
