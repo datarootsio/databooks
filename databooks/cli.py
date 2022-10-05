@@ -11,6 +11,7 @@ from rich.progress import (
     TextColumn,
     TimeElapsedColumn,
 )
+from rich.prompt import Confirm
 from typer import Argument, BadParameter, Context, Exit, Option, Typer, echo
 
 from databooks.affirm import affirm_all
@@ -107,9 +108,7 @@ def meta(
         (),
         help="Other (excluding `execution_counts` and `outputs`) cell fields to keep",
     ),
-    overwrite: bool = Option(
-        False, "--overwrite", "-w", help="Confirm overwrite of files"
-    ),
+    overwrite: bool = Option(False, "--yes", "-y", help="Confirm overwrite of files"),
     check: bool = Option(
         False,
         "--check",
@@ -140,11 +139,16 @@ def meta(
     nb_paths = _check_paths(paths=paths, ignore=ignore)
 
     if not bool(prefix + suffix) and not check:
-        if not overwrite:
-            raise BadParameter(
-                "No prefix nor suffix were passed."
-                " Please specify `--overwrite` or `-w` to overwrite files."
+        overwrite = (
+            Confirm.ask(
+                f"{len(nb_paths)} files may be overwritten"
+                " (no prefix nor suffix was passed). Continue?"
             )
+            if not overwrite
+            else overwrite
+        )
+        if not overwrite:
+            raise Exit()
         else:
             logger.warning(f"{len(nb_paths)} files will be overwritten")
 

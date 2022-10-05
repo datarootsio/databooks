@@ -143,7 +143,7 @@ $ databooks meta [OPTIONS] PATHS...
 * `--nb-meta-keep TEXT`: Notebook metadata fields to keep  [default: ]
 * `--cell-meta-keep TEXT`: Cells metadata fields to keep  [default: ]
 * `--cell-fields-keep TEXT`: Other (excluding `execution_counts` and `outputs`) cell fields to keep  [default: ]
-* `-w, --overwrite`: Confirm overwrite of files  [default: False]
+* `-y, --yes`: Confirm overwrite of files  [default: False]
 * `--check`: Don't write files but check whether there is unwanted metadata  [default: False]
 * `-v, --verbose`: Log processed files in console  [default: False]
 * `-c, --config PATH`: Get CLI options from configuration file
