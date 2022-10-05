@@ -124,8 +124,8 @@ def test_affirm(caplog: LogCaptureFixture) -> None:
             affirm(
                 nb,
                 [
-                    "len(nb.cells) == 6",
-                    "len(code_cells) == 5",
+                    "len(nb.cells) == 5",
+                    "len(code_cells) == 4",
                     "len(md_cells) == 1",
                 ],
             )
