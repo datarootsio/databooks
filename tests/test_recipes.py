@@ -49,6 +49,12 @@ class TestCookBookGood:
         recipe = CookBook.no_empty_code.src
         assert affirm(nb_path=self.nb, exprs=[recipe]) is True
 
+    def test_error(self) -> None:
+        """Ensure that the notebook's first cell is a markdown cell."""
+        recipe = CookBook.seq_exec.src
+        with resources.path("tests.files", "doesnt_assert.ipynb") as nb:
+            assert affirm(nb_path=nb, exprs=[recipe]) is True
+
 
 class TestCookBookBad:
     """Ensure desired effect for recipes."""
