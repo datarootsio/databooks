@@ -141,7 +141,7 @@ def meta(
     if not bool(prefix + suffix) and not check:
         overwrite = (
             Confirm.ask(
-                f"{len(nb_paths)} files may be overwritten"
+                f"{len(nb_paths)} files will be overwritten"
                 " (no prefix nor suffix was passed). Continue?"
             )
             if not overwrite

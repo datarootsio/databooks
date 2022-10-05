@@ -147,8 +147,8 @@ def test_meta__no_confirm(tmpdir: LocalPath) -> None:
 
     assert result.exit_code == 1
     assert JupyterNotebook.parse_file(nb_path) == TestJupyterNotebook().jupyter_notebook
-    assert (
-        result.output == "1 files may be overwritten (no prefix nor suffix was passed)."
+    assert result.output == (
+        "1 files will be overwritten (no prefix nor suffix was passed)."
         " Continue? [y/n]: \nAborted!\n"
     )
 
@@ -163,7 +163,8 @@ def test_meta__confirm(tmpdir: LocalPath) -> None:
     assert result.exit_code == 0
     assert JupyterNotebook.parse_file(nb_path) != TestJupyterNotebook().jupyter_notebook
     assert result.output == (
-        "1 files may be overwritten (no prefix nor suffix was passed). Continue? [y/n]:"
+        "1 files will be overwritten (no prefix nor suffix was passed)."
+        " Continue? [y/n]:"
         "   Removing metadata ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00\n"
     )
 
