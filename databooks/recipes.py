@@ -37,8 +37,8 @@ class CookBook:
         description="Assert that there is at least one code cell with tags.",
     )
     max_cells = RecipeInfo(
-        src="len(nb.cells) < 128",
-        description="Assert that there are less than 128 cells in the notebook.",
+        src="len(nb.cells) < 64",
+        description="Assert that there are less than 64 cells in the notebook.",
     )
     startswith_md = RecipeInfo(
         src="nb.cells[0].cell_type == 'markdown'",
