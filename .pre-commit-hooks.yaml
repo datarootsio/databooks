@@ -2,7 +2,7 @@
   name: databooks-meta
   description:
     "Remove Jupyter notebook metadata using `databooks`."
-  entry: databooks meta --overwrite
+  entry: databooks meta --yes
   language: python
   minimum_pre_commit_version: 2.9.2
   types: [jupyter]

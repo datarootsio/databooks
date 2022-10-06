@@ -1,15 +1,15 @@
 [tool.databooks.meta]
-rm-outs=true
-rm_exec=false
-overwrite=true
+rm-outs = true
+rm_exec = false
+overwrite = true
 
 [tool.databooks.fix]
-metadata-head=false
+metadata-head = false
 
 [tool.databooks.assert]
 expr = ["[c.execution_count for c in exec_cells] == list(range(1, len(exec_cells) + 1))"]
 recipe = ["seq-exec", "has-tags"]
-ignore=[".ipynb_checkpoints/*"]
+ignore = [".ipynb_checkpoints/*"]
 
 [tool.databooks.test-config]
 config-default = "config-value"
