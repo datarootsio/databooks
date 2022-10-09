@@ -214,10 +214,10 @@ def test_assert__config(caplog: LogCaptureFixture) -> None:
         )
     logs = list(caplog.records)
     assert result.exit_code == 1
-    assert len(logs) == 3
+    assert len(logs) == 4
     assert (
         logs[-1].message
-        == "Found issues in notebook metadata for 1 out of 2 notebooks."
+        == "Found issues in notebook metadata for 2 out of 3 notebooks."
     )
 
 
