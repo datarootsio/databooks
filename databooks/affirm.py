@@ -99,6 +99,26 @@ class DatabooksParser(ast.NodeVisitor):
             return True
         return not any(isinstance(f, ast.comprehension) for f in value)
 
+    @staticmethod
+    def _allowed_attr(obj: Any, attr: str, is_dynamic: bool = False) -> None:
+        """
+        Check that attribute is a key of `databooks.data_models.base.DatabooksBase`.
+
+        If `obj` is an iterable and was computed dynamically (that is, not originally in
+         scope but computed from a comprehension), check attributes for all elements in
+         the iterable.
+        """
+        allowed_attrs = list(dict(obj).keys()) if isinstance(obj, DatabooksBase) else ()
+        if isinstance(obj, abc.Iterable) and is_dynamic:
+            for el in obj:
+                DatabooksParser._allowed_attr(obj=el, attr=attr)
+        else:
+            if attr not in allowed_attrs:
+                raise ValueError(
+                    "Expected attribute to be one of"
+                    f" `{allowed_attrs}`, got `{attr}` for {obj}."
+                )
+
     def _get_iter(self, node: ast.AST) -> Iterable:
         """Use `DatabooksParser.safe_eval_ast` to get the iterable object."""
         tree = ast.Expression(body=node)
@@ -133,26 +153,6 @@ class DatabooksParser(ast.NodeVisitor):
             )
         self.names[node.target.id] = self._get_iter(node.iter)
         self.generic_visit(node)
-
-    @staticmethod
-    def _allowed_attr(obj: Any, attr: str, is_dynamic: bool = False) -> None:
-        """
-        Check that attribute is a key of `databooks.data_models.base.DatabooksBase`.
-
-        If `obj` is an iterable and was computed dynamically (that is, not originally in
-         scope but computed from a comprehension), check attributes for all elements in
-         the iterable.
-        """
-        allowed_attrs = list(dict(obj).keys()) if isinstance(obj, DatabooksBase) else ()
-        if isinstance(obj, abc.Iterable) and is_dynamic:
-            for el in obj:
-                DatabooksParser._allowed_attr(obj=el, attr=attr)
-        else:
-            if attr not in allowed_attrs:
-                raise ValueError(
-                    "Expected attribute to be one of"
-                    f" `{allowed_attrs}`, got `{attr}` for {obj}."
-                )
 
     def visit_Attribute(self, node: ast.Attribute) -> None:
         """Allow attributes for Pydantic fields only."""
