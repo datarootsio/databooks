@@ -1,7 +1,7 @@
 """Functions to safely evaluate strings and inspect notebook."""
 import ast
+from collections import abc
 from copy import deepcopy
-from functools import reduce
 from itertools import compress
 from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, List, Tuple
@@ -131,13 +131,7 @@ class DatabooksParser(ast.NodeVisitor):
                 "Expected `ast.comprehension`'s target to be `ast.Name`, got"
                 f" `ast.{type(node.target).__name__}`."
             )
-        # If any elements in the comprehension are a `DatabooksBase` instance, then
-        #  pass down the attributes as valid
-        iterable = self._get_iter(node.iter)
-        databooks_el = [el for el in iterable if isinstance(el, DatabooksBase)]
-        if databooks_el:
-            d_attrs = reduce(lambda a, b: {**a, **b}, [dict(el) for el in databooks_el])
-        self.names[node.target.id] = DatabooksBase(**d_attrs) if databooks_el else ...
+        self.names[node.target.id] = self._get_iter(node.iter)
         self.generic_visit(node)
 
     def visit_Attribute(self, node: ast.Attribute) -> None:
@@ -150,11 +144,28 @@ class DatabooksParser(ast.NodeVisitor):
         if isinstance(node.value, ast.Name):
             obj = self.names[node.value.id]
             allowed_attrs = dict(obj).keys() if isinstance(obj, DatabooksBase) else ()
-            if node.attr not in allowed_attrs:
-                raise ValueError(
-                    "Expected attribute to be one of"
-                    f" `{allowed_attrs}`, got `{node.attr}`"
-                )
+            if node.value.id in (self.names.keys() - self.scope.keys()):
+                if not isinstance(obj, abc.Iterable):
+                    raise RuntimeError(
+                        "Expected dynamically computed object to be an iterable, for a"
+                        f" `{type(obj).__name__}` with {list(obj)}."
+                    )
+
+                for el in obj:
+                    if (
+                        not isinstance(el, DatabooksBase)
+                        or node.attr not in dict(el).keys()
+                    ):
+                        raise ValueError(
+                            "Expected attribute to be one of"
+                            f" `{allowed_attrs}`, got `{node.attr}`."
+                        )
+            else:
+                if (
+                    not isinstance(obj, DatabooksBase)
+                    or node.attr not in dict(obj).keys()
+                ):
+                    raise ValueError("invalid attribute.")
         self.generic_visit(node)
 
     def visit_Name(self, node: ast.Name) -> None:
