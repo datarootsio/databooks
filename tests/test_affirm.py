@@ -41,6 +41,12 @@ class TestSafeEval:
         parser = DatabooksParser(n=[1, 2, 3])
         assert parser.safe_eval("[i+1 for i in n]") == [2, 3, 4]
 
+    def test_nested_comprehension(self) -> None:
+        """Variables in nested expressions should be valid names."""
+        parser = DatabooksParser(m=[1, 2], n=[3, 4], o=[1, -1])
+        res_eval = parser.safe_eval("[(i+j)*k for j in m for i in n for k in o]")
+        assert res_eval == [4, -4, 5, -5, 5, -5, 6, -6]
+
     def test_multiply(self) -> None:
         """Multiplications are valid."""
         parser = DatabooksParser()
