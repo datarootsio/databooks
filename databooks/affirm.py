@@ -134,6 +134,26 @@ class DatabooksParser(ast.NodeVisitor):
         self.names[node.target.id] = self._get_iter(node.iter)
         self.generic_visit(node)
 
+    @staticmethod
+    def _allowed_attr(obj: Any, attr: str, is_dynamic: bool = False) -> None:
+        """
+        Check that attribute is a key of `databooks.data_models.base.DatabooksBase`.
+
+        If `obj` is an iterable and was computed dynamically (that is, not originally in
+         scope but computed from a comprehension), check attributes for all elements in
+         the iterable.
+        """
+        allowed_attrs = list(dict(obj).keys()) if isinstance(obj, DatabooksBase) else ()
+        if isinstance(obj, abc.Iterable) and is_dynamic:
+            for el in obj:
+                DatabooksParser._allowed_attr(obj=el, attr=attr)
+        else:
+            if attr not in allowed_attrs:
+                raise ValueError(
+                    "Expected attribute to be one of"
+                    f" `{allowed_attrs}`, got `{attr}` for {obj}."
+                )
+
     def visit_Attribute(self, node: ast.Attribute) -> None:
         """Allow attributes for Pydantic fields only."""
         if not isinstance(node.value, (ast.Attribute, ast.Name, ast.Subscript)):
@@ -142,30 +162,11 @@ class DatabooksParser(ast.NodeVisitor):
                 f" `ast.Subscript`, got `ast.{type(node.value).__name__}`."
             )
         if isinstance(node.value, ast.Name):
-            obj = self.names[node.value.id]
-            allowed_attrs = dict(obj).keys() if isinstance(obj, DatabooksBase) else ()
-            if node.value.id in (self.names.keys() - self.scope.keys()):
-                if not isinstance(obj, abc.Iterable):
-                    raise RuntimeError(
-                        "Expected dynamically computed object to be an iterable, for a"
-                        f" `{type(obj).__name__}` with {list(obj)}."
-                    )
-
-                for el in obj:
-                    if (
-                        not isinstance(el, DatabooksBase)
-                        or node.attr not in dict(el).keys()
-                    ):
-                        raise ValueError(
-                            "Expected attribute to be one of"
-                            f" `{allowed_attrs}`, got `{node.attr}`."
-                        )
-            else:
-                if (
-                    not isinstance(obj, DatabooksBase)
-                    or node.attr not in dict(obj).keys()
-                ):
-                    raise ValueError("invalid attribute.")
+            self._allowed_attr(
+                obj=self.names[node.value.id],
+                attr=node.attr,
+                is_dynamic=node.value.id in (self.names.keys() - self.scope.keys()),
+            )
         self.generic_visit(node)
 
     def visit_Name(self, node: ast.Name) -> None:
