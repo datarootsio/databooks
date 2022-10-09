@@ -4,7 +4,8 @@ from pathlib import Path
 from _pytest.logging import LogCaptureFixture
 from py._path.local import LocalPath
 
-from databooks.data_models.notebook import CellMetadata, CellOutputs, JupyterNotebook
+from databooks.data_models.cell import CellMetadata, CellOutputs
+from databooks.data_models.notebook import JupyterNotebook
 from databooks.metadata import clear
 from tests.test_data_models.test_notebook import TestJupyterNotebook
 

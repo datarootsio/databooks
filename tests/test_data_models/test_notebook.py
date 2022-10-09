@@ -7,13 +7,8 @@ from typing import List, Tuple
 import pytest
 from _pytest.logging import LogCaptureFixture
 
-from databooks.data_models.notebook import (
-    Cell,
-    CellMetadata,
-    Cells,
-    JupyterNotebook,
-    NotebookMetadata,
-)
+from databooks.data_models.cell import Cell, CellMetadata
+from databooks.data_models.notebook import Cells, JupyterNotebook, NotebookMetadata
 
 
 class TestNotebookMetadata:

@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Any, Callable, List, Optional, Sequence
 
 from databooks import JupyterNotebook
-from databooks.data_models.notebook import Cell
+from databooks.data_models.cell import Cell
 from databooks.logging import get_logger, set_verbose
 
 logger = get_logger(__file__)

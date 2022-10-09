@@ -10,13 +10,8 @@ from typer.core import TyperCommand
 from typer.testing import CliRunner
 
 from databooks.cli import _config_callback, app
-from databooks.data_models.notebook import (
-    Cell,
-    CellMetadata,
-    CellOutputs,
-    JupyterNotebook,
-    NotebookMetadata,
-)
+from databooks.data_models.cell import Cell, CellMetadata, CellOutputs
+from databooks.data_models.notebook import JupyterNotebook, NotebookMetadata
 from databooks.git_utils import get_conflict_blobs
 from databooks.version import __version__
 from tests.test_data_models.test_notebook import TestJupyterNotebook
