@@ -41,6 +41,12 @@ class TestSafeEval:
         parser = DatabooksParser(n=[1, 2, 3])
         assert parser.safe_eval("[i+1 for i in n]") == [2, 3, 4]
 
+    def test_nested_comprehension(self) -> None:
+        """Variables in nested iterables should be valid."""
+        parser = DatabooksParser(m=[1, 2], n=[3, 4], o={1: 10, -1: -10})
+        res_eval = parser.safe_eval("[(i+j)*k for j in m for i in n for k in o]")
+        assert res_eval == [4, -4, 5, -5, 5, -5, 6, -6]
+
     def test_multiply(self) -> None:
         """Multiplications are valid."""
         parser = DatabooksParser()
@@ -78,6 +84,21 @@ class TestSafeEval:
         """Nested attributes from Pydantic fields are valid."""
         parser = DatabooksParser(model=DatabooksBase(a=DatabooksBase(b=2)))
         assert parser.safe_eval("model.a.b") == 2
+
+    def test_nested_attributes_comprehensions(self) -> None:
+        """Nested attributes from Pydantic fields in nested comprehensions are valid."""
+        parser = DatabooksParser(
+            l1=[
+                DatabooksBase(a=DatabooksBase(b=1)),
+                DatabooksBase(a=DatabooksBase(b=2)),
+            ],
+            l2=[
+                DatabooksBase(a=DatabooksBase(b=3)),
+                DatabooksBase(a=DatabooksBase(b=4)),
+            ],
+        )
+        res_eval = parser.safe_eval("[m1.a.b+m2.a.b for m1 in l1 for m2 in l2]")
+        assert res_eval == [4, 5, 5, 6]
 
     def test_eval(self) -> None:
         """Trying accessing built-in `eval` raises error."""
