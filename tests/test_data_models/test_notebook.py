@@ -331,6 +331,12 @@ def test_parse_file() -> None:
                 execution_count=4,
                 id="53cd4d06-b52e-4fbb-9ae1-d55babe2f3a2",
             ),
+            Cell(
+                metadata=CellMetadata(),
+                source=["This is a raw cell! 🚀"],
+                cell_type="raw",
+                id="b2cf154d-0d1d-44d1-9ab8-7ee4b3d37f12",
+            ),
         ]
     )
 
