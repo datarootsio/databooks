@@ -3,8 +3,9 @@ from __future__ import annotations
 
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Union
 
-from pydantic import PositiveInt, root_validator, validator
+from pydantic import PositiveInt, root_validator, validate_model, validator
 from rich.console import Console, ConsoleOptions, RenderResult
+from rich.markdown import Markdown
 from rich.panel import Panel
 from rich.syntax import Syntax
 from rich.text import Text
@@ -42,8 +43,12 @@ class Cell(DatabooksBase):
         self, console: Console, options: ConsoleOptions
     ) -> RenderResult:
         """Rich display of cell."""
-        if self.cell_type == "code":
-            yield CodeCell(**self.dict())
+        _, _, validation_error = validate_model(self.__class__, self.dict())
+        if validation_error:
+            raise validation_error
+        cell_map = {"code": CodeCell, "markdown": MarkdownCell, "raw": RawCell}
+        cell = cell_map[self.cell_type]
+        yield cell(**self.dict())
 
     def remove_fields(
         self, fields: Iterable[str] = (), missing_ok: bool = True, **kwargs: Any
@@ -295,3 +300,44 @@ class CodeCell(Cell):
     def get_attr_from_dunder_root(cls, v: CellOutputs) -> List[CellOutputType]:
         """Extract the list values from the __root__ attribute of `CellOutputs`."""
         return v.__root__
+
+    @validator("cell_type")
+    def cell_has_code_type(cls, v: str) -> str:
+        """Extract the list values from the __root__ attribute of `CellOutputs`."""
+        if v != "code":
+            raise ValueError(f"Expected code of type `code`, got {v}.")
+        return v
+
+
+class MarkdownCell(Cell):
+    """Cell of type `markdown` - defined for rich displaying in terminal."""
+
+    def __rich_console__(
+        self, console: Console, options: ConsoleOptions
+    ) -> RenderResult:
+        """Rich display of markdown cells."""
+        yield Panel(Markdown("".join(self.source)))
+
+    @validator("cell_type")
+    def cell_has_md_type(cls, v: str) -> str:
+        """Extract the list values from the __root__ attribute of `CellOutputs`."""
+        if v != "markdown":
+            raise ValueError(f"Expected code of type `markdown`, got {v}.")
+        return v
+
+
+class RawCell(Cell):
+    """Cell of type `raw` - defined for rich displaying in terminal."""
+
+    def __rich_console__(
+        self, console: Console, options: ConsoleOptions
+    ) -> RenderResult:
+        """Rich display of raw cells."""
+        yield Panel(Text("".join(self.source)))
+
+    @validator("cell_type")
+    def cell_has_md_type(cls, v: str) -> str:
+        """Extract the list values from the __root__ attribute of `CellOutputs`."""
+        if v != "raw":
+            raise ValueError(f"Expected code of type `raw`, got {v}.")
+        return v
