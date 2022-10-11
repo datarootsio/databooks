@@ -156,6 +156,12 @@ class CellStreamOutput(DatabooksBase):
     name: str
     text: List[str]
 
+    def __rich_console__(
+        self, console: Console, options: ConsoleOptions
+    ) -> RenderResult:
+        """Rich display of cell stream outputs."""
+        yield Text("".join(self.text))
+
     @validator("output_type")
     def output_type_must_be_stream(cls, v: str) -> str:
         """Check if stream has `stream` type."""
@@ -181,6 +187,21 @@ class CellDisplayDataOutput(DatabooksBase):
     data: Dict[str, Any]
     metadata: Dict[str, Any]
 
+    @property
+    def rich_output(self) -> List[Text]:
+        """Dynamically compute the rich output - also in `CellExecuteResultOutput`."""
+        return [
+            Text("".join(out))
+            for mime, out in self.data.items()
+            if mime in ("text/plain")
+        ]
+
+    def __rich_console__(
+        self, console: Console, options: ConsoleOptions
+    ) -> RenderResult:
+        """Rich display of data display outputs."""
+        yield from self.rich_output
+
     @validator("output_type")
     def output_type_must_match(cls, v: str) -> str:
         """Check if stream has `display_data` type."""
@@ -193,6 +214,13 @@ class CellExecuteResultOutput(CellDisplayDataOutput):
     """Cell output of type `execute_result`."""
 
     execution_count: PositiveInt
+
+    def __rich_console__(
+        self, console: Console, options: ConsoleOptions
+    ) -> RenderResult:
+        """Rich display of executed cell outputs."""
+        yield Text(f"Out [{self.execution_count or ' '}]:", style="out_count")
+        yield from self.rich_output
 
     @validator("output_type")
     def output_type_must_match(cls, v: str) -> str:
@@ -212,6 +240,12 @@ class CellErrorOutput(DatabooksBase):
     evalue: str
     traceback: List[str]
 
+    def __rich_console__(
+        self, console: Console, options: ConsoleOptions
+    ) -> RenderResult:
+        """Rich display of error outputs."""
+        raise NotImplementedError
+
     @validator("output_type")
     def output_type_must_match(cls, v: str) -> str:
         """Check if stream has `error` type."""
@@ -220,27 +254,20 @@ class CellErrorOutput(DatabooksBase):
         return v
 
 
+CellOutputType = Union[
+    CellStreamOutput, CellDisplayDataOutput, CellExecuteResultOutput, CellErrorOutput
+]
+
+
 class CellOutputs(DatabooksBase):
     """Outputs of notebook code cells."""
 
-    __root__: List[
-        Union[
-            CellStreamOutput,
-            CellDisplayDataOutput,
-            CellExecuteResultOutput,
-            CellErrorOutput,
-        ]
-    ]
+    __root__: List[CellOutputType]
 
     @property
     def values(
         self,
-    ) -> List[
-        CellStreamOutput
-        | CellDisplayDataOutput
-        | CellExecuteResultOutput
-        | CellErrorOutput
-    ]:
+    ) -> List[CellOutputType]:
         """Alias `__root__` with outputs for easy referencing."""
         return self.__root__
 
@@ -262,17 +289,9 @@ class CodeCell(Cell):
                 "python",  # TODO: change to `self.lang`
             )
         )
+        yield from self.outputs.values
 
     @validator("outputs")
-    def get_attr_from_dunder_root(
-        cls, v: CellOutputs
-    ) -> List[
-        Union[
-            CellStreamOutput,
-            CellDisplayDataOutput,
-            CellExecuteResultOutput,
-            CellErrorOutput,
-        ]
-    ]:
+    def get_attr_from_dunder_root(cls, v: CellOutputs) -> List[CellOutputType]:
         """Extract the list values from the __root__ attribute of `CellOutputs`."""
         return v.__root__
