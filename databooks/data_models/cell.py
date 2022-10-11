@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Union
 
 from pydantic import PositiveInt, root_validator, validate_model, validator
-from rich.console import Console, ConsoleOptions, RenderResult
+from rich.console import Console, ConsoleOptions, ConsoleRenderable, RenderResult
 from rich.markdown import Markdown
 from rich.panel import Panel
 from rich.syntax import Syntax
@@ -193,7 +193,7 @@ class CellDisplayDataOutput(DatabooksBase):
     metadata: Dict[str, Any]
 
     @property
-    def rich_output(self) -> List[Text]:
+    def rich_output(self) -> List[ConsoleRenderable]:
         """Dynamically compute the rich output - also in `CellExecuteResultOutput`."""
         return [
             Text("".join(out))
@@ -269,6 +269,12 @@ class CellOutputs(DatabooksBase):
 
     __root__: List[CellOutputType]
 
+    def __rich_console__(
+        self, console: Console, options: ConsoleOptions
+    ) -> RenderResult:
+        """Rich display of code cell outputs."""
+        yield from self.values
+
     @property
     def values(
         self,
@@ -293,7 +299,7 @@ class CodeCell(Cell):
                 "python",
             )
         )
-        yield from self.outputs.values
+        yield self.outputs
 
     @validator("outputs")
     def get_attr_from_dunder_root(cls, v: CellOutputs) -> List[CellOutputType]:
