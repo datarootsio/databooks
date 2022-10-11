@@ -39,3 +39,19 @@ Out [2]:
 0.9995123767309688
 """
     )
+
+
+def test_code_cell_error():
+    """Prints code cell with no outputs."""
+    assert render(nb.cells[4]) == dedent(
+        """In [4]:
+╭────────────────────────────────────────────────╮
+│ throw error                                    │
+╰────────────────────────────────────────────────╯
+  File "/var/folders/_r/_8qwqbqn4_gdj4m3gb6_t05400
+00gn/T/ipykernel_3501/1516912967.py", line 1
+    throw error
+          ^
+SyntaxError: invalid syntax
+"""
+    )

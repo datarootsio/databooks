@@ -244,7 +244,7 @@ class CellErrorOutput(DatabooksBase):
         self, console: Console, options: ConsoleOptions
     ) -> RenderResult:
         """Rich display of error outputs."""
-        raise NotImplementedError
+        yield Text.from_ansi("\n".join(self.traceback))
 
     @validator("output_type")
     def output_type_must_match(cls, v: str) -> str:
