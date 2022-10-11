@@ -25,7 +25,7 @@ T = TypeVar("T", Cell, Tuple[List[Cell], List[Cell]])
 class Cells(GenericModel, BaseCells[T]):
     """Similar to `list`, with `-` operator using `difflib.SequenceMatcher`."""
 
-    __root__: Sequence[T] = []
+    __root__: Sequence[T] = ()
 
     def __init__(self, elements: Sequence[T] = ()) -> None:
         """Allow passing data as a positional argument when instantiating class."""

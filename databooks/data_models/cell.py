@@ -281,7 +281,6 @@ class CodeCell(Cell):
     """Cell of type `code` - defined for rich displaying in terminal."""
 
     outputs: CellOutputs
-    lang: str = "text"
 
     def __rich_console__(
         self, console: Console, options: ConsoleOptions
@@ -291,7 +290,7 @@ class CodeCell(Cell):
         yield Panel(
             Syntax(
                 "".join(self.source) if isinstance(self.source, list) else self.source,
-                "python",  # TODO: change to `self.lang`
+                "python",
             )
         )
         yield from self.outputs.values
