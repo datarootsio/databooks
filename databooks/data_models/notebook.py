@@ -10,6 +10,7 @@ from typing import Any, Callable, Generator, List, Optional, Sequence, Tuple, Ty
 
 from pydantic import Extra, validate_model
 from pydantic.generics import GenericModel
+from rich.console import Console, ConsoleOptions, RenderResult
 
 from databooks.data_models.base import BaseCells, DatabooksBase
 from databooks.data_models.cell import Cell, CellMetadata
@@ -72,6 +73,13 @@ class Cells(GenericModel, BaseCells[T]):
                 for _, i1, j1, i2, j2 in chain.from_iterable(diff_opcodes)
             ]
         )
+
+    def __rich_console__(
+        self, console: Console, options: ConsoleOptions
+    ) -> RenderResult:
+        """Rich display of all cells in notebook."""
+        # TODO: implement printing for diffs - ignore mypy errors for now
+        yield from self.data  # type: ignore
 
     @classmethod
     def __get_validators__(cls) -> Generator[Callable[..., Any], None, None]:
@@ -169,6 +177,12 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
     nbformat_minor: int
     metadata: NotebookMetadata
     cells: Cells[Cell]
+
+    def __rich_console__(
+        self, console: Console, options: ConsoleOptions
+    ) -> RenderResult:
+        """Rich display notebook."""
+        yield self.cells
 
     @classmethod
     def parse_file(cls, path: Path | str, **parse_kwargs: Any) -> JupyterNotebook:
