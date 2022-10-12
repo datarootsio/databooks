@@ -46,6 +46,7 @@ $ databooks [OPTIONS] COMMAND [ARGS]...
 * `diff`: Show differences between notebooks (not...
 * `fix`: Fix git conflicts for notebooks.
 * `meta`: Clear both notebook and cell metadata.
+* `show`: Show rich representation of notebook.
 
 ## `databooks assert`
 
@@ -146,6 +147,28 @@ $ databooks meta [OPTIONS] PATHS...
 * `-y, --yes`: Confirm overwrite of files  [default: False]
 * `--check`: Don't write files but check whether there is unwanted metadata  [default: False]
 * `-v, --verbose`: Log processed files in console  [default: False]
+* `-c, --config PATH`: Get CLI options from configuration file
+* `--help`: Show this message and exit
+
+## `databooks show`
+
+Show rich representation of notebook.
+
+**Usage**:
+
+```console
+$ databooks show [OPTIONS] PATHS...
+```
+
+**Arguments**:
+
+* `PATHS...`: Path(s) of notebook files with conflicts  [required]
+
+**Options**:
+
+* `--ignore TEXT`: Glob expression(s) of files to ignore  [default: !*]
+* `--verbose / --no-verbose`: Increase verbosity for debugging  [default: False]
+* `-y, --yes`: Show multiple files  [default: False]
 * `-c, --config PATH`: Get CLI options from configuration file
 * `--help`: Show this message and exit
 
