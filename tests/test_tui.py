@@ -5,6 +5,7 @@ from textwrap import dedent
 from rich.console import Console, ConsoleRenderable
 
 from databooks import JupyterNotebook
+from databooks.tui import print_nb
 
 with resources.path("tests.files", "tui-demo.ipynb") as nb_path:
     nb = JupyterNotebook.parse_file(nb_path)
@@ -179,3 +180,13 @@ def test_raw_cell() -> None:
 def test_notebook() -> None:
     """Prints notebook (identical to printing all cells)."""
     assert render(nb) == render(nb.cells) == rich_nb
+
+
+def test_print_nb() -> None:
+    """Print notebook from path and add rules with file name."""
+    console = Console(file=io.StringIO(), width=50, legacy_windows=False)
+    with resources.path("tests.files", "tui-demo.ipynb") as path:
+        print_nb(path, console=console)
+    assert console.file.getvalue() == "\n".join(
+        ("───────────────── tui-demo.ipynb ─────────────────", rich_nb)
+    )
