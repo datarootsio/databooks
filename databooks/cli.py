@@ -74,6 +74,7 @@ def _config_callback(ctx: Context, config_path: Optional[Path]) -> Optional[Path
 
 
 def _check_paths(paths: List[Path], ignore: List[str]) -> List[Path]:
+    """Check that notebooks exist retrieve the file paths."""
     if any(path.suffix not in ("", ".ipynb") for path in paths):
         raise BadParameter(
             "Expected either notebook files, a directory or glob expression."

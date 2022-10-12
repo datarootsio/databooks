@@ -4,4 +4,4 @@ from rich.theme import Theme
 
 DATABOOKS_TUI = Theme({"in_count": "blue", "out_count": "orange3", "error": "on red"})
 
-default_console = Console(theme=DATABOOKS_TUI)
+databooks_console = Console(theme=DATABOOKS_TUI)
