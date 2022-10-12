@@ -193,12 +193,25 @@ class CellDisplayDataOutput(DatabooksBase):
     metadata: Dict[str, Any]
 
     @property
-    def rich_output(self) -> List[ConsoleRenderable]:
+    def rich_output(self) -> Sequence[ConsoleRenderable]:
         """Dynamically compute the rich output - also in `CellExecuteResultOutput`."""
-        return [
-            Text("".join(out))
-            for mime, out in self.data.items()
-            if mime in ("text/plain")
+        mime_func = {
+            "image/png": None,
+            "text/html": None,
+            "text/plain": lambda s: Text("".join(s)),
+        }
+        supported = [k for k, v in mime_func.items() if v is not None]
+        not_supported = [
+            Text(f"<✨Rich✨ `{mime}` not currently supported 😢>")
+            for mime in self.data.keys()
+            if mime not in supported
+        ]
+        return not_supported + [
+            next(
+                mime_func[mime](content)  # type: ignore
+                for mime, content in self.data.items()
+                if mime in supported
+            )
         ]
 
     def __rich_console__(

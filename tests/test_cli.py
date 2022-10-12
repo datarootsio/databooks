@@ -418,6 +418,7 @@ In [5]:
 A dataframe! 🐼
 
 Out [5]:
+<✨Rich✨ `text/html` not currently supported 😢>
        col0      col1      col2
 0  0.849474  0.756456  0.268569
 1  0.511937  0.357224  0.570879
