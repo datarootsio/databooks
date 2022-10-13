@@ -440,13 +440,13 @@ In [ ]:
 
 def test_show_no_multiple() -> None:
     """Don't show multiple notebooks if not confirmed in prompt."""
-    with resources.path("tests", "files") as nb_dir:
-        dirpath = str(nb_dir)
+    with resources.path("tests.files", "tui-demo.ipynb") as nb:
+        dirpath = str(nb.parent)
 
     # Exit code is 0 if user responds to prompt with `n`
     result = runner.invoke(app, ["show", dirpath], input="n")
     assert result.exit_code == 0
 
     # Raise error (exit code 1) if no answer to prompt is given
-    result = runner.invoke(app, ["show", str(nb_dir)])
+    result = runner.invoke(app, ["show", dirpath])
     assert result.exit_code == 1
