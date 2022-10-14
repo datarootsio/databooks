@@ -1,0 +1,1382 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for `databooks`.">
+      
+      
+      
+        <link rel="canonical" href="https://datarootsio.github.io/databooks/1.2.0/usage/overview/">
+      
+      <link rel="icon" href="../../images/sm-logo.png">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.9">
+    
+    
+      
+        <title>Overview - databooks</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.120efc48.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.9647289d.min.css">
+        
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=arvo:300,300i,400,400i,700,700i%7Cpoppins:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"arvo";--md-code-font:"poppins"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#usage" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-component="outdated" hidden>
+        <aside class="md-banner md-banner--warning">
+          
+        </aside>
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="databooks" class="md-header__button md-logo" aria-label="databooks" data-md-component="logo">
+      
+  <img src="../../images/sm-logo-white.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            databooks
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Overview
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/datarootsio/databooks" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1zM480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2zm-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3zm-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    datarootsio/databooks
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        Home
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="./" class="md-tabs__link md-tabs__link--active">
+        Usage
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../CLI/" class="md-tabs__link">
+      CLI
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../API/" class="md-tabs__link">
+        API
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../contrib/" class="md-tabs__link">
+        Development
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="databooks" class="md-nav__button md-logo" aria-label="databooks" data-md-component="logo">
+      
+  <img src="../../images/sm-logo-white.png" alt="logo">
+
+    </a>
+    databooks
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/datarootsio/databooks" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1zM480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2zm-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3zm-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    datarootsio/databooks
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1">
+          Home
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Home" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          Home
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../alternatives/" class="md-nav__link">
+        Alternatives and comparisons
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/datarootsio/databooks/releases" class="md-nav__link">
+        Changelog
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        License
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          Usage
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Usage" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Usage
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Overview
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Overview
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#databooks-meta" class="md-nav__link">
+    databooks meta
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#databooks-fix" class="md-nav__link">
+    databooks fix
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#databooks-assert" class="md-nav__link">
+    databooks assert
+  </a>
+  
+    <nav class="md-nav" aria-label="databooks assert">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#recipes" class="md-nav__link">
+    Recipes
+  </a>
+  
+    <nav class="md-nav" aria-label="Recipes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#has-tags" class="md-nav__link">
+    has-tags
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#has-tags-code" class="md-nav__link">
+    has-tags-code
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#max-cells" class="md-nav__link">
+    max-cells
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#no-empty-code" class="md-nav__link">
+    no-empty-code
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#seq-exec" class="md-nav__link">
+    seq-exec
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#seq-increase" class="md-nav__link">
+    seq-increase
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#startswith-md" class="md-nav__link">
+    startswith-md
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/" class="md-nav__link">
+        CLI
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cicd/" class="md-nav__link">
+        CI/CD
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../precommit/" class="md-nav__link">
+        Pre-commit hooks
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        Configuration
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CLI/" class="md-nav__link">
+        CLI
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          API
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="API" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          API
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../API/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_2" type="checkbox" id="__nav_4_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4_2">
+          Data models
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Data models" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_2">
+          <span class="md-nav__icon md-icon"></span>
+          Data models
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data_models/base/" class="md-nav__link">
+        Base
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data_models/notebook/" class="md-nav__link">
+        Notebooks
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../affirm/" class="md-nav__link">
+        Affirm
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/" class="md-nav__link">
+        Common utils
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../config/" class="md-nav__link">
+        Configuration
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conflicts/" class="md-nav__link">
+        Conflicts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../git_utils/" class="md-nav__link">
+        Git
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../logging/" class="md-nav__link">
+        Logging
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metadata/" class="md-nav__link">
+        Metadata
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          Development
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Development" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Development
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contrib/" class="md-nav__link">
+        Contributing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../coverage/" class="md-nav__link">
+        Coverage report
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#databooks-meta" class="md-nav__link">
+    databooks meta
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#databooks-fix" class="md-nav__link">
+    databooks fix
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#databooks-assert" class="md-nav__link">
+    databooks assert
+  </a>
+  
+    <nav class="md-nav" aria-label="databooks assert">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#recipes" class="md-nav__link">
+    Recipes
+  </a>
+  
+    <nav class="md-nav" aria-label="Recipes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#has-tags" class="md-nav__link">
+    has-tags
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#has-tags-code" class="md-nav__link">
+    has-tags-code
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#max-cells" class="md-nav__link">
+    max-cells
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#no-empty-code" class="md-nav__link">
+    no-empty-code
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#seq-exec" class="md-nav__link">
+    seq-exec
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#seq-increase" class="md-nav__link">
+    seq-increase
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#startswith-md" class="md-nav__link">
+    startswith-md
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+  <a href="https://github.com/datarootsio/databooks/blob/main/docs/usage/overview.md" title="Edit this page" class="md-content__button md-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
+  </a>
+
+
+
+<h1 id="usage">Usage</h1>
+<p><code>databooks</code> is a tool designed to make the life of Jupyter notebook users easier,
+especially when it comes to sharing and versioning notebooks. That is because Jupyter
+notebooks are actually JSON files, with extra metadata that are useful for Jupyter but
+unnecessary for many users. When committing notebooks you commit all the metadata that
+may cause some issues down the line. This is where <code>databooks</code> comes in.</p>
+<p>The package currently has 3 main features, exposed as CLI commands</p>
+<ol>
+<li><code>databooks meta</code>: to remove unnecessary notebook metadata that can cause git conflicts</li>
+<li><code>databooks fix</code>: to fix conflicts after they've occurred, by parsing versions of the
+conflicting file and computing its difference in a Jupyter-friendly way, so you (user) can
+manually resolve them in the Jupyter terminal</li>
+<li><code>databooks assert</code>: to assert that the notebook metadata actually conforms to desired
+values - ensure that notebook has sequential execution count, tags, etc.</li>
+</ol>
+<h2 id="databooks-meta"><code>databooks meta</code></h2>
+<p>The only thing you need to pass is a path. We have sensible defaults to do the rest.</p>
+<div class="highlight"><pre><span></span><code>databooks meta path/to/notebooks
+</code></pre></div>
+<p>With that, for each notebook in the path, by default:</p>
+<ul>
+<li>It will remove execution counts</li>
+<li>It <strong>won't</strong> remove cell outputs</li>
+<li>It will remove metadata from all cells (such as cell tags or ids)</li>
+<li>It will remove all metadata from your notebook (including kernel information)</li>
+<li>It <strong>won't</strong> overwrite files for you</li>
+</ul>
+<p>Nonetheless, the tool is highly configurable. You could choose to remove cell outputs by
+passing <code>--rm-outs</code>. Or if there is some metadata you'd like to keep, such as cell tags,
+you can do so by passing <code>--cell-meta-keep tags</code>. Also, if you do want to save the clean
+notebook you can either pass a prefix (<code>--prefix ...</code>) or a suffix (<code>--suffix ...</code>) that
+will be added before writing the file, or you can simply overwrite the source file
+(<code>--overwrite</code>).</p>
+<h2 id="databooks-fix"><code>databooks fix</code></h2>
+<p>In <code>databooks meta</code> we try to avoid git conflicts. In <code>databooks fix</code> we fix conflicts after
+they have occurred. Similar to <code>databooks meta ...</code>, the only required argument here
+is a path.</p>
+<div class="highlight"><pre><span></span><code>databooks fix path/to/notebooks
+</code></pre></div>
+<p>For each notebook in the path <em>that has git conflicts</em>:</p>
+<ul>
+<li>It will keep the metadata from the notebook in <a href="https://stackoverflow.com/questions/2304087/what-is-head-in-git"><code>HEAD</code></a></li>
+<li>For the conflicting cells, it will wrap some special cells around the differences, like
+in normal git conflicts</li>
+</ul>
+<p>Similarly to <code>databooks meta</code>, the default behavior can be changed by passing a
+configuration <code>pyproject.toml</code> file or specifying the CLI arguments. You could, for
+instance, keep the metadata from the notebook in <code>BASE</code> (as opposed to <code>HEAD</code>). If you
+know you only care about the notebook cells in <code>HEAD</code> or <code>BASE</code>, then you could pass
+<code>--cells-head</code> or <code>--no-cells-head</code> and not worry about fixing conflicted cells in Jupyter.</p>
+<p>You can also pass a special <code>--cell-fields-ignore parameter</code>, that will remove the cell
+metadata from both versions of the conflicting notebook before comparing them. This is
+because depending on your Jupyter version you may have an <code>id</code> field, that will be unique
+for each cell. That is, all the cells will be considered different even if they have the
+same <code>source</code> and <code>outputs</code> as their <code>id</code>s are different. By removing <code>id</code> and
+<code>execution_count</code> (we'll do this by default) we only compare the actual code and outputs
+to determine if the cells have changed or not.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If a notebook with conflicts (thus not valid JSON/Jupyter) is committed to the repo,
+<code>databooks fix</code> will not consider the file as something to fix - same behavior as <code>git</code>.</p>
+</div>
+<div class="admonition info">
+<p class="admonition-title">Fun fact</p>
+<p>"Fix" may be a misnomer: the "broken" JSON in the notebook is not actually fixed -
+instead we compare the versions of the notebook that caused the conflict.</p>
+</div>
+<h2 id="databooks-assert"><code>databooks assert</code></h2>
+<p>In <code>databooks meta</code>, we remove unwanted metadata. But sometimes we may still want some
+metadata (such as cell tags), or more than that, we may want the metadata to have
+certain values. This is where <code>databooks assert</code> comes in. We can use this command to
+ensure that the metadata is present and has the desired values.</p>
+<p><code>databooks assert</code> is akin to (and inspired by) Python's <a href="https://docs.python.org/3/reference/simple_stmts.html#the-assert-statement"><code>assert</code></a>.
+Therefore, the user must pass a path and a string with the expression to be evaluated
+for each notebook.</p>
+<div class="highlight"><pre><span></span><code>databooks assert path/to/notebooks --expr <span class="s2">&quot;python expression to assert on notebooks&quot;</span>
+</code></pre></div>
+<p>This can be used, for example, to make sure that the notebook cells were executed in
+order. Or that we have <code>markdown</code> cells, or to set a maximum number of cells for each
+notebook.</p>
+<p>Evidently, there are some limitations to the expressions that a user can pass.</p>
+<p><strong>Variables in scope:</strong></p>
+<p>All the variables available for in your assert expressions are <a href="https://pydantic-docs.helpmanual.io/usage/models/">subclasses of Pydantic
+models</a>. Therefore, you can use these
+models as regular python objects (i.e.: to access the cell types, one could write
+<code>[cell.cell_type for cell in nb.cells]</code>). For convenience's sake, follows a list of
+currently supported variables that can be used in assert expressions:</p>
+<ul>
+<li><code>nb</code>: Jupyter notebook found in path</li>
+<li><code>raw_cells</code>: notebook "raw" cells</li>
+<li><code>md_cells</code>: notebook markdown cells</li>
+<li><code>code_cells</code>: notebook code cells</li>
+<li><code>exec_cells</code>: executed notebook code cells</li>
+</ul>
+<p><strong>Built-in functions:</strong></p>
+<!-- [[[cog
+import ast
+from pathlib import Path
+import cog
+
+SRC_FILE = Path("databooks/affirm.py")
+DOC_TEMPLATE = "- [`{func}`](https://docs.python.org/3/library/functions.html#{func})"
+
+ast_tree = ast.parse(SRC_FILE.read_text("utf-8"))
+allowed_builtins_node = next(
+    node
+    for node in ast.walk(ast_tree)
+    if isinstance(node, ast.Assign) and node.targets[0].id == "_ALLOWED_BUILTINS"
+)
+
+try:
+    allowed_builtins = [func.id for func in allowed_builtins_node.value.elts]
+except AttributeError:
+    raise ValueError("Could not find assignment of builtins.")
+
+cog.out("\n".join(DOC_TEMPLATE.format(func=func) for func in allowed_builtins))
+]]] -->
+<ul>
+<li><a href="https://docs.python.org/3/library/functions.html#all"><code>all</code></a></li>
+<li><a href="https://docs.python.org/3/library/functions.html#any"><code>any</code></a></li>
+<li><a href="https://docs.python.org/3/library/functions.html#enumerate"><code>enumerate</code></a></li>
+<li><a href="https://docs.python.org/3/library/functions.html#filter"><code>filter</code></a></li>
+<li><a href="https://docs.python.org/3/library/functions.html#getattr"><code>getattr</code></a></li>
+<li><a href="https://docs.python.org/3/library/functions.html#hasattr"><code>hasattr</code></a></li>
+<li><a href="https://docs.python.org/3/library/functions.html#len"><code>len</code></a></li>
+<li><a href="https://docs.python.org/3/library/functions.html#list"><code>list</code></a></li>
+<li><a href="https://docs.python.org/3/library/functions.html#range"><code>range</code></a></li>
+<li><a href="https://docs.python.org/3/library/functions.html#sorted"><code>sorted</code></a></li>
+</ul>
+<!-- [[[end]]] -->
+
+<p>These limitations are designed to allow anyone to use <code>databooks assert</code> safely. This is
+because we use built-in's <a href="https://docs.python.org/3/library/functions.html#eval"><code>eval</code></a>,
+and <a href="https://nedbatchelder.com/blog/201206/eval_really_is_dangerous.html"><code>eval</code> is really dangerous</a>.
+To mitigate that (and for your safety), we actually parse the string and only allow a
+couple of operations to happen. Check out our <a href="https://github.com/datarootsio/databooks/blob/main/tests/test_affirm.py">tests</a>
+to see what is and isn't allowed and see the <a href="https://github.com/datarootsio/databooks/blob/main/databooks/affirm.py">source</a>
+to see how that happens!</p>
+<p>It's also relevant to mention that to avoid repetitive typing you can configure the tool to
+omit the source string. An even more powerful method is to combine it with <a href="https://pre-commit.com/"><code>pre-commit</code></a>
+or CI/CD. Check out the rest of the "Usage" section for more info!</p>
+<h3 id="recipes">Recipes</h3>
+<p>It can be a bit repetitive and tedious to write out expressions to be asserted. Or
+even hard to think of how to express these assertions about notebooks. With that in mind,
+we also include "user recipes". These recipes store some useful expressions to be checked,
+to be used both as shorthand of other expressions and inspiration for you to come up
+with your own recipe! Feel free to submit a PR with your recipe or open an issue if
+you're having issues coming up with a recipe for your goal.</p>
+<!-- [[[cog
+import importlib.util
+from collections import namedtuple
+import cog
+
+spec = importlib.util.spec_from_file_location("databooks", "databooks/recipes.py")
+recipes = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(recipes)
+
+RecipeDoc = namedtuple("RecipeDoc", ["name", "src", "desc"])
+
+DOC_TEMPLATE = """#### `{recipe.name}`
+- **Description:** {recipe.desc}
+- **Source:** `{recipe.src}`
+"""
+
+recipe_names = [name for name in dir(recipes.CookBook) if not name.startswith("_")]
+recipe_infos = [getattr(recipes.CookBook, recipe) for recipe in recipe_names]
+recipe_docs = [
+    RecipeDoc(name=name.replace("_","-"), src=info.src, desc=info.description)
+    for name, info in zip(recipe_names, recipe_infos)
+]
+
+cog.out("\n".join(DOC_TEMPLATE.format(recipe=recipe) for recipe in recipe_docs))
+
+]]] -->
+<h4 id="has-tags"><code>has-tags</code></h4>
+<ul>
+<li><strong>Description:</strong> Assert that there is at least one cell with tags.</li>
+<li><strong>Source:</strong> <code>any(getattr(cell.metadata, 'tags', []) for cell in nb.cells)</code></li>
+</ul>
+<h4 id="has-tags-code"><code>has-tags-code</code></h4>
+<ul>
+<li><strong>Description:</strong> Assert that there is at least one code cell with tags.</li>
+<li><strong>Source:</strong> <code>any(getattr(cell.metadata, 'tags', []) for cell in code_cells)</code></li>
+</ul>
+<h4 id="max-cells"><code>max-cells</code></h4>
+<ul>
+<li><strong>Description:</strong> Assert that there are less than 64 cells in the notebook.</li>
+<li><strong>Source:</strong> <code>len(nb.cells) &lt; 64</code></li>
+</ul>
+<h4 id="no-empty-code"><code>no-empty-code</code></h4>
+<ul>
+<li><strong>Description:</strong> Assert that there are no empty code cells in the notebook.</li>
+<li><strong>Source:</strong> <code>all(cell.source for cell in code_cells)</code></li>
+</ul>
+<h4 id="seq-exec"><code>seq-exec</code></h4>
+<ul>
+<li><strong>Description:</strong> Assert that the executed code cells were executed sequentially (similar effect to when you 'restart kernel and run all cells').</li>
+<li><strong>Source:</strong> <code>[c.execution_count for c in exec_cells] == list(range(1, len(exec_cells) + 1))</code></li>
+</ul>
+<h4 id="seq-increase"><code>seq-increase</code></h4>
+<ul>
+<li><strong>Description:</strong> Assert that the executed code cells were executed in increasing order.</li>
+<li><strong>Source:</strong> <code>[c.execution_count for c in exec_cells] == sorted([c.execution_count for c in exec_cells])</code></li>
+</ul>
+<h4 id="startswith-md"><code>startswith-md</code></h4>
+<ul>
+<li><strong>Description:</strong> Assert that the first cell in notebook is a markdown cell.</li>
+<li><strong>Source:</strong> <code>nb.cells[0].cell_type == 'markdown'</code></li>
+</ul>
+<!-- [[[end]]] -->
+
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If your use case is more complex and cannot be translated into a single expression,
+you can always download <code>databooks</code> and use it as a part of your script!</p>
+</div>
+
+              
+            </article>
+          </div>
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            Back to top
+          </a>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../../license/" class="md-footer__link md-footer__link--prev" aria-label="Previous: License" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              License
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../cli/" class="md-footer__link md-footer__link--next" aria-label="Next: CLI" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              CLI
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Maintained by dataroots
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+      
+      
+    
+    <a href="https://github.com/datarootsio" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1zM480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2zm-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3zm-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1z"/></svg>
+    </a>
+  
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/company/dataroots/" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+    </a>
+  
+    
+    
+      
+      
+    
+    <a href="https://www.instagram.com/lifeatdataroots/" target="_blank" rel="noopener" title="www.instagram.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/></svg>
+    </a>
+  
+    
+    
+      
+      
+    
+    <a href="https://www.youtube.com/c/dataroots" target="_blank" rel="noopener" title="www.youtube.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"/></svg>
+    </a>
+  
+    
+    
+      
+      
+    
+    <a href="https://dataroots.io/" target="_blank" rel="noopener" title="dataroots.io" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M352 256c0 22.2-1.2 43.6-3.3 64H163.3c-2.1-20.4-4.2-41.8-4.2-64 0-22.2 2.1-43.6 4.2-64h185.4c2.1 20.4 3.3 41.8 3.3 64zm151.9-64c5.3 20.5 8.1 41.9 8.1 64s-2.8 43.5-8.1 64H380.8c2.1-20.6 3.2-42.9 3.2-64 0-22-1.1-43.4-3.2-64h123.1zm-10.5-32H376.7c-10-63.86-29.8-117.38-55.3-151.558C399.8 29.09 463.4 85.94 493.4 160zm-149.1 0H167.7c6.1-36.4 15.5-68.62 27-94.65 10.5-23.61 22.2-40.74 33.5-51.54C239.4 3.178 248.7 0 256 0c7.3 0 16.6 3.178 27.8 13.81 11.3 10.8 23 27.93 33.5 51.54 11.5 26.03 20.9 58.25 27 94.65zm-325.69 0C48.59 85.94 112.2 29.09 190.6 8.442 165.1 42.62 145.3 96.14 135.3 160H18.61zm112.59 32c-2.1 20.6-4.1 42-4.1 64 0 21.1 2 43.4 4.1 64H8.065C2.8 299.5 0 278.1 0 256s2.8-43.5 8.065-64H131.2zm63.5 254.6c-11.5-26-20.9-58.2-27-94.6h176.6c-6.1 36.4-15.5 68.6-27 94.6-10.5 23.7-22.2 40.8-33.5 51.6-11.2 10.6-20.5 13.8-28.7 13.8-6.4 0-15.7-3.2-26.9-13.8-11.3-10.8-23-27.9-33.5-51.6zm-4.1 57C112.2 482.9 48.59 426.1 18.61 352H135.3c10 63.9 29.8 117.4 55.3 151.6zm130.8 0c25.5-34.2 45.3-87.7 55.3-151.6h116.7c-30 74.1-93.6 130.9-172 151.6z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top"], "search": "../../assets/javascripts/workers/search.2a1c317c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.6e54b5cd.min.js"></script>
+      
+    
+  </body>
+</html>
