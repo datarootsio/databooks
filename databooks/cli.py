@@ -21,6 +21,7 @@ from databooks.conflicts import conflicts2nbs, path2conflicts
 from databooks.logging import get_logger
 from databooks.metadata import clear_all
 from databooks.recipes import Recipe
+from databooks.tui import print_nbs
 from databooks.version import __version__
 
 logger = get_logger(__file__)
@@ -74,6 +75,7 @@ def _config_callback(ctx: Context, config_path: Optional[Path]) -> Optional[Path
 
 
 def _check_paths(paths: List[Path], ignore: List[str]) -> List[Path]:
+    """Check that notebooks exist retrieve the file paths."""
     if any(path.suffix not in ("", ".ipynb") for path in paths):
         raise BadParameter(
             "Expected either notebook files, a directory or glob expression."
@@ -349,6 +351,41 @@ def fix(
             progress_callback=lambda: progress.update(conflicts, advance=1),
         )
     logger.info(f"Resolved the conflicts of {len(conflict_files)}!")
+
+
+@app.command(add_help_option=False)
+def show(
+    paths: List[Path] = Argument(
+        ..., is_eager=True, help="Path(s) of notebook files with conflicts"
+    ),
+    ignore: List[str] = Option(["!*"], help="Glob expression(s) of files to ignore"),
+    verbose: bool = Option(False, help="Increase verbosity for debugging"),
+    multiple: bool = Option(False, "--yes", "-y", help="Show multiple files"),
+    config: Optional[Path] = Option(
+        None,
+        "--config",
+        "-c",
+        is_eager=True,
+        callback=_config_callback,
+        resolve_path=True,
+        exists=True,
+        help="Get CLI options from configuration file",
+    ),
+    help: Optional[bool] = Option(
+        None,
+        "--help",
+        is_eager=True,
+        callback=_help_callback,
+        help="Show this message and exit",
+    ),
+) -> None:
+    """Show rich representation of notebook."""
+    nb_paths = _check_paths(paths=paths, ignore=ignore)
+    if len(nb_paths) > 1 and not multiple:
+        if not Confirm.ask(f"Show {len(nb_paths)} notebooks?"):
+            raise Exit()
+
+    print_nbs(nb_paths)
 
 
 @app.command()

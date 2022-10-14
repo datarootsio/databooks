@@ -6,152 +6,17 @@ from copy import deepcopy
 from difflib import SequenceMatcher
 from itertools import chain
 from pathlib import Path
-from typing import (
-    Any,
-    Callable,
-    Dict,
-    Generator,
-    Iterable,
-    List,
-    Optional,
-    Sequence,
-    Tuple,
-    TypeVar,
-    Union,
-)
+from typing import Any, Callable, Generator, List, Optional, Sequence, Tuple, TypeVar
 
-from pydantic import Extra, PositiveInt, root_validator, validate_model, validator
+from pydantic import Extra, validate_model
 from pydantic.generics import GenericModel
+from rich.console import Console, ConsoleOptions, RenderResult
 
 from databooks.data_models.base import BaseCells, DatabooksBase
+from databooks.data_models.cell import Cell, CellMetadata
 from databooks.logging import get_logger
 
 logger = get_logger(__file__)
-
-
-class NotebookMetadata(DatabooksBase):
-    """Notebook metadata. Empty by default but can accept extra fields."""
-
-
-class CellMetadata(DatabooksBase):
-    """Cell metadata. Empty by default but can accept extra fields."""
-
-
-class Cell(DatabooksBase):
-    """
-    Jupyter notebook cells.
-
-    Fields `outputs` and `execution_count` are not included since they should only be
-     present in code cells - thus are treated as extra fields.
-    """
-
-    metadata: CellMetadata
-    source: Union[List[str], str]
-    cell_type: str
-
-    def __hash__(self) -> int:
-        """Cells must be hashable for `difflib.SequenceMatcher`."""
-        return hash(
-            (type(self),) + tuple(v) if isinstance(v, list) else v
-            for v in self.__dict__.values()
-        )
-
-    def remove_fields(
-        self, fields: Iterable[str] = (), missing_ok: bool = True, **kwargs: Any
-    ) -> None:
-        """
-        Remove Cell fields.
-
-        Similar to `databooks.data_models.base.remove_fields`, but will ignore required
-         fields for `databooks.data_models.notebook.Cell`.
-        """
-        # Ignore required `Cell` fields
-        cell_fields = self.__fields__  # required fields especified in class definition
-        if any(field in fields for field in cell_fields):
-            logger.debug(
-                "Ignoring removal of required fields "
-                + str([f for f in fields if f in cell_fields])
-                + f" in `{type(self).__name__}`."
-            )
-            fields = [f for f in fields if f not in cell_fields]
-
-        super(Cell, self).remove_fields(fields, missing_ok=missing_ok)
-
-        if self.cell_type == "code":
-            self.outputs: List[Dict[str, Any]] = (
-                [] if "outputs" not in dict(self) else self.outputs
-            )
-            self.execution_count: Optional[PositiveInt] = (
-                None if "execution_count" not in dict(self) else self.execution_count
-            )
-
-    def clear_fields(
-        self,
-        *,
-        cell_metadata_keep: Sequence[str] = None,
-        cell_metadata_remove: Sequence[str] = None,
-        cell_remove_fields: Sequence[str] = (),
-    ) -> None:
-        """
-        Clear cell metadata, execution count, outputs or other desired fields (id, ...).
-
-        You can also specify metadata to keep or remove from the `metadata` property of
-         `databooks.data_models.notebook.Cell`.
-        :param cell_metadata_keep: Metadata values to keep - simply pass an empty
-         sequence (i.e.: `()`) to remove all extra fields.
-        :param cell_metadata_remove: Metadata values to remove
-        :param cell_remove_fields: Fields to remove from cell
-        :return:
-        """
-        nargs = sum((cell_metadata_keep is not None, cell_metadata_remove is not None))
-        if nargs != 1:
-            raise ValueError(
-                "Exactly one of `cell_metadata_keep` or `cell_metadata_remove` must"
-                f" be passed, got {nargs} arguments."
-            )
-
-        if cell_metadata_keep is not None:
-            cell_metadata_remove = tuple(
-                field for field, _ in self.metadata if field not in cell_metadata_keep
-            )
-        self.metadata.remove_fields(cell_metadata_remove)  # type: ignore
-
-        self.remove_fields(fields=cell_remove_fields, missing_ok=True)
-
-    @validator("cell_type")
-    def cell_has_valid_type(cls, v: str) -> str:
-        """Check if cell has one of the three predefined types."""
-        valid_cell_types = ("raw", "markdown", "code")
-        if v not in valid_cell_types:
-            raise ValueError(f"Invalid cell type. Must be one of {valid_cell_types}")
-        return v
-
-    @root_validator
-    def code_cell_has_valid_outputs(cls, values: Dict[str, Any]) -> Dict[str, Any]:
-        """Check that code cells have list-type outputs."""
-        if values.get("cell_type") == "code" and "outputs" not in values:
-            raise ValueError(
-                f"All code cells must have an `outputs` property, got {values}"
-            )
-            if not isinstance(values["outputs"], list):
-                raise ValueError(
-                    f"Cell outputs must be a list, got {type(values['outputs'])}"
-                )
-        return values
-
-    @root_validator
-    def only_code_cells_have_outputs_and_execution_count(
-        cls, values: Dict[str, Any]
-    ) -> Dict[str, Any]:
-        """Check that only code cells have outputs and execution count."""
-        if values.get("cell_type") != "code" and (
-            ("outputs" in values) or ("execution_count" in values)
-        ):
-            raise ValueError(
-                "Found `outputs` or `execution_count` for cell of type"
-                f" `{values['cell_type']}`"
-            )
-        return values
 
 
 T = TypeVar("T", Cell, Tuple[List[Cell], List[Cell]])
@@ -160,7 +25,7 @@ T = TypeVar("T", Cell, Tuple[List[Cell], List[Cell]])
 class Cells(GenericModel, BaseCells[T]):
     """Similar to `list`, with `-` operator using `difflib.SequenceMatcher`."""
 
-    __root__: Sequence[T] = []
+    __root__: Sequence[T] = ()
 
     def __init__(self, elements: Sequence[T] = ()) -> None:
         """Allow passing data as a positional argument when instantiating class."""
@@ -208,6 +73,13 @@ class Cells(GenericModel, BaseCells[T]):
                 for _, i1, j1, i2, j2 in chain.from_iterable(diff_opcodes)
             ]
         )
+
+    def __rich_console__(
+        self, console: Console, options: ConsoleOptions
+    ) -> RenderResult:
+        """Rich display of all cells in notebook."""
+        # TODO: implement printing for diffs - ignore mypy errors for now
+        yield from self.data  # type: ignore
 
     @classmethod
     def __get_validators__(cls) -> Generator[Callable[..., Any], None, None]:
@@ -294,6 +166,10 @@ class Cells(GenericModel, BaseCells[T]):
         )
 
 
+class NotebookMetadata(DatabooksBase):
+    """Notebook metadata. Empty by default but can accept extra fields."""
+
+
 class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
     """Jupyter notebook. Extra fields yield invalid notebook."""
 
@@ -301,6 +177,12 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
     nbformat_minor: int
     metadata: NotebookMetadata
     cells: Cells[Cell]
+
+    def __rich_console__(
+        self, console: Console, options: ConsoleOptions
+    ) -> RenderResult:
+        """Rich display notebook."""
+        yield self.cells
 
     @classmethod
     def parse_file(cls, path: Path | str, **parse_kwargs: Any) -> JupyterNotebook:

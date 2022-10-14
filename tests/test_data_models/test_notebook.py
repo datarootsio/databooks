@@ -1,4 +1,5 @@
 """Test data models for notebook components."""
+import json
 import logging
 from copy import deepcopy
 from importlib import resources
@@ -6,14 +7,10 @@ from typing import List, Tuple
 
 import pytest
 from _pytest.logging import LogCaptureFixture
+from py._path.local import LocalPath
 
-from databooks.data_models.notebook import (
-    Cell,
-    CellMetadata,
-    Cells,
-    JupyterNotebook,
-    NotebookMetadata,
-)
+from databooks.data_models.cell import Cell, CellMetadata, CellOutputs
+from databooks.data_models.notebook import Cells, JupyterNotebook, NotebookMetadata
 
 
 class TestNotebookMetadata:
@@ -171,7 +168,9 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
 
         assert all(cell.metadata == CellMetadata() for cell in notebook.cells)
         assert all(
-            cell.outputs == [] for cell in notebook.cells if cell.cell_type == "code"
+            cell.outputs == CellOutputs(__root__=[])
+            for cell in notebook.cells
+            if cell.cell_type == "code"
         )
         assert all(
             cell.execution_count is None
@@ -332,5 +331,24 @@ def test_parse_file() -> None:
                 execution_count=4,
                 id="53cd4d06-b52e-4fbb-9ae1-d55babe2f3a2",
             ),
+            Cell(
+                metadata=CellMetadata(),
+                source=["This is a raw cell! 🚀"],
+                cell_type="raw",
+                id="b2cf154d-0d1d-44d1-9ab8-7ee4b3d37f12",
+            ),
         ]
     )
+
+
+def test_write_file(tmpdir: LocalPath) -> None:
+    """Check that serialization and deserialization are valid."""
+    write_path = tmpdir / "serialized_demo.ipynb"
+    with resources.path("tests.files", "demo.ipynb") as nb_path:
+        notebook = JupyterNotebook.parse_file(nb_path)
+        in_json_str = nb_path.read_text(encoding="utf-8")
+
+    notebook.write(write_path)
+    out_json_str = write_path.read_text(encoding="utf-8")
+    assert json.loads(in_json_str) == json.loads(out_json_str)
+    assert in_json_str != out_json_str
