@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Union
 
-from pydantic import PositiveInt, root_validator, validate_model, validator
+from pydantic import PositiveInt, validator
 from rich.console import Console, ConsoleOptions, ConsoleRenderable, RenderResult
 from rich.markdown import Markdown
 from rich.panel import Panel
@@ -38,17 +38,6 @@ class CellBase(DatabooksBase):
             (type(self),) + tuple(v) if isinstance(v, list) else v
             for v in self.__dict__.values()
         )
-
-    def __rich_console__(
-        self, console: Console, options: ConsoleOptions
-    ) -> RenderResult:
-        """Rich display of cell."""
-        _, _, validation_error = validate_model(self.__class__, self.dict())
-        if validation_error:
-            raise validation_error
-        cell_map = {"code": CodeCell, "markdown": MarkdownCell, "raw": RawCell}
-        cell = cell_map[self.cell_type]
-        yield cell(**self.dict())
 
     def remove_fields(
         self, fields: Iterable[str] = (), missing_ok: bool = True, **kwargs: Any
@@ -113,45 +102,6 @@ class CellBase(DatabooksBase):
         self.metadata.remove_fields(cell_metadata_remove)  # type: ignore
 
         self.remove_fields(fields=cell_remove_fields, missing_ok=True)
-
-    @validator("cell_type")
-    def cell_has_valid_type(cls, v: str) -> str:
-        """Check if cell has one of the three predefined types."""
-        valid_cell_types = ("raw", "markdown", "code")
-        if v not in valid_cell_types:
-            raise ValueError(f"Invalid cell type. Must be one of {valid_cell_types}")
-        return v
-
-    @root_validator
-    def code_cell_has_outputs(cls, values: Dict[str, Any]) -> Dict[str, Any]:
-        """Check that code cells have outputs."""
-        if values.get("cell_type") == "code" and "outputs" not in values:
-            raise ValueError(
-                f"All code cells must have an `outputs` property, got {values}"
-            )
-        return values
-
-    @root_validator
-    def outputs_are_valid(cls, values: Dict[str, Any]) -> Dict[str, Any]:
-        """Check and parse that cell outputs are valid."""
-        outputs = values.get("outputs")
-        if outputs is not None:
-            values["outputs"] = CellOutputs(__root__=outputs)
-        return values
-
-    @root_validator
-    def only_code_cells_have_outputs_and_execution_count(
-        cls, values: Dict[str, Any]
-    ) -> Dict[str, Any]:
-        """Check that only code cells have outputs and execution count."""
-        if values.get("cell_type") != "code" and (
-            ("outputs" in values) or ("execution_count" in values)
-        ):
-            raise ValueError(
-                "Found `outputs` or `execution_count` for cell of type"
-                f" `{values['cell_type']}`"
-            )
-        return values
 
 
 class CellStreamOutput(DatabooksBase):
@@ -300,6 +250,7 @@ class CodeCell(CellBase):
     """Cell of type `code` - defined for rich displaying in terminal."""
 
     outputs: CellOutputs
+    cell_type: str = "code"
 
     def __rich_console__(
         self, console: Console, options: ConsoleOptions
@@ -314,11 +265,6 @@ class CodeCell(CellBase):
         )
         yield self.outputs
 
-    @validator("outputs")
-    def get_attr_from_dunder_root(cls, v: CellOutputs) -> List[CellOutputType]:
-        """Extract the list values from the __root__ attribute of `CellOutputs`."""
-        return v.__root__
-
     @validator("cell_type")
     def cell_has_code_type(cls, v: str) -> str:
         """Extract the list values from the __root__ attribute of `CellOutputs`."""
@@ -329,6 +275,8 @@ class CodeCell(CellBase):
 
 class MarkdownCell(CellBase):
     """Cell of type `markdown` - defined for rich displaying in terminal."""
+
+    cell_type: str = "markdown"
 
     def __rich_console__(
         self, console: Console, options: ConsoleOptions
@@ -346,6 +294,8 @@ class MarkdownCell(CellBase):
 
 class RawCell(CellBase):
     """Cell of type `raw` - defined for rich displaying in terminal."""
+
+    cell_type: str = "raw"
 
     def __rich_console__(
         self, console: Console, options: ConsoleOptions
