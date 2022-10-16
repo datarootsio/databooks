@@ -26,11 +26,11 @@ from databooks.data_models.base import BaseCells, DatabooksBase
 from databooks.data_models.cell import CellMetadata, CodeCell, MarkdownCell, RawCell
 from databooks.logging import get_logger
 
-CellBase = Union[CodeCell, RawCell, MarkdownCell]
+Cell = Union[CodeCell, RawCell, MarkdownCell]
 logger = get_logger(__file__)
 
 
-T = TypeVar("T", CellBase, Tuple[List[CellBase], List[CellBase]])
+T = TypeVar("T", Cell, Tuple[List[Cell], List[Cell]])
 
 
 class Cells(GenericModel, BaseCells[T]):
@@ -52,8 +52,8 @@ class Cells(GenericModel, BaseCells[T]):
         return (el for el in self.data)
 
     def __sub__(
-        self: Cells[CellBase], other: Cells[CellBase]
-    ) -> Cells[Tuple[List[CellBase], List[CellBase]]]:
+        self: Cells[Cell], other: Cells[Cell]
+    ) -> Cells[Tuple[List[Cell], List[Cell]]]:
         """Return the difference using `difflib.SequenceMatcher`."""
         if type(self) != type(other):
             raise TypeError(
@@ -77,7 +77,7 @@ class Cells(GenericModel, BaseCells[T]):
                 f" {n_context} for {len(self)} and {len(other)} cells in"
                 " notebooks."
             )
-        return Cells[Tuple[List[CellBase], List[CellBase]]](
+        return Cells[Tuple[List[Cell], List[Cell]]](
             [
                 # https://github.com/python/mypy/issues/9459
                 tuple((self.data[i1:j1], other.data[i2:j2]))  # type: ignore
@@ -107,11 +107,11 @@ class Cells(GenericModel, BaseCells[T]):
 
     @staticmethod
     def wrap_git(
-        first_cells: List[CellBase],
-        last_cells: List[CellBase],
+        first_cells: List[Cell],
+        last_cells: List[Cell],
         hash_first: Optional[str] = None,
         hash_last: Optional[str] = None,
-    ) -> Sequence[CellBase]:
+    ) -> Sequence[Cell]:
         """Wrap git-diff cells in existing notebook."""
         return [
             MarkdownCell(
@@ -134,13 +134,13 @@ class Cells(GenericModel, BaseCells[T]):
         ]
 
     def resolve(
-        self: Cells[Tuple[List[CellBase], List[CellBase]]],
+        self: Cells[Tuple[List[Cell], List[Cell]]],
         *,
         keep_first_cells: Optional[bool] = None,
         first_id: Optional[str] = None,
         last_id: Optional[str] = None,
         **kwargs: Any,
-    ) -> List[CellBase]:
+    ) -> List[Cell]:
         """
         Resolve differences between `databooks.data_models.notebook.Cells`.
 
@@ -181,7 +181,7 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
     nbformat: int
     nbformat_minor: int
     metadata: NotebookMetadata
-    cells: Cells[CellBase]
+    cells: Cells[Cell]
 
     def __rich_console__(
         self, console: Console, options: ConsoleOptions

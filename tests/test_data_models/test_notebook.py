@@ -18,7 +18,7 @@ from databooks.data_models.cell import (
     RawCell,
 )
 from databooks.data_models.notebook import (
-    CellBase,
+    Cell,
     Cells,
     JupyterNotebook,
     NotebookMetadata,
@@ -131,13 +131,13 @@ class TestCell:
 
     def test_cells_sub(self) -> None:
         """Get the diff from different `Cells`."""
-        dl1 = Cells[CellBase]([self.cell])
-        dl2 = Cells[CellBase]([self.cell] * 2)
+        dl1 = Cells[Cell]([self.cell])
+        dl2 = Cells[Cell]([self.cell] * 2)
 
         diff = dl1 - dl2
 
-        assert type(dl1) == type(dl2) == Cells[CellBase]
-        assert type(diff) == Cells[Tuple[List[CellBase], List[CellBase]]]
+        assert type(dl1) == type(dl2) == Cells[Cell]
+        assert type(diff) == Cells[Tuple[List[Cell], List[Cell]]]
         assert diff == Cells(  # type: ignore
             [([self.cell], [self.cell]), ([], [self.cell])]
         )

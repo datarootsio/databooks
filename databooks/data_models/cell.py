@@ -57,7 +57,7 @@ class CellBase(DatabooksBase):
         Remove cell fields.
 
         Similar to `databooks.data_models.base.remove_fields`, but will ignore required
-         fields for `databooks.data_models.notebook.CellBase`.
+         fields for cell type.
         """
         # Ignore required `CellBase` fields
         cell_fields = self.__fields__  # required fields especified in class definition
@@ -92,7 +92,7 @@ class CellBase(DatabooksBase):
         Clear cell metadata, execution count, outputs or other desired fields (id, ...).
 
         You can also specify metadata to keep or remove from the `metadata` property of
-         `databooks.data_models.notebook.CellBase`.
+         `databooks.data_models.cell.CellBase`.
         :param cell_metadata_keep: Metadata values to keep - simply pass an empty
          sequence (i.e.: `()`) to remove all extra fields.
         :param cell_metadata_remove: Metadata values to remove
