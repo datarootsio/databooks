@@ -26,10 +26,10 @@ from databooks.data_models.base import BaseCells, DatabooksBase
 from databooks.data_models.cell import CellMetadata, CodeCell, MarkdownCell, RawCell
 from databooks.logging import get_logger
 
-Cell = Union[CodeCell, RawCell, MarkdownCell]
 logger = get_logger(__file__)
 
 
+Cell = Union[CodeCell, RawCell, MarkdownCell]
 T = TypeVar("T", Cell, Tuple[List[Cell], List[Cell]])
 
 
