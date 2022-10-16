@@ -187,6 +187,10 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
         self, console: Console, options: ConsoleOptions
     ) -> RenderResult:
         """Rich display notebook."""
+        nb_lang = self.metadata.dict().get("kernelspec", {}).get("language", "text")
+        for cell in self.cells:
+            if isinstance(cell, CodeCell):
+                cell.metadata = CellMetadata(**cell.metadata.dict(), lang=nb_lang)
         yield self.cells
 
     @classmethod

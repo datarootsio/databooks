@@ -309,7 +309,7 @@ class CodeCell(CellBase):
         yield Panel(
             Syntax(
                 "".join(self.source) if isinstance(self.source, list) else self.source,
-                "python",
+                getattr(self.metadata, "lang", "text"),
             )
         )
         yield self.outputs
