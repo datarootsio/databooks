@@ -3,7 +3,7 @@ from pathlib import Path
 from py._path.local import LocalPath
 
 from databooks.conflicts import path2conflicts
-from databooks.data_models.cell import Cell, CellMetadata
+from databooks.data_models.cell import CellBase, CellMetadata
 from databooks.data_models.notebook import NotebookMetadata
 from tests.test_data_models.test_notebook import TestJupyterNotebook
 from tests.test_git_utils import ConflictFile, init_repo_conflicts
@@ -21,7 +21,7 @@ def test_path2diff(tmpdir: LocalPath) -> None:
         field_to_remove=["Field to remove"],
         another_field_to_remove="another field",
     )
-    extra_cell = Cell(
+    extra_cell = CellBase(
         cell_type="raw",
         metadata=CellMetadata(random_meta=["meta"]),
         source="extra",

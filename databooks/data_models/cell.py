@@ -20,7 +20,7 @@ class CellMetadata(DatabooksBase):
     """Cell metadata. Empty by default but can accept extra fields."""
 
 
-class Cell(DatabooksBase):
+class CellBase(DatabooksBase):
     """
     Jupyter notebook cells.
 
@@ -54,12 +54,12 @@ class Cell(DatabooksBase):
         self, fields: Iterable[str] = (), missing_ok: bool = True, **kwargs: Any
     ) -> None:
         """
-        Remove Cell fields.
+        Remove cell fields.
 
         Similar to `databooks.data_models.base.remove_fields`, but will ignore required
-         fields for `databooks.data_models.notebook.Cell`.
+         fields for `databooks.data_models.notebook.CellBase`.
         """
-        # Ignore required `Cell` fields
+        # Ignore required `CellBase` fields
         cell_fields = self.__fields__  # required fields especified in class definition
         if any(field in fields for field in cell_fields):
             logger.debug(
@@ -69,7 +69,7 @@ class Cell(DatabooksBase):
             )
             fields = [f for f in fields if f not in cell_fields]
 
-        super(Cell, self).remove_fields(fields, missing_ok=missing_ok)
+        super(CellBase, self).remove_fields(fields, missing_ok=missing_ok)
 
         if self.cell_type == "code":
             self.outputs: CellOutputs = (
@@ -92,7 +92,7 @@ class Cell(DatabooksBase):
         Clear cell metadata, execution count, outputs or other desired fields (id, ...).
 
         You can also specify metadata to keep or remove from the `metadata` property of
-         `databooks.data_models.notebook.Cell`.
+         `databooks.data_models.notebook.CellBase`.
         :param cell_metadata_keep: Metadata values to keep - simply pass an empty
          sequence (i.e.: `()`) to remove all extra fields.
         :param cell_metadata_remove: Metadata values to remove
@@ -296,7 +296,7 @@ class CellOutputs(DatabooksBase):
         return self.__root__
 
 
-class CodeCell(Cell):
+class CodeCell(CellBase):
     """Cell of type `code` - defined for rich displaying in terminal."""
 
     outputs: CellOutputs
@@ -323,11 +323,11 @@ class CodeCell(Cell):
     def cell_has_code_type(cls, v: str) -> str:
         """Extract the list values from the __root__ attribute of `CellOutputs`."""
         if v != "code":
-            raise ValueError(f"Expected code of type `code`, got {v}.")
+            raise ValueError(f"Expected code of type `code`, got `{v}`.")
         return v
 
 
-class MarkdownCell(Cell):
+class MarkdownCell(CellBase):
     """Cell of type `markdown` - defined for rich displaying in terminal."""
 
     def __rich_console__(
@@ -344,7 +344,7 @@ class MarkdownCell(Cell):
         return v
 
 
-class RawCell(Cell):
+class RawCell(CellBase):
     """Cell of type `raw` - defined for rich displaying in terminal."""
 
     def __rich_console__(

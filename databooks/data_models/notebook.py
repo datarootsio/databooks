@@ -6,20 +6,31 @@ from copy import deepcopy
 from difflib import SequenceMatcher
 from itertools import chain
 from pathlib import Path
-from typing import Any, Callable, Generator, List, Optional, Sequence, Tuple, TypeVar
+from typing import (
+    Any,
+    Callable,
+    Generator,
+    List,
+    Optional,
+    Sequence,
+    Tuple,
+    TypeVar,
+    Union,
+)
 
 from pydantic import Extra, validate_model
 from pydantic.generics import GenericModel
 from rich.console import Console, ConsoleOptions, RenderResult
 
 from databooks.data_models.base import BaseCells, DatabooksBase
-from databooks.data_models.cell import Cell, CellMetadata
+from databooks.data_models.cell import CellMetadata, CodeCell, MarkdownCell, RawCell
 from databooks.logging import get_logger
 
+CellBase = Union[CodeCell, RawCell, MarkdownCell]
 logger = get_logger(__file__)
 
 
-T = TypeVar("T", Cell, Tuple[List[Cell], List[Cell]])
+T = TypeVar("T", CellBase, Tuple[List[CellBase], List[CellBase]])
 
 
 class Cells(GenericModel, BaseCells[T]):
@@ -41,8 +52,8 @@ class Cells(GenericModel, BaseCells[T]):
         return (el for el in self.data)
 
     def __sub__(
-        self: Cells[Cell], other: Cells[Cell]
-    ) -> Cells[Tuple[List[Cell], List[Cell]]]:
+        self: Cells[CellBase], other: Cells[CellBase]
+    ) -> Cells[Tuple[List[CellBase], List[CellBase]]]:
         """Return the difference using `difflib.SequenceMatcher`."""
         if type(self) != type(other):
             raise TypeError(
@@ -66,7 +77,7 @@ class Cells(GenericModel, BaseCells[T]):
                 f" {n_context} for {len(self)} and {len(other)} cells in"
                 " notebooks."
             )
-        return Cells[Tuple[List[Cell], List[Cell]]](
+        return Cells[Tuple[List[CellBase], List[CellBase]]](
             [
                 # https://github.com/python/mypy/issues/9459
                 tuple((self.data[i1:j1], other.data[i2:j2]))  # type: ignore
@@ -96,46 +107,40 @@ class Cells(GenericModel, BaseCells[T]):
 
     @staticmethod
     def wrap_git(
-        first_cells: List[Cell],
-        last_cells: List[Cell],
+        first_cells: List[CellBase],
+        last_cells: List[CellBase],
         hash_first: Optional[str] = None,
         hash_last: Optional[str] = None,
-    ) -> List[Cell]:
+    ) -> Sequence[CellBase]:
         """Wrap git-diff cells in existing notebook."""
-        return (
-            [
-                Cell(
-                    metadata=CellMetadata(git_hash=hash_first),
-                    source=[f"`<<<<<<< {hash_first}`"],
-                    cell_type="markdown",
-                )
-            ]
-            + first_cells
-            + [
-                Cell(
-                    source=["`=======`"],
-                    cell_type="markdown",
-                    metadata=CellMetadata(),
-                )
-            ]
-            + last_cells
-            + [
-                Cell(
-                    metadata=CellMetadata(git_hash=hash_last),
-                    source=[f"`>>>>>>> {hash_last}`"],
-                    cell_type="markdown",
-                )
-            ]
-        )
+        return [
+            MarkdownCell(
+                metadata=CellMetadata(git_hash=hash_first),
+                source=[f"`<<<<<<< {hash_first}`"],
+                cell_type="markdown",
+            ),
+            *first_cells,
+            MarkdownCell(
+                source=["`=======`"],
+                cell_type="markdown",
+                metadata=CellMetadata(),
+            ),
+            *last_cells,
+            MarkdownCell(
+                metadata=CellMetadata(git_hash=hash_last),
+                source=[f"`>>>>>>> {hash_last}`"],
+                cell_type="markdown",
+            ),
+        ]
 
     def resolve(
-        self: Cells[Tuple[List[Cell], List[Cell]]],
+        self: Cells[Tuple[List[CellBase], List[CellBase]]],
         *,
         keep_first_cells: Optional[bool] = None,
         first_id: Optional[str] = None,
         last_id: Optional[str] = None,
         **kwargs: Any,
-    ) -> List[Cell]:
+    ) -> List[CellBase]:
         """
         Resolve differences between `databooks.data_models.notebook.Cells`.
 
@@ -176,7 +181,7 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
     nbformat: int
     nbformat_minor: int
     metadata: NotebookMetadata
-    cells: Cells[Cell]
+    cells: Cells[CellBase]
 
     def __rich_console__(
         self, console: Console, options: ConsoleOptions
@@ -227,7 +232,7 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
          sequence (i.e.: `()`) to remove all extra fields.
         :param notebook_metadata_remove: Metadata values to remove
         :param cell_kwargs: keyword arguments to be passed to each cell's
-         `databooks.data_models.Cell.clear_metadata`
+         `databooks.data_models.cell.CellBase.clear_metadata`
         :return:
         """
         nargs = sum(
