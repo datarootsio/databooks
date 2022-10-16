@@ -111,11 +111,11 @@ class CellStreamOutput(DatabooksBase):
     name: str
     text: List[str]
 
-    def __rich_console__(
-        self, console: Console, options: ConsoleOptions
-    ) -> RenderResult:
+    def __rich__(
+        self,
+    ) -> ConsoleRenderable:
         """Rich display of cell stream outputs."""
-        yield Text("".join(self.text))
+        return Text("".join(self.text))
 
     @validator("output_type")
     def output_type_must_be_stream(cls, v: str) -> str:
@@ -208,11 +208,11 @@ class CellErrorOutput(DatabooksBase):
     evalue: str
     traceback: List[str]
 
-    def __rich_console__(
-        self, console: Console, options: ConsoleOptions
-    ) -> RenderResult:
+    def __rich__(
+        self,
+    ) -> ConsoleRenderable:
         """Rich display of error outputs."""
-        yield Text.from_ansi("\n".join(self.traceback))
+        return Text.from_ansi("\n".join(self.traceback))
 
     @validator("output_type")
     def output_type_must_match(cls, v: str) -> str:
@@ -278,11 +278,11 @@ class MarkdownCell(CellBase):
 
     cell_type: str = "markdown"
 
-    def __rich_console__(
-        self, console: Console, options: ConsoleOptions
-    ) -> RenderResult:
+    def __rich__(
+        self,
+    ) -> ConsoleRenderable:
         """Rich display of markdown cells."""
-        yield Panel(Markdown("".join(self.source)))
+        return Panel(Markdown("".join(self.source)))
 
     @validator("cell_type")
     def cell_has_md_type(cls, v: str) -> str:
@@ -297,11 +297,11 @@ class RawCell(CellBase):
 
     cell_type: str = "raw"
 
-    def __rich_console__(
-        self, console: Console, options: ConsoleOptions
-    ) -> RenderResult:
+    def __rich__(
+        self,
+    ) -> ConsoleRenderable:
         """Rich display of raw cells."""
-        yield Panel(Text("".join(self.source)))
+        return Panel(Text("".join(self.source)))
 
     @validator("cell_type")
     def cell_has_md_type(cls, v: str) -> str:

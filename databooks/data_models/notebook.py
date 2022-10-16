@@ -183,15 +183,13 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
     metadata: NotebookMetadata
     cells: Cells[Cell]
 
-    def __rich_console__(
-        self, console: Console, options: ConsoleOptions
-    ) -> RenderResult:
+    def __rich__(self) -> RenderResult:
         """Rich display notebook."""
         nb_lang = self.metadata.dict().get("kernelspec", {}).get("language", "text")
         for cell in self.cells:
             if isinstance(cell, CodeCell):
                 cell.metadata = CellMetadata(**cell.metadata.dict(), lang=nb_lang)
-        yield self.cells
+        return self.cells
 
     @classmethod
     def parse_file(cls, path: Path | str, **parse_kwargs: Any) -> JupyterNotebook:
