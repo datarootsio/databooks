@@ -24,7 +24,7 @@ from pydantic import Extra, validate_model
 from pydantic.generics import GenericModel
 from rich import box
 from rich.columns import Columns
-from rich.console import Console, ConsoleOptions, RenderableType, RenderResult
+from rich.console import Console, ConsoleOptions, Group, RenderableType, RenderResult
 from rich.panel import Panel
 from rich.text import Text
 
@@ -125,9 +125,9 @@ class Cells(GenericModel, BaseCells[T]):
     ) -> Sequence[Columns]:
         """Wrap the first and second cells into colunmns for iterable."""
         _empty = [Panel(Text("<None>", justify="center"), box=box.SIMPLE)]
-        _first = cast(List[RenderableType], first_cells or _empty)
-        _last = cast(List[RenderableType], last_cells or _empty)
-        return [Columns(_first + _last, **cols_kwargs)]
+        _first = Group(*first_cells or _empty)
+        _last = Group(*last_cells or _empty)
+        return [Columns([_first, _last], **cols_kwargs)]
 
     @staticmethod
     def wrap_git(
