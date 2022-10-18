@@ -218,14 +218,17 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
 
         kernelspec = self.metadata.dict().get("kernelspec", {})
         if isinstance(kernelspec, tuple):  # check if this is a `DiffCells`
-            first, last = (ks.get("language", "text") for ks in kernelspec)
-            nb_lang = first if first == last else "text"
+            lang_first, lang_last = (ks.get("language", "text") for ks in kernelspec)
+            nb_lang = lang_first if lang_first == lang_last else "text"
             if any("display_name" in ks.keys() for ks in kernelspec):
+                kernel_first, kernel_last = [
+                    _rich(ks["display_name"]) for ks in kernelspec
+                ]
                 yield Columns(
-                    [_rich(ks["display_name"]) for ks in kernelspec],
-                    expand=False,
+                    [kernel_first, kernel_last],
+                    expand=True,
                     width=options.max_width // 3,
-                )
+                ) if kernel_first != kernel_last else kernel_first
         else:
             nb_lang = kernelspec.get("language", "text")
             if "display_name" in kernelspec.keys():
