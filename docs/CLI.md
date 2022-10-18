@@ -116,7 +116,7 @@ $ databooks fix [OPTIONS] PATHS...
 * `--cells-head / --no-cells-head`: Whether to keep the cells from the head/base notebook. Omit to keep both
 * `--cell-fields-ignore TEXT`: Cell fields to remove before comparing cells  [default: id, execution_count]
 * `-i, --interactive`: Interactively resolve the conflicts (not implemented)  [default: False]
-* `--verbose / --no-verbose`: Log processed files in console  [default: False]
+* `-v, --verbose`: Log processed files in console  [default: False]
 * `-c, --config PATH`: Get CLI options from configuration file
 * `--help`: Show this message and exit
 
@@ -167,7 +167,8 @@ $ databooks show [OPTIONS] PATHS...
 **Options**:
 
 * `--ignore TEXT`: Glob expression(s) of files to ignore  [default: !*]
-* `--verbose / --no-verbose`: Increase verbosity for debugging  [default: False]
+* `-p, --pager`: Use pager instead of printing to terminal  [default: False]
+* `-v, --verbose`: Increase verbosity for debugging  [default: False]
 * `-y, --yes`: Show multiple files  [default: False]
 * `-c, --config PATH`: Get CLI options from configuration file
 * `--help`: Show this message and exit
