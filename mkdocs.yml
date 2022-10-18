@@ -70,6 +70,7 @@ nav:
   - Git: git_utils.md
   - Logging: logging.md
   - Metadata: metadata.md
+  - TUI: tui.md
 - Development:
   - Contributing: contrib.md
   - Coverage report: coverage.md
