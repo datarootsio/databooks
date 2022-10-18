@@ -59,7 +59,12 @@ def test_metadata_clear(tmpdir: LocalPath) -> None:
     assert len(nb_write.cells) == len(nb_read.cells)
     assert all(cell.metadata == CellMetadata() for cell in nb_write.cells)
     assert all(
-        cell.outputs == CellOutputs(__root__=[])
+        cell.outputs
+        == CellOutputs(
+            __root__=[
+                {"name": "stdout", "output_type": "stream", "text": ["test text\n"]}
+            ]
+        )
         for cell in nb_write.cells
         if cell.cell_type == "code"
     )

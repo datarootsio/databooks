@@ -11,7 +11,7 @@ from typer.core import TyperCommand
 from typer.testing import CliRunner
 
 from databooks.cli import _config_callback, app
-from databooks.data_models.cell import Cell, CellMetadata, CellOutputs
+from databooks.data_models.cell import CellBase, CellMetadata, CellOutputs
 from databooks.data_models.notebook import JupyterNotebook, NotebookMetadata
 from databooks.git_utils import get_conflict_blobs
 from databooks.version import __version__
@@ -109,7 +109,15 @@ def test_meta__config(tmpdir: LocalPath) -> None:
 
     assert result.exit_code == 0
     assert nb_read != nb_write, "Notebook was not overwritten"
-    assert all(c.outputs == CellOutputs(__root__=[]) for c in nb_write.cells)
+    assert all(
+        c.outputs
+        == CellOutputs(
+            __root__=[
+                {"name": "stdout", "output_type": "stream", "text": ["test text\n"]}
+            ]
+        )
+        for c in nb_write.cells
+    )
     assert all(c.execution_count is not None for c in nb_write.cells)
 
     # Override config file arguments
@@ -233,7 +241,7 @@ def test_fix(tmpdir: LocalPath) -> None:
         another_field_to_remove="another field",
     )
 
-    extra_cell = Cell(
+    extra_cell = CellBase(
         cell_type="raw",
         metadata=CellMetadata(random_meta=["meta"]),
         source="extra",
@@ -273,18 +281,18 @@ def test_fix(tmpdir: LocalPath) -> None:
     assert fixed_notebook.nbformat == notebook_1.nbformat
     assert fixed_notebook.nbformat_minor == notebook_1.nbformat_minor
     assert fixed_notebook.cells == notebook_1.cells + [
-        Cell(
+        CellBase(
             metadata=CellMetadata(git_hash=id_main),
             source=[f"`<<<<<<< {id_main}`"],
             cell_type="markdown",
         ),
-        Cell(
+        CellBase(
             source=["`=======`"],
             cell_type="markdown",
             metadata=CellMetadata(),
         ),
         extra_cell,
-        Cell(
+        CellBase(
             metadata=CellMetadata(git_hash=id_other),
             source=[f"`>>>>>>> {id_other}`"],
             cell_type="markdown",
@@ -307,7 +315,7 @@ def test_fix__config(tmpdir: LocalPath) -> None:
         another_field_to_remove="another field",
     )
 
-    extra_cell = Cell(
+    extra_cell = CellBase(
         cell_type="raw",
         metadata=CellMetadata(random_meta=["meta"]),
         source="extra",
@@ -348,18 +356,18 @@ def test_fix__config(tmpdir: LocalPath) -> None:
     assert fixed_notebook.nbformat == notebook_2.nbformat
     assert fixed_notebook.nbformat_minor == notebook_2.nbformat_minor
     assert fixed_notebook.cells == notebook_1.cells + [
-        Cell(
+        CellBase(
             metadata=CellMetadata(git_hash=id_main),
             source=[f"`<<<<<<< {id_main}`"],
             cell_type="markdown",
         ),
-        Cell(
+        CellBase(
             source=["`=======`"],
             cell_type="markdown",
             metadata=CellMetadata(),
         ),
         extra_cell,
-        Cell(
+        CellBase(
             metadata=CellMetadata(git_hash=id_other),
             source=[f"`>>>>>>> {id_other}`"],
             cell_type="markdown",

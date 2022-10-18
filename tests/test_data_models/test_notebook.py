@@ -9,8 +9,20 @@ import pytest
 from _pytest.logging import LogCaptureFixture
 from py._path.local import LocalPath
 
-from databooks.data_models.cell import Cell, CellMetadata, CellOutputs
-from databooks.data_models.notebook import Cells, JupyterNotebook, NotebookMetadata
+from databooks.data_models.cell import (
+    CellMetadata,
+    CellOutputs,
+    CellStreamOutput,
+    CodeCell,
+    MarkdownCell,
+    RawCell,
+)
+from databooks.data_models.notebook import (
+    Cell,
+    Cells,
+    JupyterNotebook,
+    NotebookMetadata,
+)
 
 
 class TestNotebookMetadata:
@@ -63,9 +75,9 @@ class TestCell:
         return CellMetadata(field_to_remove="Field to remove")
 
     @property
-    def cell(self) -> Cell:
-        """`Cell` property to test on."""
-        return Cell(
+    def cell(self) -> CodeCell:
+        """`CodeCell` property to test on."""
+        return CodeCell(
             cell_type="code",
             metadata=self.cell_metadata,
             source=["test_source"],
@@ -86,7 +98,7 @@ class TestCell:
         assert metadata == CellMetadata()
 
     def test_clear(self, caplog: LogCaptureFixture) -> None:
-        """Remove metadata specified from notebook `Cell`."""
+        """Remove metadata specified from notebook `CodeCell`."""
         caplog.set_level(logging.DEBUG)
 
         cell = self.cell
@@ -99,16 +111,22 @@ class TestCell:
         )
         logs = list(caplog.records)
 
-        assert cell == Cell(
+        assert cell == CodeCell(
             cell_type="code",
             metadata=CellMetadata(),
-            outputs=[],
+            outputs=CellOutputs(
+                __root__=[
+                    CellStreamOutput(
+                        output_type="stream", name="stdout", text=["test text\n"]
+                    )
+                ]
+            ),
             source=["test_source"],
             execution_count=None,
         )
         assert len(logs) == 1
         assert logs[0].message == (
-            "Ignoring removal of required fields ['source'] in `Cell`."
+            "Ignoring removal of required fields ['outputs', 'source'] in `CodeCell`."
         )
 
     def test_cells_sub(self) -> None:
@@ -136,11 +154,14 @@ class TestCell:
             metadata=self.cell_metadata,
             source=["test_source"],
             execution_count=1,
-            outputs=[],
+            outputs=[
+                {"name": "stdout", "output_type": "stream", "text": ["test text\n"]}
+            ],
         )
         assert len(logs) == 1
         assert logs[0].message == (
-            "Ignoring removal of required fields ['cell_type'] in `Cell`."
+            "Ignoring removal of required fields ['cell_type', 'outputs'] in"
+            " `CodeCell`."
         )
 
 
@@ -168,7 +189,14 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
 
         assert all(cell.metadata == CellMetadata() for cell in notebook.cells)
         assert all(
-            cell.outputs == CellOutputs(__root__=[])
+            cell.outputs
+            == CellOutputs(
+                __root__=[
+                    CellStreamOutput(
+                        output_type="stream", name="stdout", text=["test text\n"]
+                    )
+                ]
+            )
             for cell in notebook.cells
             if cell.cell_type == "code"
         )
@@ -194,7 +222,7 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
             field_to_remove=["Field to remove"],
             another_field_to_remove="another field",
         )
-        extra_cell = Cell(
+        extra_cell = RawCell(
             cell_type="raw",
             metadata=CellMetadata(random_meta=["meta"]),
             source="extra",
@@ -215,18 +243,18 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
         assert diff.resolve(keep_first_cells=False) == notebook
 
         notebook.cells = notebook_1.cells + [
-            Cell(
+            MarkdownCell(
                 metadata=CellMetadata(git_hash=None),
                 source=["`<<<<<<< None`"],
                 cell_type="markdown",
             ),
-            Cell(
+            MarkdownCell(
                 source=["`=======`"],
                 cell_type="markdown",
                 metadata=CellMetadata(),
             ),
             extra_cell,
-            Cell(
+            MarkdownCell(
                 metadata=CellMetadata(git_hash=None),
                 source=["`>>>>>>> None`"],
                 cell_type="markdown",
@@ -266,13 +294,13 @@ def test_parse_file() -> None:
     )
     assert notebook.cells == Cells(
         [
-            Cell(
+            MarkdownCell(
                 metadata=CellMetadata(tags=[]),
                 source=["# `databooks` demo!"],
                 cell_type="markdown",
                 id="9adc7c77-95f1-4cb9-b987-1411e28f2976",
             ),
-            Cell(
+            CodeCell(
                 metadata=CellMetadata(tags=["random-tag"]),
                 source=["from random import random  # cell with tags"],
                 cell_type="code",
@@ -280,7 +308,7 @@ def test_parse_file() -> None:
                 execution_count=1,
                 id="6a6eafec-a799-455b-8c1b-fd43a0a1f3ca",
             ),
-            Cell(
+            CodeCell(
                 metadata=CellMetadata(tags=[]),
                 source=["random()"],
                 cell_type="code",
@@ -295,7 +323,7 @@ def test_parse_file() -> None:
                 execution_count=2,
                 id="8b852d3e-5482-4feb-8bd1-e902ed6ecaff",
             ),
-            Cell(
+            CodeCell(
                 metadata=CellMetadata(),
                 source=['print("notebooks + git ❤️")'],
                 cell_type="code",
@@ -309,7 +337,7 @@ def test_parse_file() -> None:
                 execution_count=3,
                 id="4dcb36c4-d671-4ec9-9bff-87857b3f718a",
             ),
-            Cell(
+            CodeCell(
                 metadata=CellMetadata(),
                 source=["throw error"],
                 cell_type="code",
@@ -331,7 +359,7 @@ def test_parse_file() -> None:
                 execution_count=4,
                 id="53cd4d06-b52e-4fbb-9ae1-d55babe2f3a2",
             ),
-            Cell(
+            RawCell(
                 metadata=CellMetadata(),
                 source=["This is a raw cell! 🚀"],
                 cell_type="raw",

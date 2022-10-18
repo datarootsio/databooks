@@ -56,7 +56,7 @@ def resolve(
     """
     Resolve differences for 'diff models'.
 
-    Return instance alike the parent class `databooks.data_models.Cell.DatabooksBase`.
+    Return instance alike the parent class `databooks.data_models.base.DatabooksBase`.
     :param model: DiffModel that is to be resolved (self when added as a method to a
      class
     :param keep_first: Whether to keep the information from the prior in the
