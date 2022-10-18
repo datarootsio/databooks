@@ -81,6 +81,17 @@ $ databooks assert [OPTIONS] PATHS...
 
 ![databooks assert demo](https://raw.githubusercontent.com/datarootsio/databooks/main/docs/images/databooks-assert.gif)
 
+### Show rich notebook
+
+Instead of launching Jupyter and opening the browser to inspect notebooks, have a quick
+look at them in the terminal. All you need is to specify the path(s) of the notebook(s).
+
+```console
+$ databooks show [OPTIONS] PATHS...
+```
+
+![databooks show demo](https://raw.githubusercontent.com/datarootsio/databooks/main/docs/images/databooks-show.gif)
+
 ## License
 
 This project is licensed under the terms of the MIT license.

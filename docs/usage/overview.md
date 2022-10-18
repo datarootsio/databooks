@@ -11,9 +11,10 @@ The package currently has 3 main features, exposed as CLI commands
 1. `databooks meta`: to remove unnecessary notebook metadata that can cause git conflicts
 2. `databooks fix`: to fix conflicts after they've occurred, by parsing versions of the
 conflicting file and computing its difference in a Jupyter-friendly way, so you (user) can
-manually resolve them in the Jupyter terminal
+manually resolve them in the Jupyter interface
 3. `databooks assert`: to assert that the notebook metadata actually conforms to desired
 values - ensure that notebook has sequential execution count, tags, etc.
+4. `databooks show`: to show a rich representation of the notebooks in the terminal
 
 ## `databooks meta`
 
@@ -228,3 +229,15 @@ cog.out("\n".join(DOC_TEMPLATE.format(recipe=recipe) for recipe in recipe_docs))
 
     If your use case is more complex and cannot be translated into a single expression,
     you can always download `databooks` and use it as a part of your script!
+
+## `databooks show`
+
+Sometimes we may want to quickly visualize the notebook. However, it can be a bit
+cumbersome to start the Jupyter server, navigate to the file that we'd like inspect and
+open it in the terminal. Moreover, by opening the file in Jupyter we may already modify
+the notebook metadata.
+
+This is where `databooks show` comes in place. Simply specify the
+path(s) to the notebook(s) to visualize them in the terminal. You can optionally pass
+`pager` to open a scrollable window that won't actually print the notebook contents in
+the terminal.
