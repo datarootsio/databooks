@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Any, Callable, List, Optional, Sequence
 
 from databooks import JupyterNotebook
-from databooks.data_models.cell import CellBase
+from databooks.data_models.cell import BaseCell
 from databooks.logging import get_logger, set_verbose
 
 logger = get_logger(__file__)
@@ -46,7 +46,7 @@ def clear(
 
     # Get fields to remove from cells and keep notebook schema
     cell_fields = {field for cell in notebook.cells for field, _ in cell if field}
-    cell_fields_keep = list(cell_fields_keep) + list(CellBase.__fields__)
+    cell_fields_keep = list(cell_fields_keep) + list(BaseCell.__fields__)
 
     cell_remove_fields = [
         field for field in cell_fields if field not in cell_fields_keep

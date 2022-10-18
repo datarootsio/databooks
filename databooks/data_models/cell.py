@@ -20,7 +20,7 @@ class CellMetadata(DatabooksBase):
     """Cell metadata. Empty by default but can accept extra fields."""
 
 
-class CellBase(DatabooksBase):
+class BaseCell(DatabooksBase):
     """
     Jupyter notebook cells.
 
@@ -48,7 +48,7 @@ class CellBase(DatabooksBase):
         Similar to `databooks.data_models.base.remove_fields`, but will ignore required
          fields for cell type.
         """
-        # Ignore required `CellBase` fields
+        # Ignore required `BaseCell` fields
         cell_fields = self.__fields__  # required fields especified in class definition
         if any(field in fields for field in cell_fields):
             logger.debug(
@@ -58,7 +58,7 @@ class CellBase(DatabooksBase):
             )
             fields = [f for f in fields if f not in cell_fields]
 
-        super(CellBase, self).remove_fields(fields, missing_ok=missing_ok)
+        super(BaseCell, self).remove_fields(fields, missing_ok=missing_ok)
 
         if self.cell_type == "code":
             self.outputs: CellOutputs = (
@@ -81,7 +81,7 @@ class CellBase(DatabooksBase):
         Clear cell metadata, execution count, outputs or other desired fields (id, ...).
 
         You can also specify metadata to keep or remove from the `metadata` property of
-         `databooks.data_models.cell.CellBase`.
+         `databooks.data_models.cell.BaseCell`.
         :param cell_metadata_keep: Metadata values to keep - simply pass an empty
          sequence (i.e.: `()`) to remove all extra fields.
         :param cell_metadata_remove: Metadata values to remove
@@ -246,7 +246,7 @@ class CellOutputs(DatabooksBase):
         return self.__root__
 
 
-class CodeCell(CellBase):
+class CodeCell(BaseCell):
     """Cell of type `code` - defined for rich displaying in terminal."""
 
     outputs: CellOutputs
@@ -273,7 +273,7 @@ class CodeCell(CellBase):
         return v
 
 
-class MarkdownCell(CellBase):
+class MarkdownCell(BaseCell):
     """Cell of type `markdown` - defined for rich displaying in terminal."""
 
     cell_type: str = "markdown"
@@ -292,7 +292,7 @@ class MarkdownCell(CellBase):
         return v
 
 
-class RawCell(CellBase):
+class RawCell(BaseCell):
     """Cell of type `raw` - defined for rich displaying in terminal."""
 
     cell_type: str = "raw"

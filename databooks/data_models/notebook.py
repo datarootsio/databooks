@@ -10,17 +10,23 @@ from typing import (
     Any,
     Callable,
     Generator,
+    Iterable,
     List,
     Optional,
     Sequence,
     Tuple,
     TypeVar,
     Union,
+    cast,
 )
 
 from pydantic import Extra, validate_model
 from pydantic.generics import GenericModel
-from rich.console import Console, ConsoleOptions, RenderResult
+from rich import box
+from rich.columns import Columns
+from rich.console import Console, ConsoleOptions, RenderableType, RenderResult
+from rich.panel import Panel
+from rich.text import Text
 
 from databooks.data_models.base import BaseCells, DatabooksBase
 from databooks.data_models.cell import CellMetadata, CodeCell, MarkdownCell, RawCell
@@ -28,9 +34,9 @@ from databooks.logging import get_logger
 
 logger = get_logger(__file__)
 
-
 Cell = Union[CodeCell, RawCell, MarkdownCell]
-T = TypeVar("T", Cell, Tuple[List[Cell], List[Cell]])
+CellsPair = Tuple[List[Cell], List[Cell]]
+T = TypeVar("T", Cell, CellsPair)
 
 
 class Cells(GenericModel, BaseCells[T]):
@@ -51,9 +57,7 @@ class Cells(GenericModel, BaseCells[T]):
         """Use list property as iterable."""
         return (el for el in self.data)
 
-    def __sub__(
-        self: Cells[Cell], other: Cells[Cell]
-    ) -> Cells[Tuple[List[Cell], List[Cell]]]:
+    def __sub__(self: Cells[Cell], other: Cells[Cell]) -> Cells[CellsPair]:
         """Return the difference using `difflib.SequenceMatcher`."""
         if type(self) != type(other):
             raise TypeError(
@@ -77,7 +81,7 @@ class Cells(GenericModel, BaseCells[T]):
                 f" {n_context} for {len(self)} and {len(other)} cells in"
                 " notebooks."
             )
-        return Cells[Tuple[List[Cell], List[Cell]]](
+        return Cells[CellsPair](
             [
                 # https://github.com/python/mypy/issues/9459
                 tuple((self.data[i1:j1], other.data[i2:j2]))  # type: ignore
@@ -89,8 +93,18 @@ class Cells(GenericModel, BaseCells[T]):
         self, console: Console, options: ConsoleOptions
     ) -> RenderResult:
         """Rich display of all cells in notebook."""
-        # TODO: implement printing for diffs - ignore mypy errors for now
-        yield from self.data  # type: ignore
+        yield from self._get_renderables(expand=True, width=options.max_width // 3)
+
+    def _get_renderables(self, **wrap_cols_kwargs: Any) -> Iterable[RenderableType]:
+        """Get the Rich renderables, depending on whether `Cells` is a diff or not."""
+        if all(isinstance(el, tuple) for el in self.data):
+            return chain.from_iterable(
+                Cells.wrap_cols(val[0], val[1], **wrap_cols_kwargs)
+                if val[0] != val[1]
+                else val[0]
+                for val in cast(List[CellsPair], self.data)
+            )
+        return cast(List[Cell], self.data)
 
     @classmethod
     def __get_validators__(cls) -> Generator[Callable[..., Any], None, None]:
@@ -104,6 +118,16 @@ class Cells(GenericModel, BaseCells[T]):
             return cls(v)
         else:
             return v
+
+    @classmethod
+    def wrap_cols(
+        cls, first_cells: List[Cell], last_cells: List[Cell], **cols_kwargs: Any
+    ) -> Sequence[Columns]:
+        """Wrap the first and second cells into colunmns for iterable."""
+        _empty = [Panel(Text("<None>", justify="center"), box=box.SIMPLE)]
+        _first = cast(List[RenderableType], first_cells or _empty)
+        _last = cast(List[RenderableType], last_cells or _empty)
+        return [Columns(_first + _last, **cols_kwargs)]
 
     @staticmethod
     def wrap_git(
@@ -134,7 +158,7 @@ class Cells(GenericModel, BaseCells[T]):
         ]
 
     def resolve(
-        self: Cells[Tuple[List[Cell], List[Cell]]],
+        self: Cells[CellsPair],
         *,
         keep_first_cells: Optional[bool] = None,
         first_id: Optional[str] = None,
@@ -185,7 +209,14 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
 
     def __rich__(self) -> RenderResult:
         """Rich display notebook."""
-        nb_lang = self.metadata.dict().get("kernelspec", {}).get("language", "text")
+        kernelspec = self.metadata.dict().get("kernelspec", {})
+        # Check if this is a `DiffCells`
+        if isinstance(kernelspec, tuple):
+            first, last = (ks.get("language", "text") for ks in kernelspec)
+            nb_lang = first if first == last else "text"
+        else:
+            nb_lang = kernelspec.get("language", "text")
+
         for cell in self.cells:
             if isinstance(cell, CodeCell):
                 cell.metadata = CellMetadata(**cell.metadata.dict(), lang=nb_lang)
@@ -234,7 +265,7 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
          sequence (i.e.: `()`) to remove all extra fields.
         :param notebook_metadata_remove: Metadata values to remove
         :param cell_kwargs: keyword arguments to be passed to each cell's
-         `databooks.data_models.cell.CellBase.clear_metadata`
+         `databooks.data_models.cell.BaseCell.clear_metadata`
         :return:
         """
         nargs = sum(

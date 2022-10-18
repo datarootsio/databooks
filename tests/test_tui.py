@@ -5,7 +5,10 @@ from textwrap import dedent
 from rich.console import Console, ConsoleRenderable
 
 from databooks import JupyterNotebook
+from databooks.data_models.cell import CellMetadata, RawCell
+from databooks.data_models.notebook import NotebookMetadata
 from databooks.tui import print_nb
+from tests.test_data_models.test_notebook import TestJupyterNotebook
 
 with resources.path("tests.files", "tui-demo.ipynb") as nb_path:
     nb = JupyterNotebook.parse_file(nb_path)
@@ -191,4 +194,43 @@ def test_print_nb() -> None:
         print_nb(path, console=console)
     assert console.file.getvalue() == "\n".join(
         ("───────────────── tui-demo.ipynb ─────────────────", rich_nb)
+    )
+
+
+def test_diff_nb() -> None:
+    """Show rich representation of 'diff' notebook."""
+    notebook_1 = TestJupyterNotebook().jupyter_notebook
+    notebook_2 = TestJupyterNotebook().jupyter_notebook
+    notebook_1.metadata = NotebookMetadata(
+        kernelspec=dict(
+            display_name="different_kernel_display_name", name="kernel_name"
+        ),
+        field_to_remove=["Field to remove"],
+        another_field_to_remove="another field",
+    )
+    extra_cell = RawCell(
+        metadata=CellMetadata(random_meta=["meta"]),
+        source="extra",
+    )
+    notebook_2.cells = notebook_2.cells + [extra_cell]
+
+    diff = notebook_1 - notebook_2
+    assert render(diff) == dedent(
+        """\
+In [1]:
+╭────────────────────────────────────────────────╮
+│ test_source                                    │
+╰────────────────────────────────────────────────╯
+test text
+
+In [1]:
+╭────────────────────────────────────────────────╮
+│ test_source                                    │
+╰────────────────────────────────────────────────╯
+test text
+
+                          ╭──────────────────────╮
+         <None>           │ extra                │
+                          ╰──────────────────────╯
+"""
     )

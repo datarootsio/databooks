@@ -11,7 +11,7 @@ from typer.core import TyperCommand
 from typer.testing import CliRunner
 
 from databooks.cli import _config_callback, app
-from databooks.data_models.cell import CellBase, CellMetadata, CellOutputs
+from databooks.data_models.cell import BaseCell, CellMetadata, CellOutputs
 from databooks.data_models.notebook import JupyterNotebook, NotebookMetadata
 from databooks.git_utils import get_conflict_blobs
 from databooks.version import __version__
@@ -241,7 +241,7 @@ def test_fix(tmpdir: LocalPath) -> None:
         another_field_to_remove="another field",
     )
 
-    extra_cell = CellBase(
+    extra_cell = BaseCell(
         cell_type="raw",
         metadata=CellMetadata(random_meta=["meta"]),
         source="extra",
@@ -281,18 +281,18 @@ def test_fix(tmpdir: LocalPath) -> None:
     assert fixed_notebook.nbformat == notebook_1.nbformat
     assert fixed_notebook.nbformat_minor == notebook_1.nbformat_minor
     assert fixed_notebook.cells == notebook_1.cells + [
-        CellBase(
+        BaseCell(
             metadata=CellMetadata(git_hash=id_main),
             source=[f"`<<<<<<< {id_main}`"],
             cell_type="markdown",
         ),
-        CellBase(
+        BaseCell(
             source=["`=======`"],
             cell_type="markdown",
             metadata=CellMetadata(),
         ),
         extra_cell,
-        CellBase(
+        BaseCell(
             metadata=CellMetadata(git_hash=id_other),
             source=[f"`>>>>>>> {id_other}`"],
             cell_type="markdown",
@@ -315,7 +315,7 @@ def test_fix__config(tmpdir: LocalPath) -> None:
         another_field_to_remove="another field",
     )
 
-    extra_cell = CellBase(
+    extra_cell = BaseCell(
         cell_type="raw",
         metadata=CellMetadata(random_meta=["meta"]),
         source="extra",
@@ -356,18 +356,18 @@ def test_fix__config(tmpdir: LocalPath) -> None:
     assert fixed_notebook.nbformat == notebook_2.nbformat
     assert fixed_notebook.nbformat_minor == notebook_2.nbformat_minor
     assert fixed_notebook.cells == notebook_1.cells + [
-        CellBase(
+        BaseCell(
             metadata=CellMetadata(git_hash=id_main),
             source=[f"`<<<<<<< {id_main}`"],
             cell_type="markdown",
         ),
-        CellBase(
+        BaseCell(
             source=["`=======`"],
             cell_type="markdown",
             metadata=CellMetadata(),
         ),
         extra_cell,
-        CellBase(
+        BaseCell(
             metadata=CellMetadata(git_hash=id_other),
             source=[f"`>>>>>>> {id_other}`"],
             cell_type="markdown",
