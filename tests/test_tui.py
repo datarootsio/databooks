@@ -5,7 +5,9 @@ from textwrap import dedent
 from rich.console import Console, ConsoleRenderable
 
 from databooks import JupyterNotebook
+from databooks.data_models.cell import CellMetadata, RawCell
 from databooks.tui import print_nb
+from tests.test_data_models.test_notebook import TestJupyterNotebook
 
 with resources.path("tests.files", "tui-demo.ipynb") as nb_path:
     nb = JupyterNotebook.parse_file(nb_path)
@@ -191,4 +193,83 @@ def test_print_nb() -> None:
         print_nb(path, console=console)
     assert console.file.getvalue() == "\n".join(
         ("───────────────── tui-demo.ipynb ─────────────────", rich_nb)
+    )
+
+
+def test_diff_nb() -> None:
+    """Show rich representation of 'diff' notebook."""
+    notebook_1 = TestJupyterNotebook().jupyter_notebook
+    notebook_2 = TestJupyterNotebook().jupyter_notebook
+    extra_cell = RawCell(
+        metadata=CellMetadata(random_meta=["meta"]),
+        source="extra",
+    )
+    notebook_2.cells = notebook_2.cells + [extra_cell]
+
+    diff = notebook_1 - notebook_2
+    assert render(diff) == dedent(
+        """\
+In [1]:
+╭────────────────────────────────────────────────╮
+│ test_source                                    │
+╰────────────────────────────────────────────────╯
+test text
+
+In [1]:
+╭────────────────────────────────────────────────╮
+│ test_source                                    │
+╰────────────────────────────────────────────────╯
+test text
+
+                          ╭──────────────────────╮
+         <None>           │ extra                │
+                          ╰──────────────────────╯
+"""
+    )
+
+
+def test_multiple_diff_nb() -> None:
+    """Show rich representation of 'diff' notebook."""
+    notebook_1 = TestJupyterNotebook().jupyter_notebook
+    notebook_2 = TestJupyterNotebook().jupyter_notebook
+    extra_cell = RawCell(
+        metadata=CellMetadata(random_meta=["meta"]),
+        source="extra",
+    )
+    notebook_1.cells = notebook_1.cells + [
+        RawCell(
+            metadata=CellMetadata(),
+            source="mod_extra",
+        )
+    ]
+    notebook_2.cells = notebook_2.cells + [extra_cell, extra_cell, extra_cell]
+
+    diff = notebook_1 - notebook_2
+    from databooks.tui import databooks_console
+
+    databooks_console.print(diff)
+    assert render(diff) == dedent(
+        """\
+In [1]:
+╭────────────────────────────────────────────────╮
+│ test_source                                    │
+╰────────────────────────────────────────────────╯
+test text
+
+In [1]:
+╭────────────────────────────────────────────────╮
+│ test_source                                    │
+╰────────────────────────────────────────────────╯
+test text
+
+╭───────────────────────╮ ╭──────────────────────╮
+│ mod_extra             │ │ extra                │
+╰───────────────────────╯ ╰──────────────────────╯
+                          ╭──────────────────────╮
+                          │ extra                │
+                          ╰──────────────────────╯
+                          ╭──────────────────────╮
+                          │ extra                │
+                          ╰──────────────────────╯
+"""
     )
