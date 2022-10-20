@@ -207,20 +207,37 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
     metadata: NotebookMetadata
     cells: Cells[Cell]
 
-    def __rich__(self) -> RenderResult:
+    def __rich_console__(
+        self, console: Console, options: ConsoleOptions
+    ) -> RenderResult:
         """Rich display notebook."""
+
+        def _rich(kernel: str) -> Text:
+            """Display with `kernel` theme, horizontal padding and right-justified."""
+            return Text(kernel, style="kernel", justify="right")
+
         kernelspec = self.metadata.dict().get("kernelspec", {})
-        # Check if this is a `DiffCells`
-        if isinstance(kernelspec, tuple):
-            first, last = (ks.get("language", "text") for ks in kernelspec)
-            nb_lang = first if first == last else "text"
+        if isinstance(kernelspec, tuple):  # check if this is a `DiffCells`
+            lang_first, lang_last = (ks.get("language", "text") for ks in kernelspec)
+            nb_lang = lang_first if lang_first == lang_last else "text"
+            if any("display_name" in ks.keys() for ks in kernelspec):
+                kernel_first, kernel_last = [
+                    _rich(ks["display_name"]) for ks in kernelspec
+                ]
+                yield Columns(
+                    [kernel_first, kernel_last],
+                    expand=True,
+                    width=options.max_width // 3,
+                ) if kernel_first != kernel_last else kernel_first
         else:
             nb_lang = kernelspec.get("language", "text")
+            if "display_name" in kernelspec.keys():
+                yield _rich(kernelspec["display_name"])
 
         for cell in self.cells:
             if isinstance(cell, CodeCell):
                 cell.metadata = CellMetadata(**cell.metadata.dict(), lang=nb_lang)
-        return self.cells
+        yield self.cells
 
     @classmethod
     def parse_file(cls, path: Path | str, **parse_kwargs: Any) -> JupyterNotebook:

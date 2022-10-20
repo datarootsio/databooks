@@ -4,8 +4,8 @@ from textwrap import dedent
 
 from rich.console import Console, ConsoleRenderable
 
-from databooks import JupyterNotebook
 from databooks.data_models.cell import CellMetadata, RawCell
+from databooks.data_models.notebook import JupyterNotebook, NotebookMetadata
 from databooks.tui import print_nb
 from tests.test_data_models.test_notebook import TestJupyterNotebook
 
@@ -14,6 +14,7 @@ with resources.path("tests.files", "tui-demo.ipynb") as nb_path:
 
 rich_nb = dedent(
     """\
+                              Python 3 (ipykernel)
 ╭────────────────────────────────────────────────╮
 │ ╔════════════════════════════════════════════╗ │
 │ ║              databooks demo!               ║ │
@@ -183,7 +184,7 @@ def test_raw_cell() -> None:
 
 def test_notebook() -> None:
     """Prints notebook (identical to printing all cells)."""
-    assert render(nb) == render(nb.cells) == rich_nb
+    assert render(nb) == rich_nb
 
 
 def test_print_nb() -> None:
@@ -209,6 +210,7 @@ def test_diff_nb() -> None:
     diff = notebook_1 - notebook_2
     assert render(diff) == dedent(
         """\
+                               kernel_display_name
 In [1]:
 ╭────────────────────────────────────────────────╮
 │ test_source                                    │
@@ -232,6 +234,9 @@ def test_multiple_diff_nb() -> None:
     """Show rich representation of 'diff' notebook."""
     notebook_1 = TestJupyterNotebook().jupyter_notebook
     notebook_2 = TestJupyterNotebook().jupyter_notebook
+    notebook_2.metadata = NotebookMetadata(
+        kernelspec=dict(display_name="another_kernel", name="kernel_name"),
+    )
     extra_cell = RawCell(
         metadata=CellMetadata(random_meta=["meta"]),
         source="extra",
@@ -245,11 +250,9 @@ def test_multiple_diff_nb() -> None:
     notebook_2.cells = notebook_2.cells + [extra_cell, extra_cell, extra_cell]
 
     diff = notebook_1 - notebook_2
-    from databooks.tui import databooks_console
-
-    databooks_console.print(diff)
     assert render(diff) == dedent(
         """\
+      kernel_display_name           another_kernel
 In [1]:
 ╭────────────────────────────────────────────────╮
 │ test_source                                    │

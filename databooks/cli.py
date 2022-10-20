@@ -297,7 +297,9 @@ def fix(
         "-i",
         help="Interactively resolve the conflicts (not implemented)",
     ),
-    verbose: bool = Option(False, help="Log processed files in console"),
+    verbose: bool = Option(
+        False, "--verbose", "-v", help="Log processed files in console"
+    ),
     config: Optional[Path] = Option(
         None,
         "--config",
@@ -359,7 +361,12 @@ def show(
         ..., is_eager=True, help="Path(s) of notebook files with conflicts"
     ),
     ignore: List[str] = Option(["!*"], help="Glob expression(s) of files to ignore"),
-    verbose: bool = Option(False, help="Increase verbosity for debugging"),
+    pager: bool = Option(
+        False, "--pager", "-p", help="Use pager instead of printing to terminal"
+    ),
+    verbose: bool = Option(
+        False, "--verbose", "-v", help="Increase verbosity for debugging"
+    ),
     multiple: bool = Option(False, "--yes", "-y", help="Show multiple files"),
     config: Optional[Path] = Option(
         None,
@@ -385,7 +392,7 @@ def show(
         if not Confirm.ask(f"Show {len(nb_paths)} notebooks?"):
             raise Exit()
 
-    print_nbs(nb_paths)
+    print_nbs(nb_paths, use_pager=pager)
 
 
 @app.command()
