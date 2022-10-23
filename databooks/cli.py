@@ -206,7 +206,7 @@ def affirm_meta(
         "--recipe",
         "-r",
         help="Common recipes of expressions - see"
-        " https://databooks.dev/0.1.15/usage/overview/#recipes",
+        " https://databooks.dev/latest/usage/overview/#recipes",
     ),
     verbose: bool = Option(
         False, "--verbose", "-v", help="Log processed files in console"
