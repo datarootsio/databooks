@@ -62,11 +62,11 @@ def clear(
 
     if nb_equals or check:
         msg = (
-            "only check (unwanted metadata found)."
-            if not nb_equals
-            else "no metadata to remove."
+            "no metadata to remove."
+            if nb_equals
+            else "only check (unwanted metadata found)."
         )
-        logger.debug(f"No action taken for {read_path} - " + msg)
+        logger.debug(f"No action taken for {read_path} - {msg}")
     else:
         notebook.write(path=write_path, overwrite=overwrite)
         logger.debug(f"Removed metadata from {read_path}, saved as {write_path}")
