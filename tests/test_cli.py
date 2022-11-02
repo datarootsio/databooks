@@ -15,7 +15,7 @@ from databooks.data_models.notebook import JupyterNotebook, NotebookMetadata
 from databooks.git_utils import get_conflict_blobs
 from databooks.version import __version__
 from tests.test_data_models.test_notebook import TestJupyterNotebook
-from tests.test_git_utils import init_repo_conflicts
+from tests.test_git_utils import init_repo_diff
 
 runner = CliRunner()
 
@@ -246,7 +246,7 @@ def test_fix(tmp_path: Path) -> None:
     notebook_2.nbformat += 1
     notebook_2.nbformat_minor += 1
 
-    git_repo = init_repo_conflicts(
+    git_repo = init_repo_diff(
         tmp_path=tmp_path,
         filename=nb_path,
         contents_main=notebook_1.json(),
@@ -320,7 +320,7 @@ def test_fix__config(tmp_path: Path) -> None:
     notebook_2.nbformat += 1
     notebook_2.nbformat_minor += 1
 
-    git_repo = init_repo_conflicts(
+    git_repo = init_repo_diff(
         tmp_path=tmp_path,
         filename=nb_path,
         contents_main=notebook_1.json(),

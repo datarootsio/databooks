@@ -4,7 +4,7 @@ from databooks.conflicts import path2conflicts
 from databooks.data_models.cell import BaseCell, CellMetadata
 from databooks.data_models.notebook import NotebookMetadata
 from tests.test_data_models.test_notebook import TestJupyterNotebook
-from tests.test_git_utils import ConflictFile, init_repo_conflicts
+from tests.test_git_utils import ConflictFile, init_repo_diff
 
 
 def test_path2diff(tmp_path: Path) -> None:
@@ -28,7 +28,7 @@ def test_path2diff(tmp_path: Path) -> None:
 
     nb_filepath = Path("test_notebook.ipynb")
 
-    git_repo = init_repo_conflicts(
+    git_repo = init_repo_diff(
         tmp_path=tmp_path,
         filename=nb_filepath,
         contents_main=notebook_main.json(),
