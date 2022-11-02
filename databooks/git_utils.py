@@ -143,3 +143,58 @@ def get_conflict_blobs(repo: Repo) -> List[ConflictFile]:
         )
         for blob in blobs
     ]
+
+
+def get_nb_diffs(
+    ref_base: Optional[str] = None,
+    ref_remote: Optional[str] = None,
+    paths: Sequence[Path] = (),
+    *,
+    repo: Optional[Repo] = None,
+    verbose: bool = False,
+) -> List[DiffContents]:
+    """
+    Get the noteebook(s) git diff(s).
+
+    By default, diffs are compared with the current working direcotory. That is, staged
+     files will still show up in the diffs. Only return the diffs for notebook files.
+    """
+    if verbose:
+        set_verbose(logger)
+
+    repo = get_repo(path=Path.cwd()) if repo is None else repo
+    if repo.working_dir is None:
+        raise ValueError("No repository.")
+
+    ref_base = repo.index if ref_base is None else repo.tree(ref_base)
+    ref_remote = ref_remote if ref_remote is None else repo.tree(ref_remote)
+
+    paths = paths or [Path(repo.working_dir)]
+    logger.debug(
+        f"Looking for diffs on path(s) {[p.resolve() for p in paths]}.\n"
+        f"Comparing `{ref_base}` and `{ref_remote}`."
+    )
+    return [
+        DiffContents(
+            a=Contents(
+                path=Path(d.a_path),
+                contents=diff2contents(
+                    blob=cast(Blob, d.a_blob),
+                    ref=ref_base,
+                    path=Path(d.a_path),
+                    not_exists=d.change_type is ChangeType.A,  # type: ignore
+                ),
+            ),
+            b=Contents(
+                path=Path(d.b_path),
+                contents=diff2contents(
+                    blob=cast(Blob, d.b_blob),
+                    ref=ref_remote,
+                    path=Path(d.b_path),
+                    not_exists=d.change_type is ChangeType.D,  # type: ignore
+                ),
+            ),
+            change_type=ChangeType[d.change_type],
+        )
+        for d in ref_base.diff(other=ref_remote, paths=list(paths))
+    ]
