@@ -1,15 +1,18 @@
 import logging
+import os
 from copy import deepcopy
 from importlib import resources
 from pathlib import Path
 from textwrap import dedent
 
 from _pytest.logging import LogCaptureFixture
+from git import GitCommandError
+from pytest import raises
 from typer import Context
 from typer.core import TyperCommand
 from typer.testing import CliRunner
 
-from databooks.cli import _config_callback, app
+from databooks.cli import _config_callback, _parse_paths, app
 from databooks.data_models.cell import BaseCell, CellMetadata, CellOutputs
 from databooks.data_models.notebook import JupyterNotebook, NotebookMetadata
 from databooks.git_utils import get_conflict_blobs
@@ -25,6 +28,19 @@ def test_version_callback() -> None:
     result = runner.invoke(app, ["--version"])
     assert result.exit_code == 0
     assert f"databooks version: {__version__}\n" == result.stdout
+
+
+def test_parse_paths() -> None:
+    """Paths should be detected and removed from refs."""
+    assert _parse_paths("hash1", __file__, paths=[]) == (
+        ("hash1", None),
+        [Path(__file__)],
+    )
+    assert _parse_paths(__file__, None, paths=[]) == ((None, None), [Path(__file__)])
+    assert _parse_paths(__file__, None, paths=[Path("path/to/file")]) == (
+        (None, None),
+        [Path("path/to/file"), Path(__file__)],
+    )
 
 
 def test_config_callback() -> None:
@@ -254,6 +270,8 @@ def test_fix(tmp_path: Path) -> None:
         commit_message_main="Notebook from main",
         commit_message_other="Notebook from other",
     )
+    with raises(GitCommandError):
+        git_repo.git.merge("other")  # merge fails and raises error due to conflict
 
     conflict_files = get_conflict_blobs(repo=git_repo)
     id_main = conflict_files[0].first_log
@@ -328,6 +346,9 @@ def test_fix__config(tmp_path: Path) -> None:
         commit_message_main="Notebook from main",
         commit_message_other="Notebook from other",
     )
+
+    with raises(GitCommandError):
+        git_repo.git.merge("other")  # merge fails and raises error due to conflict
 
     conflict_files = get_conflict_blobs(repo=git_repo)
     id_main = conflict_files[0].first_log
@@ -457,3 +478,91 @@ def test_show_no_multiple() -> None:
     # Raise error (exit code 1) if no answer to prompt is given
     result = runner.invoke(app, ["show", dirpath])
     assert result.exit_code == 1
+
+
+def test_diff(tmp_path: Path) -> None:
+    """Show rich diffs of notebooks."""
+    os.chdir(tmp_path)  # change to directory with git project
+
+    nb_path = Path("test_conflicts_nb.ipynb")
+    notebook_1 = TestJupyterNotebook().jupyter_notebook
+    notebook_2 = TestJupyterNotebook().jupyter_notebook
+
+    notebook_1.metadata = NotebookMetadata(
+        kernelspec=dict(
+            display_name="different_kernel_display_name", name="kernel_name"
+        ),
+        field_to_remove=["Field to remove"],
+        another_field_to_remove="another field",
+    )
+
+    extra_cell = BaseCell(
+        cell_type="raw",
+        metadata=CellMetadata(random_meta=["meta"]),
+        source="extra",
+    )
+    notebook_1.cells = notebook_1.cells + [extra_cell]
+    notebook_2.nbformat += 1
+    notebook_2.nbformat_minor += 1
+
+    _ = init_repo_diff(
+        tmp_path=tmp_path,
+        filename=nb_path,
+        contents_main=notebook_1.json(),
+        contents_other=notebook_2.json(),
+        commit_message_main="Notebook from main",
+        commit_message_other="Notebook from other",
+    )
+
+    # Test passing another branch to compare
+    result = runner.invoke(app, ["diff", "other", str(tmp_path)])
+    assert result.output == dedent(
+        """\
+────── a/test_conflicts_nb.ipynb ───────────── b/test_conflicts_nb.ipynb ───────
+                     kernel_display_name           different_kernel_display_name
+In [1]:
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ test_source                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────╯
+test text
+
+In [1]:
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ test_source                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────╯
+test text
+
+                                         ╭─────────────────────────────────────╮
+                 <None>                  │ extra                               │
+                                         ╰─────────────────────────────────────╯
+"""
+    )
+
+    # Test comparing to index
+    notebook_1.cells = notebook_1.cells + [extra_cell]
+    notebook_1.write(tmp_path / nb_path, overwrite=True)
+    result = runner.invoke(app, ["diff", str(tmp_path)])
+    assert result.output == dedent(
+        """\
+────── a/test_conflicts_nb.ipynb ───────────── b/test_conflicts_nb.ipynb ───────
+                                                   different_kernel_display_name
+In [1]:
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ test_source                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────╯
+test text
+
+In [1]:
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ test_source                                                                  │
+╰──────────────────────────────────────────────────────────────────────────────╯
+test text
+
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ extra                                                                        │
+╰──────────────────────────────────────────────────────────────────────────────╯
+                                         ╭─────────────────────────────────────╮
+                 <None>                  │ extra                               │
+                                         ╰─────────────────────────────────────╯
+"""
+    )
