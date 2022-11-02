@@ -1,7 +1,7 @@
 """Main CLI application."""
 from itertools import compress
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 import tomli
 from rich.progress import (
@@ -18,10 +18,11 @@ from databooks.affirm import affirm_all
 from databooks.common import expand_paths
 from databooks.config import TOML_CONFIG_FILE, get_config
 from databooks.conflicts import conflicts2nbs, path2conflicts
+from databooks.git_utils import get_nb_diffs
 from databooks.logging import get_logger
 from databooks.metadata import clear_all
 from databooks.recipes import Recipe
-from databooks.tui import print_nbs
+from databooks.tui import print_diffs, print_nbs
 from databooks.version import __version__
 
 logger = get_logger(__file__)
@@ -85,6 +86,20 @@ def _check_paths(paths: List[Path], ignore: List[str]) -> List[Path]:
         logger.info(f"No notebooks found in {paths}. Nothing to do.")
         raise Exit()
     return nb_paths
+
+
+def _parse_paths(
+    *refs: Optional[str], paths: List[Path]
+) -> Tuple[Tuple[Optional[str], ...], List[Path]]:
+    """Detect paths from `refs` and add to `paths`."""
+    first, *rest = refs
+    if first is not None and Path(first).exists():
+        paths += [Path(first)]
+        first = None
+    if rest:
+        _refs, _paths = _parse_paths(*rest, paths=paths)
+        return (first, *_refs), _paths
+    return (first,), paths
 
 
 @app.callback()
