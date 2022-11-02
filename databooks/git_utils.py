@@ -1,14 +1,23 @@
 """Git helper functions."""
 from dataclasses import dataclass
+from enum import Enum
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional, Sequence, Union, cast, overload
 
-from git import Blob, Git, Repo  # type: ignore
+from git import Git
+from git.diff import DiffIndex
+from git.objects.blob import Blob
+from git.objects.commit import Commit
+from git.objects.tree import Tree
+from git.repo import Repo
 
 from databooks.common import find_obj
-from databooks.logging import get_logger
+from databooks.logging import get_logger, set_verbose
 
 logger = get_logger(name=__file__)
+
+# https://github.com/python/mypy/issues/5317
+ChangeType = Enum("ChangeType", [*DiffIndex.change_type, "U"])  # type: ignore[misc]
 
 
 @dataclass
@@ -30,14 +39,36 @@ class ConflictFile:
     last_contents: str
 
 
-def get_repo(path: Path = Path.cwd()) -> Repo:
-    """Find git repo in current or parent directories."""
-    repo_dir = find_obj(
-        obj_name=".git", start=Path(path.anchor), finish=path, is_dir=True
-    )
-    repo = Repo(path=repo_dir)
-    logger.debug(f"Repo found at: {repo.working_dir}")
-    return repo
+@dataclass
+class Contents:
+    """Container for path of file versions."""
+
+    path: Optional[Path]
+    contents: Optional[str]
+
+
+@dataclass
+class DiffContents:
+    """Container for path and different versions of conflicted notebooks."""
+
+    a: Contents
+    b: Contents
+    change_type: ChangeType
+
+
+@overload
+def blob2str(blob: None) -> None:
+    ...
+
+
+@overload
+def blob2str(blob: Blob) -> str:
+    ...
+
+
+def blob2str(blob: Optional[Blob]) -> Optional[str]:
+    """Get the blob contents if they exist (otherwise return `None`)."""
+    return blob.data_stream.read() if blob is not None else None
 
 
 def blob2commit(blob: Blob, repo: Repo) -> str:
@@ -49,6 +80,43 @@ def blob2commit(blob: Blob, repo: Repo) -> str:
         if len(commit_id) > 0
         else _git.stash("list", "--oneline", "--max-count", "1", "--find-object", blob)
     )
+
+
+def diff2contents(
+    blob: Blob,
+    ref: Optional[Union[Tree, Commit, str]],
+    path: Path,
+    not_exists: bool = False,
+) -> Optional[str]:
+    """
+    Get the blob contents from the diff.
+
+    Depends on whether we are diffing against current working tree and if object exists
+     at diff time (added or deleted objects only exist at one side). If comparing
+     against working tree (`ref=None`) we return the current file contents.
+    :param blob: git diff blob
+    :param ref: git reference
+    :param path: path to object
+    :param not_exists: whether object exists at 'diff time' (added or removed objects
+     do not exist)
+    :return: blob contents as a string (if exists)
+    """
+    if not_exists:
+        return None
+    elif ref is None:
+        return path.read_text()
+    else:
+        return blob2str(blob)
+
+
+def get_repo(path: Path = Path.cwd()) -> Repo:
+    """Find git repo in current or parent directories."""
+    repo_dir = find_obj(
+        obj_name=".git", start=Path(path.anchor), finish=path, is_dir=True
+    )
+    repo = Repo(path=repo_dir)
+    logger.debug(f"Repo found at: {repo.working_dir}")
+    return repo
 
 
 def get_conflict_blobs(repo: Repo) -> List[ConflictFile]:
@@ -70,8 +138,8 @@ def get_conflict_blobs(repo: Repo) -> List[ConflictFile]:
             filename=repo.working_dir / blob.filename,
             first_log=blob2commit(blob=blob.stage[2], repo=repo),
             last_log=blob2commit(blob=blob.stage[3], repo=repo),
-            first_contents=repo.git.show(blob.stage[2]),
-            last_contents=repo.git.show(blob.stage[3]),
+            first_contents=blob2str(blob.stage[2]),
+            last_contents=blob2str(blob.stage[3]),
         )
         for blob in blobs
     ]
