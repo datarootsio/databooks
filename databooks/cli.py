@@ -456,6 +456,7 @@ def diff(
      compare the current directory with the current index.
     """
     (ref_base, ref_remote), paths = _parse_paths(ref_base, ref_remote, paths=paths)
+    paths = _check_paths(paths=paths or [Path.cwd()], ignore=ignore)
     diffs = get_nb_diffs(
         ref_base=ref_base, ref_remote=ref_remote, paths=paths, verbose=verbose
     )
