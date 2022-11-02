@@ -411,6 +411,58 @@ def show(
 
 
 @app.command()
-def diff() -> None:
-    """Show differences between notebooks (not implemented)."""
-    raise NotImplementedError
+def diff(
+    ref_base: Optional[str] = Argument(
+        None, help="Base reference (hash, branch, etc.), defaults to index"
+    ),
+    ref_remote: Optional[str] = Argument(
+        None, help="Remote reference (hash, branch, etc.), defaults to working tree"
+    ),
+    paths: List[Path] = Argument(
+        None, is_eager=True, help="Path(s) of notebook files to compare"
+    ),
+    ignore: List[str] = Option(["!*"], help="Glob expression(s) of files to ignore"),
+    pager: bool = Option(
+        False, "--pager", "-p", help="Use pager instead of printing to terminal"
+    ),
+    verbose: bool = Option(
+        False, "--verbose", "-v", help="Increase verbosity for debugging"
+    ),
+    multiple: bool = Option(False, "--yes", "-y", help="Show multiple files"),
+    config: Optional[Path] = Option(
+        None,
+        "--config",
+        "-c",
+        is_eager=True,
+        callback=_config_callback,
+        resolve_path=True,
+        exists=True,
+        help="Get CLI options from configuration file",
+    ),
+    help: Optional[bool] = Option(
+        None,
+        "--help",
+        is_eager=True,
+        callback=_help_callback,
+        help="Show this message and exit",
+    ),
+) -> None:
+    """
+    Show differences between notebooks.
+
+    This is similar to `git-diff`, but in practice it is a subset of `git-diff`
+     features - only exception is that we cannot compare diffs between local files. That
+     means we can compare files that are staged with other branches, hashes, etc., or
+     compare the current directory with the current index.
+    """
+    (ref_base, ref_remote), paths = _parse_paths(ref_base, ref_remote, paths=paths)
+    diffs = get_nb_diffs(
+        ref_base=ref_base, ref_remote=ref_remote, paths=paths, verbose=verbose
+    )
+    if not diffs:
+        logger.info("No notebook diffs found. Nothing to do.")
+        raise Exit()
+    if len(diffs) > 1 and not multiple:
+        if not Confirm.ask(f"Show {len(diffs)} notebook diffs?"):
+            raise Exit()
+    print_diffs(diffs=diffs)
