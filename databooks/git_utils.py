@@ -11,7 +11,7 @@ from git.objects.commit import Commit
 from git.objects.tree import Tree
 from git.repo import Repo
 
-from databooks.common import find_obj
+from databooks.common import find_common_parent, find_obj
 from databooks.logging import get_logger, set_verbose
 
 logger = get_logger(name=__file__)
@@ -162,18 +162,19 @@ def get_nb_diffs(
     if verbose:
         set_verbose(logger)
 
-    repo = get_repo(path=Path.cwd()) if repo is None else repo
+    common_path = find_common_parent(paths or [Path.cwd()])
+    repo = get_repo(path=common_path) if repo is None else repo
     if repo.working_dir is None:
         raise ValueError("No repository.")
 
     ref_base = repo.index if ref_base is None else repo.tree(ref_base)
     ref_remote = ref_remote if ref_remote is None else repo.tree(ref_remote)
 
-    paths = paths or [Path(repo.working_dir)]
     logger.debug(
         f"Looking for diffs on path(s) {[p.resolve() for p in paths]}.\n"
         f"Comparing `{ref_base}` and `{ref_remote}`."
     )
+    repo_root_dir = Path(repo.working_dir)
     return [
         DiffContents(
             a=Contents(
@@ -181,7 +182,7 @@ def get_nb_diffs(
                 contents=diff2contents(
                     blob=cast(Blob, d.a_blob),
                     ref=ref_base,
-                    path=Path(d.a_path),
+                    path=repo_root_dir / d.a_path,
                     not_exists=d.change_type is ChangeType.A,  # type: ignore
                 ),
             ),
@@ -190,11 +191,11 @@ def get_nb_diffs(
                 contents=diff2contents(
                     blob=cast(Blob, d.b_blob),
                     ref=ref_remote,
-                    path=Path(d.b_path),
+                    path=repo_root_dir / d.b_path,
                     not_exists=d.change_type is ChangeType.D,  # type: ignore
                 ),
             ),
             change_type=ChangeType[d.change_type],
         )
-        for d in ref_base.diff(other=ref_remote, paths=list(paths))
+        for d in ref_base.diff(other=ref_remote, paths=list(paths) or [repo_root_dir])
     ]

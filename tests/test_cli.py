@@ -1,5 +1,4 @@
 import logging
-import os
 from copy import deepcopy
 from importlib import resources
 from pathlib import Path
@@ -482,8 +481,6 @@ def test_show_no_multiple() -> None:
 
 def test_diff(tmp_path: Path) -> None:
     """Show rich diffs of notebooks."""
-    os.chdir(tmp_path)  # change to directory with git project
-
     nb_path = Path("test_conflicts_nb.ipynb")
     notebook_1 = TestJupyterNotebook().jupyter_notebook
     notebook_2 = TestJupyterNotebook().jupyter_notebook
