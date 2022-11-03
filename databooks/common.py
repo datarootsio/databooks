@@ -53,12 +53,13 @@ def find_obj(
 
     :param obj_name: File name to locate
     :param start: Start (parent) directory
-    :param finish: Finish (child) directory
+    :param finish: Finish (child) path
     :param is_dir: Whether object is a directory or a file
     :return: File path
     """
-    if not start.is_dir() or not finish.is_dir():
-        raise ValueError("Parameters `start` and `finish` must be directories.")
+    finish = finish if finish.is_dir() else finish.parent
+    if not start.is_dir():
+        raise ValueError("Parameter `start` must be a directory.")
 
     if start.resolve() not in [finish, *finish.resolve().parents]:
         logger.debug(
