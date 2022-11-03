@@ -46,7 +46,7 @@ def _help_callback(ctx: Context, show_help: Optional[bool]) -> None:
 def _config_callback(ctx: Context, config_path: Optional[Path]) -> Optional[Path]:
     """Get config file and inject values into context to override default args."""
     target_paths = expand_paths(
-        paths=[Path(p) for p in ctx.params.get("paths", ())], rglob="*"
+        paths=[Path(p).resolve() for p in ctx.params.get("paths", ())]
     )
     config_path = (
         get_config(
