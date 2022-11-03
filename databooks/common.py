@@ -39,10 +39,10 @@ def expand_paths(
 
 
 def find_common_parent(paths: Iterable[Path]) -> Path:
-    """Find common parent amongst several file paths."""
+    """Find common parent amongst several file paths (includes current path)."""
     if not paths:
         raise ValueError(f"Expected non-empty `paths`, got {paths}.")
-    return max(set.intersection(*[set(p.resolve().parents) for p in paths]))
+    return max(set.intersection(*[{*p.resolve().parents, p.resolve()} for p in paths]))
 
 
 def find_obj(
