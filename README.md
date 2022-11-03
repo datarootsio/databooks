@@ -92,6 +92,18 @@ $ databooks show [OPTIONS] PATHS...
 
 ![databooks show demo](https://raw.githubusercontent.com/datarootsio/databooks/main/docs/images/databooks-show.gif)
 
+### Show rich notebook diffs
+
+Similar to git diff, but for notebooks! Show a rich diff of the notebooks in the
+terminal. Works for comparing git index with the current working directory, comparing
+branches or blobs.
+
+```console
+$ databooks diff [OPTIONS] [REF_BASE] [REF_REMOTE] [PATHS]...
+```
+
+![databooks diff demo](https://raw.githubusercontent.com/datarootsio/databooks/main/docs/images/databooks-diff.gif)
+
 ## License
 
 This project is licensed under the terms of the MIT license.
