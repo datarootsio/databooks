@@ -48,7 +48,7 @@ def test_metadata_clear(tmp_path: Path) -> None:
     clear(
         read_path=read_path,
         write_path=write_path,
-        cell_fields_keep=["cell_type", "source", "metadata"],
+        cell_fields_keep=["cell_type", "source", "metadata", "outputs"],
     )
 
     nb_read = JupyterNotebook.parse_file(path=read_path)
