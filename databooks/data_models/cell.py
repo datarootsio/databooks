@@ -49,7 +49,7 @@ class BaseCell(DatabooksBase):
          fields for cell type.
         """
         # Ignore required `BaseCell` fields
-        cell_fields = self.__fields__  # required fields especified in class definition
+        cell_fields = BaseCell.__fields__  # required fields
         if any(field in fields for field in cell_fields):
             logger.debug(
                 "Ignoring removal of required fields "
