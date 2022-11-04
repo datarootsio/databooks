@@ -1,15 +1,13 @@
 from pathlib import Path
 
-from py._path.local import LocalPath
-
 from databooks.common import find_obj
 
 
-def test_find_obj(tmpdir: LocalPath) -> None:
+def test_find_obj(tmp_path: Path) -> None:
     """Find file based on name, and search path."""
     filename = "SAMPLE_FILE.ext"
 
-    start_dir = Path(tmpdir)
+    start_dir = Path(tmp_path)
     end_dir = start_dir / "to" / "some" / "dir"
     end_dir.mkdir(parents=True)
     (start_dir / "to" / filename).touch()
@@ -19,11 +17,11 @@ def test_find_obj(tmpdir: LocalPath) -> None:
     assert filepath.is_file()
 
 
-def test_find_obj__missing(tmpdir: LocalPath) -> None:
+def test_find_obj__missing(tmp_path: Path) -> None:
     """Return `None` when looking for file along path."""
     filename = "SAMPLE_FILE.ext"
 
-    start_dir = Path(tmpdir)
+    start_dir = Path(tmp_path)
     end_dir = start_dir / "to" / "some" / "dir"
     end_dir.mkdir(parents=True)
 

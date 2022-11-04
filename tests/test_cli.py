@@ -5,7 +5,6 @@ from pathlib import Path
 from textwrap import dedent
 
 from _pytest.logging import LogCaptureFixture
-from py._path.local import LocalPath
 from typer import Context
 from typer.core import TyperCommand
 from typer.testing import CliRunner
@@ -38,9 +37,11 @@ def test_config_callback() -> None:
         assert parsed_config == conf
 
 
-def test_meta(tmpdir: LocalPath) -> None:
+def test_meta(tmp_path: Path) -> None:
     """Remove notebook metadata."""
-    read_path = tmpdir.mkdir("notebooks") / "test_meta_nb.ipynb"  # type: ignore
+    tmp_path /= "notebooks"
+    tmp_path.mkdir()
+    read_path = tmp_path / "test_meta_nb.ipynb"  # type: ignore
     TestJupyterNotebook().jupyter_notebook.write(read_path)
 
     nb_read = JupyterNotebook.parse_file(path=read_path)
@@ -67,11 +68,13 @@ def test_meta(tmpdir: LocalPath) -> None:
     )
 
 
-def test_meta__check(tmpdir: LocalPath, caplog: LogCaptureFixture) -> None:
+def test_meta__check(tmp_path: Path, caplog: LogCaptureFixture) -> None:
     """Report on existing notebook metadata (both when it is and isn't present)."""
     caplog.set_level(logging.INFO)
 
-    read_path = tmpdir.mkdir("notebooks") / "test_meta_nb.ipynb"  # type: ignore
+    tmp_path /= "notebooks"
+    tmp_path.mkdir()
+    read_path = tmp_path / "test_meta_nb.ipynb"  # type: ignore
     TestJupyterNotebook().jupyter_notebook.write(read_path)
 
     nb_read = JupyterNotebook.parse_file(path=read_path)
@@ -94,9 +97,11 @@ def test_meta__check(tmpdir: LocalPath, caplog: LogCaptureFixture) -> None:
     assert logs[-1].message == "No unwanted metadata!"
 
 
-def test_meta__config(tmpdir: LocalPath) -> None:
+def test_meta__config(tmp_path: Path) -> None:
     """Check notebook metadata with configuration overriding defaults."""
-    read_path = tmpdir.mkdir("notebooks") / "test_meta_nb.ipynb"  # type: ignore
+    tmp_path /= "notebooks"
+    tmp_path.mkdir()
+    read_path = tmp_path / "test_meta_nb.ipynb"  # type: ignore
     TestJupyterNotebook().jupyter_notebook.write(read_path)
 
     nb_read = JupyterNotebook.parse_file(path=read_path)
@@ -130,9 +135,11 @@ def test_meta__config(tmpdir: LocalPath) -> None:
     assert all(c.execution_count is None for c in nb_write.cells)
 
 
-def test_meta__script(tmpdir: LocalPath) -> None:
+def test_meta__script(tmp_path: Path) -> None:
     """Raise `typer.BadParameter` when passing a script instead of a notebook."""
-    py_path = tmpdir.mkdir("files") / "a_script.py"  # type: ignore
+    tmp_path /= "files"
+    tmp_path.mkdir()
+    py_path = tmp_path / "a_script.py"  # type: ignore
     py_path.write_text("# some python code", encoding="utf-8")
 
     result = runner.invoke(app, ["meta", str(py_path)])
@@ -143,9 +150,11 @@ def test_meta__script(tmpdir: LocalPath) -> None:
     )
 
 
-def test_meta__no_confirm(tmpdir: LocalPath) -> None:
+def test_meta__no_confirm(tmp_path: Path) -> None:
     """Don't make any changes without confirmation to overwrite files (prompt)."""
-    nb_path = tmpdir.mkdir("notebooks") / "test_meta_nb.ipynb"  # type: ignore
+    tmp_path /= "notebooks"
+    tmp_path.mkdir()
+    nb_path = tmp_path / "test_meta_nb.ipynb"  # type: ignore
     TestJupyterNotebook().jupyter_notebook.write(nb_path)
 
     result = runner.invoke(app, ["meta", str(nb_path)])
@@ -158,9 +167,11 @@ def test_meta__no_confirm(tmpdir: LocalPath) -> None:
     )
 
 
-def test_meta__confirm(tmpdir: LocalPath) -> None:
+def test_meta__confirm(tmp_path: Path) -> None:
     """Make changes when confirming overwrite via the prompt."""
-    nb_path = tmpdir.mkdir("notebooks") / "test_meta_nb.ipynb"  # type: ignore
+    tmp_path /= "notebooks"
+    tmp_path.mkdir()
+    nb_path = tmp_path / "test_meta_nb.ipynb"  # type: ignore
     TestJupyterNotebook().jupyter_notebook.write(nb_path)
 
     result = runner.invoke(app, ["meta", str(nb_path)], input="y")
@@ -174,10 +185,12 @@ def test_meta__confirm(tmpdir: LocalPath) -> None:
     )
 
 
-def test_meta__no_notebooks_found(tmpdir: LocalPath, caplog: LogCaptureFixture) -> None:
+def test_meta__no_notebooks_found(tmp_path: Path, caplog: LogCaptureFixture) -> None:
     """Log that no notebook was found in the paths passed."""
     caplog.set_level(logging.INFO)
-    nb_path = tmpdir.mkdir("notebooks") / "inexistent_nb.ipynb"  # type: ignore
+    tmp_path /= "notebooks"
+    tmp_path.mkdir()
+    nb_path = tmp_path / "inexistent_nb.ipynb"  # type: ignore
 
     result = runner.invoke(app, ["meta", str(nb_path), "--check"])
     logs = list(caplog.records)
@@ -226,7 +239,7 @@ def test_assert__config(caplog: LogCaptureFixture) -> None:
     )
 
 
-def test_fix(tmpdir: LocalPath) -> None:
+def test_fix(tmp_path: Path) -> None:
     """Fix notebook conflicts."""
     # Setup
     nb_path = Path("test_conflicts_nb.ipynb")
@@ -251,7 +264,7 @@ def test_fix(tmpdir: LocalPath) -> None:
     notebook_2.nbformat_minor += 1
 
     git_repo = init_repo_conflicts(
-        tmpdir=tmpdir,
+        tmp_path=tmp_path,
         filename=nb_path,
         contents_main=notebook_1.json(),
         contents_other=notebook_2.json(),
@@ -264,8 +277,8 @@ def test_fix(tmpdir: LocalPath) -> None:
     id_other = conflict_files[0].last_log
 
     # Run CLI and check conflict resolution
-    result = runner.invoke(app, ["fix", str(tmpdir)])
-    fixed_notebook = JupyterNotebook.parse_file(path=tmpdir / nb_path)
+    result = runner.invoke(app, ["fix", str(tmp_path)])
+    fixed_notebook = JupyterNotebook.parse_file(path=tmp_path / nb_path)
 
     assert len(conflict_files) == 1
     assert result.exit_code == 0
@@ -300,7 +313,7 @@ def test_fix(tmpdir: LocalPath) -> None:
     ]
 
 
-def test_fix__config(tmpdir: LocalPath) -> None:
+def test_fix__config(tmp_path: Path) -> None:
     """Fix notebook conflicts with configuration overriding defaults."""
     # Setup
     nb_path = Path("test_conflicts_nb.ipynb")
@@ -325,7 +338,7 @@ def test_fix__config(tmpdir: LocalPath) -> None:
     notebook_2.nbformat_minor += 1
 
     git_repo = init_repo_conflicts(
-        tmpdir=tmpdir,
+        tmp_path=tmp_path,
         filename=nb_path,
         contents_main=notebook_1.json(),
         contents_other=notebook_2.json(),
@@ -339,8 +352,10 @@ def test_fix__config(tmpdir: LocalPath) -> None:
 
     with resources.path("tests.files", "pyproject.toml") as config_path:
         # Run CLI and check conflict resolution
-        result = runner.invoke(app, ["fix", str(tmpdir), "--config", str(config_path)])
-    fixed_notebook = JupyterNotebook.parse_file(path=tmpdir / nb_path)
+        result = runner.invoke(
+            app, ["fix", str(tmp_path), "--config", str(config_path)]
+        )
+    fixed_notebook = JupyterNotebook.parse_file(path=tmp_path / nb_path)
 
     assert len(conflict_files) == 1
     assert result.exit_code == 0

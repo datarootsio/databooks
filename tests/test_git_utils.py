@@ -1,14 +1,13 @@
 from pathlib import Path
 
 from git import GitCommandError, Repo
-from py._path.local import LocalPath
 from pytest import raises
 
 from databooks.git_utils import ConflictFile, get_conflict_blobs, get_repo
 
 
 def init_repo_conflicts(
-    tmpdir: LocalPath,
+    tmp_path: Path,
     filename: Path,
     contents_main: str,
     contents_other: str,
@@ -16,7 +15,7 @@ def init_repo_conflicts(
     commit_message_other: str,
 ) -> Repo:
     """Create git repo and create a conflict."""
-    git_repo = Repo.init(path=tmpdir)
+    git_repo = Repo.init(path=tmp_path)
 
     if not isinstance(git_repo.working_dir, (Path, str)):
         raise RuntimeError(
@@ -57,11 +56,11 @@ def test_get_repo() -> None:
     assert Path(repo.working_dir).stem == "databooks"
 
 
-def test_get_conflict_blobs(tmpdir: LocalPath) -> None:
+def test_get_conflict_blobs(tmp_path: Path) -> None:
     """Return `databooks.git_utils.ConflctFile` from git merge conflict."""
     filepath = Path("hello.txt")
     git_repo = init_repo_conflicts(
-        tmpdir=tmpdir,
+        tmp_path=tmp_path,
         filename=filepath,
         contents_main="HELLO EVERYONE!",
         contents_other="hello world",

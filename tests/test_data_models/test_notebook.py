@@ -3,11 +3,11 @@ import json
 import logging
 from copy import deepcopy
 from importlib import resources
+from pathlib import Path
 from typing import List, Tuple
 
 import pytest
 from _pytest.logging import LogCaptureFixture
-from py._path.local import LocalPath
 
 from databooks.data_models.cell import (
     CellMetadata,
@@ -369,9 +369,9 @@ def test_parse_file() -> None:
     )
 
 
-def test_write_file(tmpdir: LocalPath) -> None:
+def test_write_file(tmp_path: Path) -> None:
     """Check that serialization and deserialization are valid."""
-    write_path = tmpdir / "serialized_demo.ipynb"
+    write_path = tmp_path / "serialized_demo.ipynb"
     with resources.path("tests.files", "demo.ipynb") as nb_path:
         notebook = JupyterNotebook.parse_file(nb_path)
         in_json_str = nb_path.read_text(encoding="utf-8")

@@ -1,7 +1,5 @@
 from pathlib import Path
 
-from py._path.local import LocalPath
-
 from databooks.conflicts import path2conflicts
 from databooks.data_models.cell import BaseCell, CellMetadata
 from databooks.data_models.notebook import NotebookMetadata
@@ -9,7 +7,7 @@ from tests.test_data_models.test_notebook import TestJupyterNotebook
 from tests.test_git_utils import ConflictFile, init_repo_conflicts
 
 
-def test_path2diff(tmpdir: LocalPath) -> None:
+def test_path2diff(tmp_path: Path) -> None:
     """Return a DiffFile based on a path and git conflicts."""
     notebook_main = TestJupyterNotebook().jupyter_notebook
     notebook_other = TestJupyterNotebook().jupyter_notebook
@@ -31,7 +29,7 @@ def test_path2diff(tmpdir: LocalPath) -> None:
     nb_filepath = Path("test_notebook.ipynb")
 
     git_repo = init_repo_conflicts(
-        tmpdir=tmpdir,
+        tmp_path=tmp_path,
         filename=nb_filepath,
         contents_main=notebook_main.json(),
         contents_other=notebook_other.json(),
