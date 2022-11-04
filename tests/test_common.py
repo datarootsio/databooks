@@ -7,7 +7,7 @@ def test_find_obj(tmp_path: Path) -> None:
     """Find file based on name, and search path."""
     filename = "SAMPLE_FILE.ext"
 
-    start_dir = Path(tmp_path)
+    start_dir = tmp_path
     end_dir = start_dir / "to" / "some" / "dir"
     end_dir.mkdir(parents=True)
     (start_dir / "to" / filename).touch()
@@ -21,7 +21,7 @@ def test_find_obj__missing(tmp_path: Path) -> None:
     """Return `None` when looking for file along path."""
     filename = "SAMPLE_FILE.ext"
 
-    start_dir = Path(tmp_path)
+    start_dir = tmp_path
     end_dir = start_dir / "to" / "some" / "dir"
     end_dir.mkdir(parents=True)
 
