@@ -720,7 +720,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "flake8 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "f5fcf38edb9279cd3746f66601d91e20f7f89b91e9f09169d46bf4b903162c30"
+content-hash = "b965437dce7692142c6f9f0e7dc693a03472d67d8123d1f512dc15563c6b9461"
 
 [metadata.files]
 astunparse = []
