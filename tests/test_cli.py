@@ -150,7 +150,7 @@ def test_meta__no_confirm(tmp_path: Path) -> None:
     assert JupyterNotebook.parse_file(nb_path) == TestJupyterNotebook().jupyter_notebook
     assert result.output.startswith(
         "1 files will be overwritten (no prefix nor suffix was passed)."
-        " Continue? [y/n]: \nAborted"
+        " Continue? [y/n]:"
     )
 
 
