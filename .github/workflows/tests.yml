@@ -27,7 +27,7 @@ jobs:
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
       - name: Unit tests
         run: |
-          pytest -v
+          pytest -vv
       - name: Coverage report
         run: |
           pytest --cov=./ --cov-report=xml
