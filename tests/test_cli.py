@@ -136,10 +136,7 @@ def test_meta__script(tmp_path: Path) -> None:
 
     result = runner.invoke(app, ["meta", str(py_path)])
     assert result.exit_code == 2
-    assert (
-        "Expected either notebook files, a directory or glob expression."
-        in result.output
-    )
+    assert "Expected either notebook files, a directory or glob " in result.output
 
 
 def test_meta__no_confirm(tmp_path: Path) -> None:
@@ -151,9 +148,9 @@ def test_meta__no_confirm(tmp_path: Path) -> None:
 
     assert result.exit_code == 1
     assert JupyterNotebook.parse_file(nb_path) == TestJupyterNotebook().jupyter_notebook
-    assert result.output == (
+    assert result.output.startswith(
         "1 files will be overwritten (no prefix nor suffix was passed)."
-        " Continue? [y/n]: \nAborted!\n"
+        " Continue? [y/n]: \nAborted"
     )
 
 
