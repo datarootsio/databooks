@@ -466,4 +466,4 @@ def diff(
     if len(diffs) > 1 and not multiple:
         if not Confirm.ask(f"Show {len(diffs)} notebook diffs?"):
             raise Exit()
-    print_diffs(diffs=diffs)
+    print_diffs(diffs=diffs, use_pager=pager)
