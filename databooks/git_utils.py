@@ -165,7 +165,7 @@ def get_nb_diffs(
     common_path = find_common_parent(paths or [Path.cwd()])
     repo = get_repo(path=common_path) if repo is None else repo
     if repo.working_dir is None:
-        raise ValueError("No repository.")
+        raise ValueError("No repo found - cannot compute diffs.")
 
     ref_base = repo.index if ref_base is None else repo.tree(ref_base)
     ref_remote = ref_remote if ref_remote is None else repo.tree(ref_remote)
@@ -197,5 +197,7 @@ def get_nb_diffs(
             ),
             change_type=ChangeType[d.change_type],
         )
-        for d in ref_base.diff(other=ref_remote, paths=list(paths) or [repo_root_dir])
+        for d in ref_base.diff(
+            other=ref_remote, paths=list(paths) or list(repo_root_dir.rglob("*.ipynb"))
+        )
     ]

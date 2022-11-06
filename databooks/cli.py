@@ -48,7 +48,7 @@ def _config_callback(ctx: Context, config_path: Optional[Path]) -> Optional[Path
     """Get config file and inject values into context to override default args."""
     target_paths = expand_paths(
         paths=[Path(p).resolve() for p in ctx.params.get("paths", ())]
-    )
+    ) or [Path.cwd()]
     config_path = (
         get_config(
             target_paths=target_paths,
@@ -58,7 +58,6 @@ def _config_callback(ctx: Context, config_path: Optional[Path]) -> Optional[Path
         else config_path
     )
     logger.debug(f"Loading config file from: {config_path}")
-
     if config_path is not None:  # config may not be specified
         with config_path.open("rb") as f:
             conf = (
@@ -83,7 +82,9 @@ def _check_paths(paths: List[Path], ignore: List[str]) -> List[Path]:
         )
     nb_paths = expand_paths(paths=paths, ignore=ignore)
     if not nb_paths:
-        logger.info(f"No notebooks found in {paths}. Nothing to do.")
+        logger.info(
+            f"No notebooks found in {[p.resolve() for p in paths]}. Nothing to do."
+        )
         raise Exit()
     return nb_paths
 
@@ -456,7 +457,6 @@ def diff(
      compare the current directory with the current index.
     """
     (ref_base, ref_remote), paths = _parse_paths(ref_base, ref_remote, paths=paths)
-    paths = _check_paths(paths=paths or [Path.cwd()], ignore=ignore)
     diffs = get_nb_diffs(
         ref_base=ref_base, ref_remote=ref_remote, paths=paths, verbose=verbose
     )
