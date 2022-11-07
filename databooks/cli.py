@@ -341,7 +341,10 @@ def fix(
      a valid notebook summarizing the differences - see
      [git docs](https://git-scm.com/docs/git-ls-files).
     """
-    filepaths = expand_paths(paths=paths, ignore=ignore)
+    # `paths` are required so `filepaths` will never be `None`
+    filepaths: List[Path] = expand_paths(  # type: ignore[assignment]
+        paths=paths, ignore=ignore
+    )
     conflict_files = path2conflicts(nb_paths=filepaths)
     if not conflict_files:
         raise BadParameter(
