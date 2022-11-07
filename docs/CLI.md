@@ -43,7 +43,7 @@ $ databooks [OPTIONS] COMMAND [ARGS]...
 **Commands**:
 
 * `assert`: Assert notebook metadata has desired values.
-* `diff`: Show differences between notebooks (not...
+* `diff`: Show differences between notebooks.
 * `fix`: Fix git conflicts for notebooks.
 * `meta`: Clear both notebook and cell metadata.
 * `show`: Show rich representation of notebook.
@@ -79,17 +79,33 @@ $ databooks assert [OPTIONS] PATHS...
 
 ## `databooks diff`
 
-Show differences between notebooks (not implemented).
+Show differences between notebooks.
+
+This is similar to `git-diff`, but in practice it is a subset of `git-diff`
+ features - only exception is that we cannot compare diffs between local files. That
+ means we can compare files that are staged with other branches, hashes, etc., or
+ compare the current directory with the current index.
 
 **Usage**:
 
 ```console
-$ databooks diff [OPTIONS]
+$ databooks diff [OPTIONS] [REF_BASE] [REF_REMOTE] [PATHS]...
 ```
+
+**Arguments**:
+
+* `[REF_BASE]`: Base reference (hash, branch, etc.), defaults to index
+* `[REF_REMOTE]`: Remote reference (hash, branch, etc.), defaults to working tree
+* `[PATHS]...`: Path(s) of notebook files to compare
 
 **Options**:
 
-* `--help`: Show this message and exit.
+* `--ignore TEXT`: Glob expression(s) of files to ignore  [default: !*]
+* `-p, --pager`: Use pager instead of printing to terminal  [default: False]
+* `-v, --verbose`: Increase verbosity for debugging  [default: False]
+* `-y, --yes`: Show multiple files  [default: False]
+* `-c, --config PATH`: Get CLI options from configuration file
+* `--help`: Show this message and exit
 
 ## `databooks fix`
 

@@ -1,7 +1,7 @@
 """Main CLI application."""
 from itertools import compress
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 import tomli
 from rich.progress import (
@@ -18,10 +18,11 @@ from databooks.affirm import affirm_all
 from databooks.common import expand_paths
 from databooks.config import TOML_CONFIG_FILE, get_config
 from databooks.conflicts import conflicts2nbs, path2conflicts
+from databooks.git_utils import get_nb_diffs
 from databooks.logging import get_logger
 from databooks.metadata import clear_all
 from databooks.recipes import Recipe
-from databooks.tui import print_nbs
+from databooks.tui import print_diffs, print_nbs
 from databooks.version import __version__
 
 logger = get_logger(__file__)
@@ -47,7 +48,7 @@ def _config_callback(ctx: Context, config_path: Optional[Path]) -> Optional[Path
     """Get config file and inject values into context to override default args."""
     target_paths = expand_paths(
         paths=[Path(p).resolve() for p in ctx.params.get("paths", ())]
-    )
+    ) or [Path.cwd()]
     config_path = (
         get_config(
             target_paths=target_paths,
@@ -57,7 +58,6 @@ def _config_callback(ctx: Context, config_path: Optional[Path]) -> Optional[Path
         else config_path
     )
     logger.debug(f"Loading config file from: {config_path}")
-
     if config_path is not None:  # config may not be specified
         with config_path.open("rb") as f:
             conf = (
@@ -82,9 +82,25 @@ def _check_paths(paths: List[Path], ignore: List[str]) -> List[Path]:
         )
     nb_paths = expand_paths(paths=paths, ignore=ignore)
     if not nb_paths:
-        logger.info(f"No notebooks found in {paths}. Nothing to do.")
+        logger.info(
+            f"No notebooks found in {[p.resolve() for p in paths]}. Nothing to do."
+        )
         raise Exit()
     return nb_paths
+
+
+def _parse_paths(
+    *refs: Optional[str], paths: List[Path]
+) -> Tuple[Tuple[Optional[str], ...], List[Path]]:
+    """Detect paths from `refs` and add to `paths`."""
+    first, *rest = refs
+    if first is not None and Path(first).exists():
+        paths += [Path(first)]
+        first = None
+    if rest:
+        _refs, _paths = _parse_paths(*rest, paths=paths)
+        return (first, *_refs), _paths
+    return (first,), paths
 
 
 @app.callback()
@@ -396,6 +412,58 @@ def show(
 
 
 @app.command()
-def diff() -> None:
-    """Show differences between notebooks (not implemented)."""
-    raise NotImplementedError
+def diff(
+    ref_base: Optional[str] = Argument(
+        None, help="Base reference (hash, branch, etc.), defaults to index"
+    ),
+    ref_remote: Optional[str] = Argument(
+        None, help="Remote reference (hash, branch, etc.), defaults to working tree"
+    ),
+    paths: List[Path] = Argument(
+        None, is_eager=True, help="Path(s) of notebook files to compare"
+    ),
+    ignore: List[str] = Option(["!*"], help="Glob expression(s) of files to ignore"),
+    pager: bool = Option(
+        False, "--pager", "-p", help="Use pager instead of printing to terminal"
+    ),
+    verbose: bool = Option(
+        False, "--verbose", "-v", help="Increase verbosity for debugging"
+    ),
+    multiple: bool = Option(False, "--yes", "-y", help="Show multiple files"),
+    config: Optional[Path] = Option(
+        None,
+        "--config",
+        "-c",
+        is_eager=True,
+        callback=_config_callback,
+        resolve_path=True,
+        exists=True,
+        help="Get CLI options from configuration file",
+    ),
+    help: Optional[bool] = Option(
+        None,
+        "--help",
+        is_eager=True,
+        callback=_help_callback,
+        help="Show this message and exit",
+    ),
+) -> None:
+    """
+    Show differences between notebooks.
+
+    This is similar to `git-diff`, but in practice it is a subset of `git-diff`
+     features - only exception is that we cannot compare diffs between local files. That
+     means we can compare files that are staged with other branches, hashes, etc., or
+     compare the current directory with the current index.
+    """
+    (ref_base, ref_remote), paths = _parse_paths(ref_base, ref_remote, paths=paths)
+    diffs = get_nb_diffs(
+        ref_base=ref_base, ref_remote=ref_remote, paths=paths, verbose=verbose
+    )
+    if not diffs:
+        logger.info("No notebook diffs found. Nothing to do.")
+        raise Exit()
+    if len(diffs) > 1 and not multiple:
+        if not Confirm.ask(f"Show {len(diffs)} notebook diffs?"):
+            raise Exit()
+    print_diffs(diffs=diffs, use_pager=pager)

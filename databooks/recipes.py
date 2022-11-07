@@ -61,4 +61,4 @@ class CookBook:
 
 
 # https://github.com/python/mypy/issues/5317
-Recipe = Enum("Recipe", CookBook._recipes())  # type: ignore
+Recipe = Enum("Recipe", CookBook._recipes())  # type: ignore[misc]

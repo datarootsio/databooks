@@ -1,10 +1,13 @@
 from pathlib import Path
 
+from git import GitCommandError
+from pytest import raises
+
 from databooks.conflicts import path2conflicts
 from databooks.data_models.cell import BaseCell, CellMetadata
 from databooks.data_models.notebook import NotebookMetadata
 from tests.test_data_models.test_notebook import TestJupyterNotebook
-from tests.test_git_utils import ConflictFile, init_repo_conflicts
+from tests.test_git_utils import ConflictFile, init_repo_diff
 
 
 def test_path2diff(tmp_path: Path) -> None:
@@ -28,7 +31,7 @@ def test_path2diff(tmp_path: Path) -> None:
 
     nb_filepath = Path("test_notebook.ipynb")
 
-    git_repo = init_repo_conflicts(
+    git_repo = init_repo_diff(
         tmp_path=tmp_path,
         filename=nb_filepath,
         contents_main=notebook_main.json(),
@@ -36,6 +39,8 @@ def test_path2diff(tmp_path: Path) -> None:
         commit_message_main="Commit message from main",
         commit_message_other="Commit message from other",
     )
+    with raises(GitCommandError):
+        git_repo.git.merge("other")  # merge fails and raises error due to conflict
 
     assert isinstance(git_repo.working_dir, (Path, str))
 
@@ -46,8 +51,8 @@ def test_path2diff(tmp_path: Path) -> None:
     conflict_file = conflict_files[0]
     assert isinstance(conflict_file, ConflictFile)
     assert conflict_file.filename == (git_repo.working_dir / nb_filepath)
-    assert conflict_file.first_contents == notebook_main.json()
-    assert conflict_file.last_contents == notebook_other.json()
+    assert conflict_file.first_contents == notebook_main.json().encode()
+    assert conflict_file.last_contents == notebook_other.json().encode()
 
     # We use git logs for ids, which start with a hash that won't match
     assert conflict_file.first_log.endswith("Commit message from main")

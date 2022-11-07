@@ -12,7 +12,6 @@ from _pytest.logging import LogCaptureFixture
 from databooks.data_models.cell import (
     CellMetadata,
     CellOutputs,
-    CellStreamOutput,
     CodeCell,
     MarkdownCell,
     RawCell,
@@ -114,19 +113,13 @@ class TestCell:
         assert cell == CodeCell(
             cell_type="code",
             metadata=CellMetadata(),
-            outputs=CellOutputs(
-                __root__=[
-                    CellStreamOutput(
-                        output_type="stream", name="stdout", text=["test text\n"]
-                    )
-                ]
-            ),
+            outputs=CellOutputs(__root__=[]),
             source=["test_source"],
             execution_count=None,
         )
         assert len(logs) == 1
         assert logs[0].message == (
-            "Ignoring removal of required fields ['outputs', 'source'] in `CodeCell`."
+            "Ignoring removal of required fields ['source'] in `CodeCell`."
         )
 
     def test_cells_sub(self) -> None:
@@ -146,7 +139,7 @@ class TestCell:
         """Test remove fields with logs."""
         caplog.set_level(logging.DEBUG)
         cell = deepcopy(self.cell)
-        cell.remove_fields(["cell_type", "outputs"])  # yields invalid `cell`
+        cell.remove_fields(["cell_type", "outputs"])
         logs = list(caplog.records)
 
         assert cell.dict() == dict(
@@ -154,14 +147,11 @@ class TestCell:
             metadata=self.cell_metadata,
             source=["test_source"],
             execution_count=1,
-            outputs=[
-                {"name": "stdout", "output_type": "stream", "text": ["test text\n"]}
-            ],
+            outputs=[],
         )
         assert len(logs) == 1
         assert logs[0].message == (
-            "Ignoring removal of required fields ['cell_type', 'outputs'] in"
-            " `CodeCell`."
+            "Ignoring removal of required fields ['cell_type'] in `CodeCell`."
         )
 
 
@@ -189,14 +179,7 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
 
         assert all(cell.metadata == CellMetadata() for cell in notebook.cells)
         assert all(
-            cell.outputs
-            == CellOutputs(
-                __root__=[
-                    CellStreamOutput(
-                        output_type="stream", name="stdout", text=["test text\n"]
-                    )
-                ]
-            )
+            cell.outputs == CellOutputs(__root__=[])
             for cell in notebook.cells
             if cell.cell_type == "code"
         )

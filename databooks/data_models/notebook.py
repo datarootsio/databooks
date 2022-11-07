@@ -218,6 +218,9 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
 
         kernelspec = self.metadata.dict().get("kernelspec", {})
         if isinstance(kernelspec, tuple):  # check if this is a `DiffCells`
+            kernelspec = tuple(
+                ks or {"language": "text", "display_name": "null"} for ks in kernelspec
+            )
             lang_first, lang_last = (ks.get("language", "text") for ks in kernelspec)
             nb_lang = lang_first if lang_first == lang_last else "text"
             if any("display_name" in ks.keys() for ks in kernelspec):
