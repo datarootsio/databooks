@@ -8,9 +8,6 @@ readme = "README.md"
 homepage = "https://datarootsio.github.io/databooks/"
 repository = "https://github.com/datarootsio/databooks/"
 keywords = ["jupyter-notebooks", "cli"]
-include = [
-    "LICENSE",
-]
 
 [tool.poetry.scripts]
 databooks = "databooks.cli:app"
