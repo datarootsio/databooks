@@ -16,7 +16,8 @@ logger = get_logger(__file__)
 def get_config(target_paths: List[Path], config_filename: str) -> Optional[Path]:
     """Find configuration file from CLI target paths."""
     common_path = find_common_parent(paths=target_paths)
-    repo_dir = get_repo().working_dir
+    repo = get_repo(common_path)
+    repo_dir = getattr(repo, "working_dir", None)
 
     return find_obj(
         obj_name=config_filename,

@@ -64,6 +64,11 @@ def test_get_repo() -> None:
     assert Path(repo.working_dir).stem == "databooks"
 
 
+def test_get_repo_missing(tmp_path: Path) -> None:
+    """Return `None` if there is no repo."""
+    assert get_repo(tmp_path) is None
+
+
 def test_get_conflict_blobs(tmp_path: Path) -> None:
     """Return `databooks.git_utils.ConflctFile` from git merge conflict."""
     filepath = Path("hello.txt")

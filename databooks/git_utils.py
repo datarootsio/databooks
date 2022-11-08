@@ -109,14 +109,18 @@ def diff2contents(
         return blob2str(blob)
 
 
-def get_repo(path: Path = Path.cwd()) -> Repo:
+def get_repo(path: Path) -> Optional[Repo]:
     """Find git repo in current or parent directories."""
     repo_dir = find_obj(
         obj_name=".git", start=Path(path.anchor), finish=path, is_dir=True
     )
-    repo = Repo(path=repo_dir)
-    logger.debug(f"Repo found at: {repo.working_dir}")
-    return repo
+    if repo_dir is not None:
+        repo = Repo(path=repo_dir)
+        logger.debug(f"Repo found at: {repo.working_dir}.")
+        return repo
+    else:
+        logger.debug(f"No repo found at {path}.")
+        return None
 
 
 def get_conflict_blobs(repo: Repo) -> List[ConflictFile]:
@@ -164,7 +168,7 @@ def get_nb_diffs(
 
     common_path = find_common_parent(paths or [Path.cwd()])
     repo = get_repo(path=common_path) if repo is None else repo
-    if repo.working_dir is None:
+    if repo is None or repo.working_dir is None:
         raise ValueError("No repo found - cannot compute diffs.")
 
     ref_base = repo.index if ref_base is None else repo.tree(ref_base)

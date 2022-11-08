@@ -31,6 +31,8 @@ def path2conflicts(
         )
     common_parent = find_common_parent(nb_paths)
     repo = get_repo(common_parent) if repo is None else repo
+    if repo is None:
+        raise ValueError("No repo found - cannot compute conflict blobs.")
     return [
         file
         for file in get_conflict_blobs(repo=repo)

@@ -10,7 +10,7 @@ logger = get_logger(__file__)
 
 def expand_paths(
     paths: List[Path], *, ignore: Sequence[str] = ("!*",), rglob: str = "*.ipynb"
-) -> List[Path]:
+) -> Optional[List[Path]]:
     """
     Get paths of existing file from list of directory or file paths.
 
@@ -20,13 +20,16 @@ def expand_paths(
      existing file paths (i.e.: to retrieve only notebooks)
     :return: List of existing file paths
     """
+    if not paths:
+        return None
     filepaths = set(
         chain.from_iterable(
             list(path.resolve().rglob(rglob)) if path.is_dir() else [path]
             for path in paths
         )
     )
-    ignored = set(chain.from_iterable(Path.cwd().rglob(i) for i in ignore))
+    common_path = find_common_parent(paths=paths)
+    ignored = set(chain.from_iterable(common_path.rglob(i) for i in ignore))
     ignored = {p.resolve() for p in ignored}
     logger.debug(
         f"{len(ignored)} files will be ignored from {len(filepaths)} file paths."

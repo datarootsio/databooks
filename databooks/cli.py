@@ -342,6 +342,10 @@ def fix(
      [git docs](https://git-scm.com/docs/git-ls-files).
     """
     filepaths = expand_paths(paths=paths, ignore=ignore)
+    if filepaths is None:
+        raise RuntimeError(
+            f"Expected `filepaths` to be list of paths, got {filepaths}."
+        )
     conflict_files = path2conflicts(nb_paths=filepaths)
     if not conflict_files:
         raise BadParameter(
