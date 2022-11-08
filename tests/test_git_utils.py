@@ -55,13 +55,13 @@ def init_repo_diff(
     return git_repo
 
 
-def test_get_repo() -> None:
+def test_get_repo(tmp_path: Path) -> None:
     """Find git repository."""
-    curr_dir = Path(__file__).parent
-    repo = get_repo(curr_dir)
+    Repo.init(tmp_path)
+    repo = get_repo(tmp_path)
     assert repo.working_dir is not None
     assert isinstance(repo, Repo)
-    assert Path(repo.working_dir).stem == "databooks"
+    assert Path(repo.working_dir).stem == "test_get_repo0"
 
 
 def test_get_repo_missing(tmp_path: Path) -> None:
