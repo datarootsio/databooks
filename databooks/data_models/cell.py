@@ -11,6 +11,7 @@ from rich.syntax import Syntax
 from rich.text import Text
 
 from databooks.data_models.base import DatabooksBase
+from databooks.data_models.rich_helpers import HtmlTable
 from databooks.logging import get_logger
 
 logger = get_logger(__file__)
@@ -147,11 +148,11 @@ class CellDisplayDataOutput(DatabooksBase):
         """Dynamically compute the rich output - also in `CellExecuteResultOutput`."""
         mime_func = {
             "image/png": None,
-            "text/html": None,
+            "text/html": lambda s: HtmlTable("".join(s)).rich(),
             "text/plain": lambda s: Text("".join(s)),
         }
         supported = [k for k, v in mime_func.items() if v is not None]
-        not_supported = [
+        not_supported: List[ConsoleRenderable] = [
             Text(f"<✨Rich✨ `{mime}` not currently supported 😢>")
             for mime in self.data.keys()
             if mime not in supported
