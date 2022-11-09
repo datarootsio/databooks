@@ -45,8 +45,11 @@ class HtmlTable(HTMLParser):
         if self.table and (self.th or self.td):
             self.row.append(data)
 
-    def rich(self, **tbl_kwargs: Any) -> Table:
+    def rich(self, **tbl_kwargs: Any) -> Optional[Table]:
         """Generate `rich` representation of table."""
+        if not self.rows and not self.headers:  # HTML is not a table
+            return None
+
         _ncols = len(self.rows[0])
         _headers = [""] * (_ncols - len(self.headers)) + self.headers
         if any(len(row) != _ncols for row in self.rows):
