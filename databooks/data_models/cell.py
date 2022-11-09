@@ -151,7 +151,10 @@ class CellDisplayDataOutput(DatabooksBase):
             "text/html": lambda s: HtmlTable("".join(s)).rich(),
             "text/plain": lambda s: Text("".join(s)),
         }
-        _rich = {mime: mime_func[mime](content) for mime, content in self.data.items()}
+        _rich = {
+            mime: mime_func.get(mime, lambda s: None)(content)  # try to render element
+            for mime, content in self.data.items()
+        }
         return [
             *[
                 Text(f"<✨Rich✨ `{mime}` not available 😢>")
