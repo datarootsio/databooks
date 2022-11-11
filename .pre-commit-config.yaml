@@ -37,6 +37,7 @@ repos:
           - GitPython==3.1.26
           - typing-extensions==4.0.1
           - tomli==2.0.1
+          - types-pillow==9.3.0.1
   - repo: https://github.com/codespell-project/codespell
     rev: v2.2.4
     hooks:
@@ -54,8 +55,10 @@ repos:
           - cogapp==3.3.0
           - typer-cli==0.0.12
           - typer==0.3.2
-          - rich==10.16.2
+          - rich==12.6.0
           - pydantic==1.9.0
           - GitPython==3.1.26
           - typing-extensions==4.0.1
           - tomli==2.0.1
+          - rich-pixels==2.0.0
+          - pillow==9.3.0

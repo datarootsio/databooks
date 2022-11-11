@@ -1,4 +1,4 @@
-from databooks.data_models.rich_helpers import HtmlTable
+from databooks.data_models._rich import HtmlTable
 from tests.test_tui import render
 
 
