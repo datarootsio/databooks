@@ -561,3 +561,89 @@ test text
 
 """
     )
+
+
+def test_diff_svg(tmp_path: Path) -> None:
+    """Show rich diffs of notebooks."""
+    nb_path = Path("test_conflicts_nb.ipynb")
+    notebook_1 = TestJupyterNotebook().jupyter_notebook
+    notebook_2 = TestJupyterNotebook().jupyter_notebook
+
+    notebook_1.metadata = NotebookMetadata(
+        kernelspec=dict(
+            display_name="different_kernel_display_name", name="kernel_name"
+        ),
+        field_to_remove=["Field to remove"],
+        another_field_to_remove="another field",
+    )
+
+    extra_cell = BaseCell(
+        cell_type="raw",
+        metadata=CellMetadata(random_meta=["meta"]),
+        source="extra",
+    )
+    notebook_1.cells = notebook_1.cells + [extra_cell]
+    notebook_2.nbformat += 1
+    notebook_2.nbformat_minor += 1
+
+    _ = init_repo_diff(
+        tmp_path=tmp_path,
+        filename=nb_path,
+        contents_main=notebook_1.json(),
+        contents_other=notebook_2.json(),
+        commit_message_main="Notebook from main",
+        commit_message_other="Notebook from other",
+    )
+
+    # Test passing another branch to compare
+    result = runner.invoke(app, ["diff", "other", str(tmp_path), "-x", "HTML"])
+    assert (
+        result.output
+        == """\
+<!DOCTYPE html>
+<head>
+<meta charset="UTF-8">
+<style>
+.r1 {color: #00ff00; text-decoration-color: #00ff00}
+.r2 {font-weight: bold}
+.r3 {color: #000080; text-decoration-color: #000080}
+.r4 {color: #f8f8f2; text-decoration-color: #f8f8f2; background-color: #272822}
+.r5 {background-color: #272822}
+body {
+    color: #000000;
+    background-color: #ffffff;
+}
+</style>
+</head>
+<html>
+<body>
+    <code>
+        <pre style="font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',\
+monospace"><span class="r1">────── </span>a/test_conflicts_nb.ipynb<span class="r1">\
+ ───────────── </span>b/test_conflicts_nb.ipynb<span class="r1"> ───────</span>
+<span class="r2">                     kernel_display_name</span> <span class="r2">\
+          different_kernel_display_name</span>
+<span class="r3">In [1]:</span>
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ <span class="r4">test_source</span><span class="r5">                          \
+                                       </span> │
+╰──────────────────────────────────────────────────────────────────────────────╯
+test text
+
+<span class="r3">In [1]:</span>
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ <span class="r4">test_source</span><span class="r5">                          \
+                                       </span> │
+╰──────────────────────────────────────────────────────────────────────────────╯
+test text
+
+                                         ╭─────────────────────────────────────╮
+                 &lt;None&gt;                  │ extra                               │
+                                         ╰─────────────────────────────────────╯
+</pre>
+    </code>
+</body>
+</html>
+
+"""
+    )
