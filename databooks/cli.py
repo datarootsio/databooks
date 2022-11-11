@@ -22,7 +22,7 @@ from databooks.git_utils import get_nb_diffs
 from databooks.logging import get_logger
 from databooks.metadata import clear_all
 from databooks.recipes import Recipe
-from databooks.tui import ImgFmt, print_diffs, print_nbs
+from databooks.tui import ImgFmt, diffs2rich, nbs2rich
 from databooks.version import __version__
 
 logger = get_logger(__file__)
@@ -420,7 +420,7 @@ def show(
         if not Confirm.ask(f"Show {len(nb_paths)} notebooks?"):
             raise Exit()
     echo(
-        print_nbs(
+        nbs2rich(
             nb_paths,
             context=export or pager,
         )
@@ -490,4 +490,4 @@ def diff(
     if len(diffs) > 1 and not multiple:
         if not Confirm.ask(f"Show {len(diffs)} notebook diffs?"):
             raise Exit()
-    echo(print_diffs(diffs=diffs, context=export or pager))
+    echo(diffs2rich(diffs=diffs, context=export or pager))

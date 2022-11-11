@@ -18,7 +18,7 @@ DATABOOKS_TUI = Theme({"in_count": "blue", "out_count": "orange3", "kernel": "bo
 ImgFmt = Enum("ImgFmt", {"html": "HTML", "svg": "SVG", "text": "TXT"})
 
 
-def print_nb(
+def nb2rich(
     path: Path,
     console: Console = Console(),
 ) -> None:
@@ -28,7 +28,7 @@ def print_nb(
 
 
 @overload
-def print_nbs(
+def nbs2rich(
     paths: List[Path],
     *,
     context: ImgFmt,
@@ -38,7 +38,7 @@ def print_nbs(
 
 
 @overload
-def print_nbs(
+def nbs2rich(
     paths: List[Path],
     *,
     context: bool,
@@ -47,7 +47,7 @@ def print_nbs(
     ...
 
 
-def print_nbs(
+def nbs2rich(
     paths: List[Path],
     *,
     context: Union[ImgFmt, bool] = False,
@@ -75,12 +75,12 @@ def print_nbs(
     }
     with ctx_map.get(context, console.capture()):
         for path in paths:
-            print_nb(path, console=console)
+            nb2rich(path, console=console)
     if isinstance(context, ImgFmt):
         return getattr(console, f"export_{context.name}")(**(export_kwargs or {}))
 
 
-def print_diff(
+def diff2rich(
     diff: DiffContents,
     *,
     console: Console = Console(),
@@ -109,7 +109,7 @@ def print_diff(
 
 
 @overload
-def print_diffs(
+def diffs2rich(
     diffs: List[DiffContents],
     *,
     context: ImgFmt,
@@ -119,7 +119,7 @@ def print_diffs(
 
 
 @overload
-def print_diffs(
+def diffs2rich(
     diffs: List[DiffContents],
     *,
     context: bool,
@@ -128,7 +128,7 @@ def print_diffs(
     ...
 
 
-def print_diffs(
+def diffs2rich(
     diffs: List[DiffContents],
     *,
     context: Union[ImgFmt, bool] = False,
@@ -152,6 +152,6 @@ def print_diffs(
     }
     with ctx_map.get(context, console.capture()):
         for diff in diffs:
-            print_diff(diff, console=console)
+            diff2rich(diff, console=console)
     if isinstance(context, ImgFmt):
         return getattr(console, f"export_{context.name}")(**(export_kwargs or {}))
