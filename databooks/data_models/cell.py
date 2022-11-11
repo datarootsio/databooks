@@ -1,7 +1,7 @@
 """Data models - Cells and components."""
 from __future__ import annotations
 
-from typing import Any, Dict, Iterable, List, Optional, Sequence, Union
+from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Union
 
 from pydantic import PositiveInt, validator
 from rich.console import Console, ConsoleOptions, ConsoleRenderable, RenderResult
@@ -11,6 +11,7 @@ from rich.syntax import Syntax
 from rich.text import Text
 
 from databooks.data_models.base import DatabooksBase
+from databooks.data_models.rich_helpers import HtmlTable
 from databooks.logging import get_logger
 
 logger = get_logger(__file__)
@@ -145,23 +146,22 @@ class CellDisplayDataOutput(DatabooksBase):
     @property
     def rich_output(self) -> Sequence[ConsoleRenderable]:
         """Dynamically compute the rich output - also in `CellExecuteResultOutput`."""
-        mime_func = {
-            "image/png": None,
-            "text/html": None,
+        mime_func: Dict[str, Callable[[str], Optional[ConsoleRenderable]]] = {
+            "image/png": lambda s: None,
+            "text/html": lambda s: HtmlTable("".join(s)).rich(),
             "text/plain": lambda s: Text("".join(s)),
         }
-        supported = [k for k, v in mime_func.items() if v is not None]
-        not_supported = [
-            Text(f"<✨Rich✨ `{mime}` not currently supported 😢>")
-            for mime in self.data.keys()
-            if mime not in supported
-        ]
-        return not_supported + [
-            next(
-                mime_func[mime](content)  # type: ignore
-                for mime, content in self.data.items()
-                if mime in supported
-            )
+        _rich = {
+            mime: mime_func.get(mime, lambda s: None)(content)  # try to render element
+            for mime, content in self.data.items()
+        }
+        return [
+            *[
+                Text(f"<✨Rich✨ `{mime}` not available 😢>")
+                for mime, renderable in _rich.items()
+                if renderable is None
+            ],
+            next(renderable for renderable in _rich.values() if renderable is not None),
         ]
 
     def __rich_console__(
