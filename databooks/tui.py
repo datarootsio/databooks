@@ -1,8 +1,9 @@
 """Terminal user interface (TUI) helper functions and components."""
-from contextlib import nullcontext
+from contextlib import AbstractContextManager, nullcontext
 from dataclasses import asdict
+from enum import Enum
 from pathlib import Path
-from typing import List
+from typing import Any, Dict, List, Optional, Union, overload
 
 from rich.columns import Columns
 from rich.console import Console
@@ -14,30 +15,75 @@ from databooks.git_utils import DiffContents
 
 DATABOOKS_TUI = Theme({"in_count": "blue", "out_count": "orange3", "kernel": "bold"})
 
-databooks_console = Console(theme=DATABOOKS_TUI)
+ImgFmt = Enum("ImgFmt", {"html": "HTML", "svg": "SVG", "text": "TXT"})
 
 
-def print_nb(path: Path, console: Console = databooks_console) -> None:
+def print_nb(
+    path: Path,
+    console: Console = Console(),
+) -> None:
     """Show rich representation of notebook in terminal."""
     notebook = JupyterNotebook.parse_file(path)
-    console.rule(path.resolve().name)
-    console.print(notebook)
+    console.print(Rule(path.resolve().name), notebook)
+
+
+@overload
+def print_nbs(
+    paths: List[Path],
+    *,
+    context: ImgFmt,
+    **kwargs: Any,
+) -> str:
+    ...
+
+
+@overload
+def print_nbs(
+    paths: List[Path],
+    *,
+    context: bool,
+    **kwargs: Any,
+) -> None:
+    ...
 
 
 def print_nbs(
     paths: List[Path],
-    console: Console = databooks_console,
-    use_pager: bool = False,
-) -> None:
-    """Show rich representation of notebooks in terminal."""
-    with console.pager(styles=True) if use_pager else nullcontext():  # type: ignore
+    *,
+    context: Union[ImgFmt, bool] = False,
+    export_kwargs: Optional[Dict[str, Any]] = None,
+    **console_kwargs: Any,
+) -> Optional[str]:
+    """
+    Show rich representation of notebooks in terminal.
+
+    :param paths: notebook paths to print
+    :param context: specify context - `ImgFmt` to export outputs, `True` for `pager`
+    :param export_kwargs: keyword arguments for exporting prints (as a dictionary)
+    :param console_kwargs: keyword arguments to be passed to `Console`
+    :return: console output if `context` is `ImgFmt`, else `None`
+    """
+    if "record" in console_kwargs:
+        raise ValueError(
+            "Specify `record` parameter of console via `context` argument."
+        )
+    theme = console_kwargs.pop("theme", DATABOOKS_TUI)
+    console = Console(record=isinstance(context, ImgFmt), theme=theme, **console_kwargs)
+    ctx_map: Dict[Union[ImgFmt, bool], AbstractContextManager] = {
+        True: console.pager(styles=True),
+        False: nullcontext(),
+    }
+    with ctx_map.get(context, console.capture()):
         for path in paths:
             print_nb(path, console=console)
+    if isinstance(context, ImgFmt):
+        return getattr(console, f"export_{context.name}")(**(export_kwargs or {}))
 
 
 def print_diff(
     diff: DiffContents,
-    console: Console = databooks_console,
+    *,
+    console: Console = Console(),
 ) -> None:
     """Show rich representation of notebook diff in terminal."""
     a_nb, b_nb = (
@@ -62,12 +108,50 @@ def print_diff(
     console.print(cols, a_nb - b_nb)
 
 
+@overload
 def print_diffs(
     diffs: List[DiffContents],
-    console: Console = databooks_console,
-    use_pager: bool = False,
+    *,
+    context: ImgFmt,
+    **kwargs: Any,
+) -> str:
+    ...
+
+
+@overload
+def print_diffs(
+    diffs: List[DiffContents],
+    *,
+    context: bool,
+    **kwargs: Any,
 ) -> None:
-    """Show rich representation of notebook diff in terminal."""
-    with console.pager(styles=True) if use_pager else nullcontext():  # type: ignore
+    ...
+
+
+def print_diffs(
+    diffs: List[DiffContents],
+    *,
+    context: Union[ImgFmt, bool] = False,
+    export_kwargs: Optional[Dict[str, Any]] = None,
+    **console_kwargs: Any,
+) -> Optional[str]:
+    """
+    Show rich representation of notebook diff in terminal.
+
+    :param diffs: `databooks.git_utils.DiffContents` for rendering
+    :param context: specify context - `ImgFmt` to export outputs, `True` for `pager`
+    :param export_kwargs: keyword arguments for exporting prints (as a dictionary)
+    :param console_kwargs: keyword arguments to be passed to `Console`
+    :return: console output if `context` is `ImgFmt`, else `None`
+    """
+    theme = console_kwargs.pop("theme", DATABOOKS_TUI)
+    console = Console(record=isinstance(context, ImgFmt), theme=theme, **console_kwargs)
+    ctx_map: Dict[Union[ImgFmt, bool], AbstractContextManager] = {
+        True: console.pager(styles=True),
+        False: nullcontext(),
+    }
+    with ctx_map.get(context, console.capture()):
         for diff in diffs:
             print_diff(diff, console=console)
+    if isinstance(context, ImgFmt):
+        return getattr(console, f"export_{context.name}")(**(export_kwargs or {}))
