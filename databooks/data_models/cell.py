@@ -180,9 +180,9 @@ class CellDisplayDataOutput(DatabooksBase):
     ) -> RenderResult:
         """Rich display of data display outputs."""
         self.max_size = (
-            options.max_width * 2,
-            options.max_height * 2,
-        )  # arbitrary factor
+            int(options.max_width * 2.5),
+            int(options.max_height * 2.5),
+        )  # arbitrarily choose `2.5` for image size
         yield from self.rich_output
 
     @validator("output_type")
