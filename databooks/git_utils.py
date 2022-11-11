@@ -120,7 +120,6 @@ def get_repo(path: Path) -> Optional[Repo]:
         return repo
     else:
         logger.debug(f"No repo found at {path}.")
-        return None
 
 
 def get_conflict_blobs(repo: Repo) -> List[ConflictFile]:

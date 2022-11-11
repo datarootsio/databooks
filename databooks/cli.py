@@ -22,7 +22,7 @@ from databooks.git_utils import get_nb_diffs
 from databooks.logging import get_logger
 from databooks.metadata import clear_all
 from databooks.recipes import Recipe
-from databooks.tui import print_diffs, print_nbs
+from databooks.tui import ImgFmt, print_diffs, print_nbs
 from databooks.version import __version__
 
 logger = get_logger(__file__)
@@ -381,6 +381,12 @@ def show(
         ..., is_eager=True, help="Path(s) of notebook files with conflicts"
     ),
     ignore: List[str] = Option(["!*"], help="Glob expression(s) of files to ignore"),
+    export: Optional[ImgFmt] = Option(
+        None,
+        "--export",
+        "-x",
+        help="Export rich outputs as a string.",
+    ),
     pager: bool = Option(
         False, "--pager", "-p", help="Use pager instead of printing to terminal"
     ),
@@ -407,12 +413,18 @@ def show(
     ),
 ) -> None:
     """Show rich representation of notebook."""
+    if export is not None and pager:
+        raise BadParameter("Cannot use both pager and export output.")
     nb_paths = _check_paths(paths=paths, ignore=ignore)
     if len(nb_paths) > 1 and not multiple:
         if not Confirm.ask(f"Show {len(nb_paths)} notebooks?"):
             raise Exit()
-
-    print_nbs(nb_paths, use_pager=pager)
+    echo(
+        print_nbs(
+            nb_paths,
+            context=export or pager,
+        )
+    )
 
 
 @app.command()
@@ -427,6 +439,12 @@ def diff(
         None, is_eager=True, help="Path(s) of notebook files to compare"
     ),
     ignore: List[str] = Option(["!*"], help="Glob expression(s) of files to ignore"),
+    export: Optional[ImgFmt] = Option(
+        None,
+        "--export",
+        "-x",
+        help="Export rich outputs as a string.",
+    ),
     pager: bool = Option(
         False, "--pager", "-p", help="Use pager instead of printing to terminal"
     ),
@@ -460,6 +478,8 @@ def diff(
      means we can compare files that are staged with other branches, hashes, etc., or
      compare the current directory with the current index.
     """
+    if export is not None and pager:
+        raise BadParameter("Cannot use both pager and export output.")
     (ref_base, ref_remote), paths = _parse_paths(ref_base, ref_remote, paths=paths)
     diffs = get_nb_diffs(
         ref_base=ref_base, ref_remote=ref_remote, paths=paths, verbose=verbose
@@ -470,4 +490,4 @@ def diff(
     if len(diffs) > 1 and not multiple:
         if not Confirm.ask(f"Show {len(diffs)} notebook diffs?"):
             raise Exit()
-    print_diffs(diffs=diffs, use_pager=pager)
+    echo(print_diffs(diffs=diffs, context=export or pager))
