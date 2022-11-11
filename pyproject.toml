@@ -48,6 +48,7 @@ show_error_codes = true
 disallow_untyped_calls = true
 disallow_untyped_defs = true
 ignore_missing_imports = true
+warn_no_return = false
 
 [tool.isort]
 skip_glob = ["docs/*"]

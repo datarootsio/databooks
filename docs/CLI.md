@@ -101,6 +101,7 @@ $ databooks diff [OPTIONS] [REF_BASE] [REF_REMOTE] [PATHS]...
 **Options**:
 
 * `--ignore TEXT`: Glob expression(s) of files to ignore  [default: !*]
+* `-x, --export [HTML|SVG|TXT]`: Export rich outputs as a string.
 * `-p, --pager`: Use pager instead of printing to terminal  [default: False]
 * `-v, --verbose`: Increase verbosity for debugging  [default: False]
 * `-y, --yes`: Show multiple files  [default: False]
@@ -183,6 +184,7 @@ $ databooks show [OPTIONS] PATHS...
 **Options**:
 
 * `--ignore TEXT`: Glob expression(s) of files to ignore  [default: !*]
+* `-x, --export [HTML|SVG|TXT]`: Export rich outputs as a string.
 * `-p, --pager`: Use pager instead of printing to terminal  [default: False]
 * `-v, --verbose`: Increase verbosity for debugging  [default: False]
 * `-y, --yes`: Show multiple files  [default: False]
