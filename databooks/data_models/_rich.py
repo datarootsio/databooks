@@ -86,6 +86,6 @@ class HtmlTable(HTMLParser):
 
 def img2rich(_base64: str, max_size: Tuple[int, int]) -> Pixels:
     """Get rich pixels from base64 image."""
-    img = Image.open(BytesIO(base64.b64decode(_base64)))
-    img.thumbnail(max_size, Image.ANTIALIAS)
-    return Pixels.from_image(img)
+    with Image.open(BytesIO(base64.b64decode(_base64))) as image:
+        image.thumbnail(max_size, Image.ANTIALIAS)
+        return Pixels.from_image(image)
