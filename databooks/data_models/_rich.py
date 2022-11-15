@@ -4,11 +4,11 @@ from html.parser import HTMLParser
 from io import BytesIO
 from typing import Any, List, Optional, Tuple
 
-from PIL import Image
 from rich import box
 from rich.table import Table
 
 try:
+    from PIL import Image
     from rich_pixels import Pixels
 
     _IMG_INSTALLED = True
