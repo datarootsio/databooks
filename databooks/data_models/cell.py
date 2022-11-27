@@ -11,7 +11,7 @@ from rich.syntax import Syntax
 from rich.text import Text
 
 from databooks.data_models.base import DatabooksBase
-from databooks.data_models.rich_helpers import HtmlTable
+from databooks.data_models.rich_helpers import HtmlTable, RichHtmlTableError
 from databooks.logging import get_logger
 
 logger = get_logger(__file__)
@@ -146,9 +146,17 @@ class CellDisplayDataOutput(DatabooksBase):
     @property
     def rich_output(self) -> Sequence[ConsoleRenderable]:
         """Dynamically compute the rich output - also in `CellExecuteResultOutput`."""
+
+        def _try_parse_html(s: str) -> Optional[ConsoleRenderable]:
+            """Try to parse HTML table, return `None` if any errors are raised."""
+            try:
+                return HtmlTable("".join(s)).rich()
+            except RichHtmlTableError:
+                logger.debug("Could not generate rich HTML table.")
+                return None
+
         mime_func: Dict[str, Callable[[str], Optional[ConsoleRenderable]]] = {
-            "image/png": lambda s: None,
-            "text/html": lambda s: HtmlTable("".join(s)).rich(),
+            "text/html": lambda s: _try_parse_html(s),
             "text/plain": lambda s: Text("".join(s)),
         }
         _rich = {

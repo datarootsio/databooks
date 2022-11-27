@@ -8,6 +8,16 @@ from rich.table import Table
 HtmlAttr = Tuple[str, Optional[str]]
 
 
+class RichHtmlTableError(Exception):
+    """Could not parse HTML table."""
+
+    def __init__(self, msg: str = "", *args: Any):
+        """Use class docstring as error 'prefix'."""
+        if self.__doc__ is None:
+            raise ValueError("Exception docstring required - used in error message.")
+        super().__init__(" ".join((self.__doc__, msg)), *args)
+
+
 class HtmlTable(HTMLParser):
     """Rich table from HTML string."""
 
@@ -23,13 +33,13 @@ class HtmlTable(HTMLParser):
     def handle_starttag(self, tag: str, attrs: List[HtmlAttr]) -> None:
         """Active tags are indicated via instance boolean properties."""
         if getattr(self, tag, None):
-            raise ValueError(f"Already in `{tag}`.")
+            raise RichHtmlTableError(f"Already in `{tag}`.")
         setattr(self, tag, True)
 
     def handle_endtag(self, tag: str) -> None:
         """Write table properties when closing tags."""
         if not getattr(self, tag):
-            raise ValueError(f"Cannot end unopened `{tag}`.")
+            raise RichHtmlTableError(f"Cannot end unopened `{tag}`.")
 
         # If we are ending a row, either set a table header or row
         if tag == "tr":
@@ -53,7 +63,7 @@ class HtmlTable(HTMLParser):
         _ncols = len(self.rows[0])
         _headers = [""] * (_ncols - len(self.headers)) + self.headers
         if any(len(row) != _ncols for row in self.rows):
-            raise ValueError(f"Expected all rows to have {_ncols} columns.")
+            raise RichHtmlTableError(f"Expected all rows to have {_ncols} columns.")
 
         _box = tbl_kwargs.pop("box", box.SIMPLE_HEAVY)
         _row_styles = tbl_kwargs.pop("row_styles", ["on bright_black", ""])
