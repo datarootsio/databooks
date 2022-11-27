@@ -10,7 +10,12 @@ from rich.panel import Panel
 from rich.syntax import Syntax
 from rich.text import Text
 
-from databooks.data_models._rich import _IMG_INSTALLED, HtmlTable, img2rich, RichHtmlTableError
+from databooks.data_models._rich import (
+    _IMG_INSTALLED,
+    HtmlTable,
+    RichHtmlTableError,
+    img2rich,
+)
 from databooks.data_models.base import DatabooksBase
 from databooks.logging import get_logger
 
