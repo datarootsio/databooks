@@ -12,7 +12,7 @@ repos:
       - id: black
         files: (databooks/|tests/)
   - repo: https://github.com/pycqa/isort
-    rev: 5.10.1
+    rev: 5.12.0
     hooks:
       - id: isort
         files: (databooks/|tests/)
@@ -37,6 +37,10 @@ repos:
           - GitPython==3.1.26
           - typing-extensions==4.0.1
           - tomli==2.0.1
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.2.4
+    hooks:
+      - id: codespell
   - repo: local
     hooks:
       - id: update-docs
