@@ -8,31 +8,23 @@ standards for `databooks`.
 After cloning the [repo](https://github.com/datarootsio/databooks/), make sure to set up
 the environment.
 
-### Poetry 📜
+### Environment and Package Management 📜
 
-We use [Poetry](https://python-poetry.org/) for both managing environments and packaging.
-That means you need to install poetry but from there you can use the tool to create the
-environment.
+You can set up the environment for development by installing the necessary dependencies
+using pip.
 
 ```bash
-pip install poetry==1.1.12
-poetry install  # installs prod and dev dependencies
+python -m venv venv
+source venv/bin/activate
+pip install -e ".[dev]" # installs prod and dev dependencies
 ```
 
 #### Usage
 
-Remember that to use the environment you can use the `poetry run <COMMAND>` command or
-initialize the shell with `poetry shell`. For example, if you want to create the
-coverage report you could run
+Remember to use your virtual environment with the `dev` dependencies installed. For
+example, if you want to create the coverage report you could run
 
 ```bash
-poetry run pytest --cov=databooks tests/
-```
-
-or alternatively
-
-```bash
-poetry shell
 pytest --cov=databooks tests/
 ```
 
@@ -132,7 +124,7 @@ pytest --cov-report html --cov=databooks tests/
 ## Publishing
 
 Publishing is automatically done via [Github Actions](https://github.com/features/actions)
-to PiPy. After published, a new tag and release are created. A new docs version is also
+to PyPI. After published, a new tag and release are created. A new docs version is also
 published if all previous steps are successful.
 
 ## Contributors 👨‍💻👩‍💻
