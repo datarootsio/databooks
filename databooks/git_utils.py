@@ -159,7 +159,7 @@ def get_nb_diffs(
     """
     Get the noteebook(s) git diff(s).
 
-    By default, diffs are compared with the current working direcotory. That is, staged
+    By default, diffs are compared with the current working directory. That is, staged
      files will still show up in the diffs. Only return the diffs for notebook files.
     """
     if verbose:
