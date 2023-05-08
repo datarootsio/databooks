@@ -15,21 +15,20 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
-          pip install poetry==1.1.7
-          poetry config virtualenvs.create false
+          pip install poetry==1.2.2
           poetry install --no-interaction --no-ansi
       - name: QA with flake8, black, isort and mypy
         run: |
-          pre-commit run --all-files
+          poetry run pre-commit run --all-files
       - name: Configure git user for git unit tests
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
       - name: Unit tests
         run: |
-          pytest -vv
+          poetry run pytest -vv
       - name: Coverage report
         run: |
-          pytest --cov=./ --cov-report=xml
+          poetry run pytest --cov=./ --cov-report=xml
       - name: Upload coverage
         uses: codecov/codecov-action@v1

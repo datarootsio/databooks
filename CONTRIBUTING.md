@@ -132,7 +132,7 @@ pytest --cov-report html --cov=databooks tests/
 ## Publishing
 
 Publishing is automatically done via [Github Actions](https://github.com/features/actions)
-to PiPy. After published, a new tag and release are created. A new docs version is also
+to PyPI. After published, a new tag and release are created. A new docs version is also
 published if all previous steps are successful.
 
 ## Contributors 👨‍💻👩‍💻
