@@ -1,0 +1,2932 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for `databooks`.">
+      
+      
+      
+        <link rel="canonical" href="https://datarootsio.github.io/databooks/1.3.8/data_models/notebook/">
+      
+      <link rel="icon" href="../../images/sm-logo.png">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-8.5.10">
+    
+    
+      
+        <title>Notebooks - databooks</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.975780f9.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.2505c338.min.css">
+        
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=arvo:300,300i,400,400i,700,700i%7Cpoppins:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"arvo";--md-code-font:"poppins"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="None" data-md-color-accent="None">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#databooks.data_models.notebook" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="databooks" class="md-header__button md-logo" aria-label="databooks" data-md-component="logo">
+      
+  <img src="../../images/sm-logo-white.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            databooks
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Notebooks
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/datarootsio/databooks" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1zM480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2zm-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3zm-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    datarootsio/databooks
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        Home
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../usage/overview/" class="md-tabs__link">
+        Usage
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../CLI/" class="md-tabs__link">
+      CLI
+    </a>
+  </li>
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../API/" class="md-tabs__link md-tabs__link--active">
+        API
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../contrib/" class="md-tabs__link">
+        Development
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="databooks" class="md-nav__button md-logo" aria-label="databooks" data-md-component="logo">
+      
+  <img src="../../images/sm-logo-white.png" alt="logo">
+
+    </a>
+    databooks
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/datarootsio/databooks" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1zM480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2zm-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3zm-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    datarootsio/databooks
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1">
+          Home
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Home" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          Home
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../alternatives/" class="md-nav__link">
+        Alternatives and comparisons
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/datarootsio/databooks/releases" class="md-nav__link">
+        Changelog
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        License
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          Usage
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Usage" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Usage
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../usage/overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../usage/cli/" class="md-nav__link">
+        CLI
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../usage/cicd/" class="md-nav__link">
+        CI/CD
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../usage/precommit/" class="md-nav__link">
+        Pre-commit hooks
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../usage/configuration/" class="md-nav__link">
+        Configuration
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CLI/" class="md-nav__link">
+        CLI
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          API
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="API" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          API
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../API/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_2" type="checkbox" id="__nav_4_2" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4_2">
+          Data models
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Data models" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_2">
+          <span class="md-nav__icon md-icon"></span>
+          Data models
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../base/" class="md-nav__link">
+        Base
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Notebooks
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Notebooks
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook" class="md-nav__link">
+    databooks.data_models.notebook
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells" class="md-nav__link">
+    Cells
+  </a>
+  
+    <nav class="md-nav" aria-label="Cells">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells.data" class="md-nav__link">
+    data
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells.__get_validators__" class="md-nav__link">
+    __get_validators__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells.__iter__" class="md-nav__link">
+    __iter__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells.__rich_console__" class="md-nav__link">
+    __rich_console__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells.__sub__" class="md-nav__link">
+    __sub__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells.resolve" class="md-nav__link">
+    resolve()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells.validate" class="md-nav__link">
+    validate()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells.wrap_cols" class="md-nav__link">
+    wrap_cols()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells.wrap_git" class="md-nav__link">
+    wrap_git()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells[Union[CodeCell, RawCell, MarkdownCell]]" class="md-nav__link">
+    Cells[Union[CodeCell, RawCell, MarkdownCell]]
+  </a>
+  
+    <nav class="md-nav" aria-label="Cells[Union[CodeCell, RawCell, MarkdownCell]]">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells[Union[CodeCell, RawCell, MarkdownCell]].Config" class="md-nav__link">
+    Config
+  </a>
+  
+    <nav class="md-nav" aria-label="Config">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells[Union[CodeCell, RawCell, MarkdownCell]].Config.getter_dict" class="md-nav__link">
+    getter_dict
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells[Union[CodeCell, RawCell, MarkdownCell]].Config.get_field_info" class="md-nav__link">
+    get_field_info()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells[Union[CodeCell, RawCell, MarkdownCell]].Config.json_dumps" class="md-nav__link">
+    json_dumps()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells[Union[CodeCell, RawCell, MarkdownCell]].Config.json_loads" class="md-nav__link">
+    json_loads()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells[Union[CodeCell, RawCell, MarkdownCell]].Config.prepare_field" class="md-nav__link">
+    prepare_field()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.JupyterNotebook" class="md-nav__link">
+    JupyterNotebook
+  </a>
+  
+    <nav class="md-nav" aria-label="JupyterNotebook">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.JupyterNotebook.__rich_console__" class="md-nav__link">
+    __rich_console__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.JupyterNotebook.clear_metadata" class="md-nav__link">
+    clear_metadata()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.JupyterNotebook.parse_file" class="md-nav__link">
+    parse_file()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.JupyterNotebook.write" class="md-nav__link">
+    write()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.NotebookMetadata" class="md-nav__link">
+    NotebookMetadata
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../affirm/" class="md-nav__link">
+        Affirm
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../common/" class="md-nav__link">
+        Common utils
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../config/" class="md-nav__link">
+        Configuration
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conflicts/" class="md-nav__link">
+        Conflicts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../git_utils/" class="md-nav__link">
+        Git
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../logging/" class="md-nav__link">
+        Logging
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metadata/" class="md-nav__link">
+        Metadata
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tui/" class="md-nav__link">
+        TUI
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          Development
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Development" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Development
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contrib/" class="md-nav__link">
+        Contributing
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../coverage/" class="md-nav__link">
+        Coverage report
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook" class="md-nav__link">
+    databooks.data_models.notebook
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells" class="md-nav__link">
+    Cells
+  </a>
+  
+    <nav class="md-nav" aria-label="Cells">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells.data" class="md-nav__link">
+    data
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells.__get_validators__" class="md-nav__link">
+    __get_validators__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells.__iter__" class="md-nav__link">
+    __iter__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells.__rich_console__" class="md-nav__link">
+    __rich_console__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells.__sub__" class="md-nav__link">
+    __sub__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells.resolve" class="md-nav__link">
+    resolve()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells.validate" class="md-nav__link">
+    validate()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells.wrap_cols" class="md-nav__link">
+    wrap_cols()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells.wrap_git" class="md-nav__link">
+    wrap_git()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells[Union[CodeCell, RawCell, MarkdownCell]]" class="md-nav__link">
+    Cells[Union[CodeCell, RawCell, MarkdownCell]]
+  </a>
+  
+    <nav class="md-nav" aria-label="Cells[Union[CodeCell, RawCell, MarkdownCell]]">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells[Union[CodeCell, RawCell, MarkdownCell]].Config" class="md-nav__link">
+    Config
+  </a>
+  
+    <nav class="md-nav" aria-label="Config">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells[Union[CodeCell, RawCell, MarkdownCell]].Config.getter_dict" class="md-nav__link">
+    getter_dict
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells[Union[CodeCell, RawCell, MarkdownCell]].Config.get_field_info" class="md-nav__link">
+    get_field_info()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells[Union[CodeCell, RawCell, MarkdownCell]].Config.json_dumps" class="md-nav__link">
+    json_dumps()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells[Union[CodeCell, RawCell, MarkdownCell]].Config.json_loads" class="md-nav__link">
+    json_loads()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.Cells[Union[CodeCell, RawCell, MarkdownCell]].Config.prepare_field" class="md-nav__link">
+    prepare_field()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.JupyterNotebook" class="md-nav__link">
+    JupyterNotebook
+  </a>
+  
+    <nav class="md-nav" aria-label="JupyterNotebook">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.JupyterNotebook.__rich_console__" class="md-nav__link">
+    __rich_console__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.JupyterNotebook.clear_metadata" class="md-nav__link">
+    clear_metadata()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.JupyterNotebook.parse_file" class="md-nav__link">
+    parse_file()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.JupyterNotebook.write" class="md-nav__link">
+    write()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#databooks.data_models.notebook.NotebookMetadata" class="md-nav__link">
+    NotebookMetadata
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  <a href="https://github.com/datarootsio/databooks/blob/main/docs/data_models/notebook.md" title="Edit this page" class="md-content__button md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
+  </a>
+
+
+  <h1>Notebooks</h1>
+
+<div class="doc doc-object doc-module">
+
+<a id="databooks.data_models.notebook"></a>
+    <div class="doc doc-contents first">
+
+      <p>Data models - Jupyter Notebooks and components.</p>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="databooks.data_models.notebook.Cells" class="doc doc-heading">
+        <code>
+Cells            (<span title="pydantic.generics.GenericModel">GenericModel</span>, <a title="databooks.data_models.base.BaseCells" href="../base/#databooks.data_models.base.BaseCells">BaseCells</a>)
+        </code>
+
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-pydantic-model"><code>pydantic-model</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Similar to <code>list</code>, with <code>-</code> operator using <code>difflib.SequenceMatcher</code>.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>databooks/data_models/notebook.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Cells</span><span class="p">(</span><span class="n">GenericModel</span><span class="p">,</span> <span class="n">BaseCells</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Similar to `list`, with `-` operator using `difflib.SequenceMatcher`.&quot;&quot;&quot;</span>
+
+    <span class="n">__root__</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elements</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="p">())</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Allow passing data as a positional argument when instantiating class.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Cells</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">__root__</span><span class="o">=</span><span class="n">elements</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>  <span class="c1"># type: ignore</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Define property `data` required for `collections.UserList` class.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Use list property as iterable.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">el</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">Cells</span><span class="p">[</span><span class="n">Cell</span><span class="p">],</span> <span class="n">other</span><span class="p">:</span> <span class="n">Cells</span><span class="p">[</span><span class="n">Cell</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Cells</span><span class="p">[</span><span class="n">CellsPair</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the difference using `difflib.SequenceMatcher`.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Unsupported operand types for `-`: `</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">` and&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; `</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">`&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># By setting the context to the max number of cells and using</span>
+        <span class="c1">#  `pathlib.SequenceMatcher.get_grouped_opcodes` we essentially get the same</span>
+        <span class="c1">#  result as `pathlib.SequenceMatcher.get_opcodes` but in smaller chunks</span>
+        <span class="n">n_context</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="p">))</span>
+        <span class="n">diff_opcodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+            <span class="n">SequenceMatcher</span><span class="p">(</span>
+                <span class="n">isjunk</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">other</span><span class="p">,</span> <span class="n">autojunk</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">get_grouped_opcodes</span><span class="p">(</span><span class="n">n_context</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">diff_opcodes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Expected one group for opcodes when context size is &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">n_context</span><span class="si">}</span><span class="s2"> for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="si">}</span><span class="s2"> cells in&quot;</span>
+                <span class="s2">&quot; notebooks.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">Cells</span><span class="p">[</span><span class="n">CellsPair</span><span class="p">](</span>
+            <span class="p">[</span>
+                <span class="c1"># https://github.com/python/mypy/issues/9459</span>
+                <span class="nb">tuple</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i1</span><span class="p">:</span><span class="n">j1</span><span class="p">],</span> <span class="n">other</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i2</span><span class="p">:</span><span class="n">j2</span><span class="p">]))</span>  <span class="c1"># type: ignore</span>
+                <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">i1</span><span class="p">,</span> <span class="n">j1</span><span class="p">,</span> <span class="n">i2</span><span class="p">,</span> <span class="n">j2</span> <span class="ow">in</span> <span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">diff_opcodes</span><span class="p">)</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__rich_console__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">console</span><span class="p">:</span> <span class="n">Console</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">ConsoleOptions</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RenderResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Rich display of all cells in notebook.&quot;&quot;&quot;</span>
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_renderables</span><span class="p">(</span><span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">max_width</span> <span class="o">//</span> <span class="mi">3</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_renderables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">wrap_cols_kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">RenderableType</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the Rich renderables, depending on whether `Cells` is a diff or not.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span>
+                <span class="n">Cells</span><span class="o">.</span><span class="n">wrap_cols</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">val</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">wrap_cols_kwargs</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">val</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">else</span> <span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cast</span><span class="p">(</span><span class="n">List</span><span class="p">[</span><span class="n">CellsPair</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="n">List</span><span class="p">[</span><span class="n">Cell</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">__get_validators__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get validators for custom class.&quot;&quot;&quot;</span>
+        <span class="k">yield</span> <span class="bp">cls</span><span class="o">.</span><span class="n">validate</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Cells</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Ensure object is custom defined container.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">v</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">wrap_cols</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">first_cells</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Cell</span><span class="p">],</span> <span class="n">last_cells</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Cell</span><span class="p">],</span> <span class="o">**</span><span class="n">cols_kwargs</span><span class="p">:</span> <span class="n">Any</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Columns</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrap the first and second cells into colunmns for iterable.&quot;&quot;&quot;</span>
+        <span class="n">_empty</span> <span class="o">=</span> <span class="p">[</span><span class="n">Panel</span><span class="p">(</span><span class="n">Text</span><span class="p">(</span><span class="s2">&quot;&lt;None&gt;&quot;</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">),</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">SIMPLE</span><span class="p">)]</span>
+        <span class="n">_first</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span><span class="o">*</span><span class="n">first_cells</span> <span class="ow">or</span> <span class="n">_empty</span><span class="p">)</span>
+        <span class="n">_last</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span><span class="o">*</span><span class="n">last_cells</span> <span class="ow">or</span> <span class="n">_empty</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">Columns</span><span class="p">([</span><span class="n">_first</span><span class="p">,</span> <span class="n">_last</span><span class="p">],</span> <span class="o">**</span><span class="n">cols_kwargs</span><span class="p">)]</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">wrap_git</span><span class="p">(</span>
+        <span class="n">first_cells</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Cell</span><span class="p">],</span>
+        <span class="n">last_cells</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Cell</span><span class="p">],</span>
+        <span class="n">hash_first</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">hash_last</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Cell</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrap git-diff cells in existing notebook.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">MarkdownCell</span><span class="p">(</span>
+                <span class="n">metadata</span><span class="o">=</span><span class="n">CellMetadata</span><span class="p">(</span><span class="n">git_hash</span><span class="o">=</span><span class="n">hash_first</span><span class="p">),</span>
+                <span class="n">source</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;`&lt;&lt;&lt;&lt;&lt;&lt;&lt; </span><span class="si">{</span><span class="n">hash_first</span><span class="si">}</span><span class="s2">`&quot;</span><span class="p">],</span>
+                <span class="n">cell_type</span><span class="o">=</span><span class="s2">&quot;markdown&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="o">*</span><span class="n">first_cells</span><span class="p">,</span>
+            <span class="n">MarkdownCell</span><span class="p">(</span>
+                <span class="n">source</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;`=======`&quot;</span><span class="p">],</span>
+                <span class="n">cell_type</span><span class="o">=</span><span class="s2">&quot;markdown&quot;</span><span class="p">,</span>
+                <span class="n">metadata</span><span class="o">=</span><span class="n">CellMetadata</span><span class="p">(),</span>
+            <span class="p">),</span>
+            <span class="o">*</span><span class="n">last_cells</span><span class="p">,</span>
+            <span class="n">MarkdownCell</span><span class="p">(</span>
+                <span class="n">metadata</span><span class="o">=</span><span class="n">CellMetadata</span><span class="p">(</span><span class="n">git_hash</span><span class="o">=</span><span class="n">hash_last</span><span class="p">),</span>
+                <span class="n">source</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;`&gt;&gt;&gt;&gt;&gt;&gt;&gt; </span><span class="si">{</span><span class="n">hash_last</span><span class="si">}</span><span class="s2">`&quot;</span><span class="p">],</span>
+                <span class="n">cell_type</span><span class="o">=</span><span class="s2">&quot;markdown&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">resolve</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">Cells</span><span class="p">[</span><span class="n">CellsPair</span><span class="p">],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">keep_first_cells</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">first_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">last_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Cell</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resolve differences between `databooks.data_models.notebook.Cells`.</span>
+
+<span class="sd">        :param keep_first_cells: Whether to keep the cells of the first notebook or not.</span>
+<span class="sd">         If `None`, then keep both wrapping the git-diff tags</span>
+<span class="sd">        :param first_id: Git hash of first file in conflict</span>
+<span class="sd">        :param last_id: Git hash of last file in conflict</span>
+<span class="sd">        :param kwargs: (Unused) keyword arguments to keep compatibility with</span>
+<span class="sd">         `databooks.data_models.base.resolve`</span>
+<span class="sd">        :return: List of cells</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">keep_first_cells</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span>
+                <span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">pairs</span><span class="p">[</span><span class="ow">not</span> <span class="n">keep_first_cells</span><span class="p">]</span> <span class="k">for</span> <span class="n">pairs</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span>
+            <span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span>
+                <span class="n">Cells</span><span class="o">.</span><span class="n">wrap_git</span><span class="p">(</span>
+                    <span class="n">first_cells</span><span class="o">=</span><span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="n">last_cells</span><span class="o">=</span><span class="n">val</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="n">hash_first</span><span class="o">=</span><span class="n">first_id</span><span class="p">,</span>
+                    <span class="n">hash_last</span><span class="o">=</span><span class="n">last_id</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">val</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">else</span> <span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+</code></pre></div>
+        </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="databooks.data_models.notebook.Cells.data" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">T</span><span class="p">]</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Define property <code>data</code> required for <code>collections.UserList</code> class.</p>
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="databooks.data_models.notebook.Cells.__get_validators__" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">__get_validators__</span><span class="p">()</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-classmethod"><code>classmethod</code></small>
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Get validators for custom class.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>databooks/data_models/notebook.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="k">def</span> <span class="nf">__get_validators__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get validators for custom class.&quot;&quot;&quot;</span>
+    <span class="k">yield</span> <span class="bp">cls</span><span class="o">.</span><span class="n">validate</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="databooks.data_models.notebook.Cells.__init__" class="doc doc-heading">
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elements</span><span class="o">=</span><span class="p">())</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Allow passing data as a positional argument when instantiating class.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>databooks/data_models/notebook.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elements</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="p">())</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Allow passing data as a positional argument when instantiating class.&quot;&quot;&quot;</span>
+    <span class="nb">super</span><span class="p">(</span><span class="n">Cells</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">__root__</span><span class="o">=</span><span class="n">elements</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="databooks.data_models.notebook.Cells.__iter__" class="doc doc-heading">
+<code class="highlight language-python"><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Use list property as iterable.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>databooks/data_models/notebook.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Use list property as iterable.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">el</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="databooks.data_models.notebook.Cells.__rich_console__" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">__rich_console__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">console</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Rich display of all cells in notebook.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>databooks/data_models/notebook.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">__rich_console__</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">console</span><span class="p">:</span> <span class="n">Console</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">ConsoleOptions</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RenderResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Rich display of all cells in notebook.&quot;&quot;&quot;</span>
+    <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_renderables</span><span class="p">(</span><span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">max_width</span> <span class="o">//</span> <span class="mi">3</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="databooks.data_models.notebook.Cells.__sub__" class="doc doc-heading">
+<code class="highlight language-python"><span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Return the difference using <code>difflib.SequenceMatcher</code>.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>databooks/data_models/notebook.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">Cells</span><span class="p">[</span><span class="n">Cell</span><span class="p">],</span> <span class="n">other</span><span class="p">:</span> <span class="n">Cells</span><span class="p">[</span><span class="n">Cell</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Cells</span><span class="p">[</span><span class="n">CellsPair</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the difference using `difflib.SequenceMatcher`.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Unsupported operand types for `-`: `</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">` and&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot; `</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">`&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># By setting the context to the max number of cells and using</span>
+    <span class="c1">#  `pathlib.SequenceMatcher.get_grouped_opcodes` we essentially get the same</span>
+    <span class="c1">#  result as `pathlib.SequenceMatcher.get_opcodes` but in smaller chunks</span>
+    <span class="n">n_context</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="p">))</span>
+    <span class="n">diff_opcodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+        <span class="n">SequenceMatcher</span><span class="p">(</span>
+            <span class="n">isjunk</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">other</span><span class="p">,</span> <span class="n">autojunk</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">get_grouped_opcodes</span><span class="p">(</span><span class="n">n_context</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">diff_opcodes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="s2">&quot;Expected one group for opcodes when context size is &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">n_context</span><span class="si">}</span><span class="s2"> for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="si">}</span><span class="s2"> cells in&quot;</span>
+            <span class="s2">&quot; notebooks.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">Cells</span><span class="p">[</span><span class="n">CellsPair</span><span class="p">](</span>
+        <span class="p">[</span>
+            <span class="c1"># https://github.com/python/mypy/issues/9459</span>
+            <span class="nb">tuple</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i1</span><span class="p">:</span><span class="n">j1</span><span class="p">],</span> <span class="n">other</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i2</span><span class="p">:</span><span class="n">j2</span><span class="p">]))</span>  <span class="c1"># type: ignore</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">i1</span><span class="p">,</span> <span class="n">j1</span><span class="p">,</span> <span class="n">i2</span><span class="p">,</span> <span class="n">j2</span> <span class="ow">in</span> <span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">diff_opcodes</span><span class="p">)</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="databooks.data_models.notebook.Cells.resolve" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">resolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">keep_first_cells</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">first_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">last_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Resolve differences between <code>databooks.data_models.notebook.Cells</code>.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>keep_first_cells</code></td>
+        <td><code>Optional[bool]</code></td>
+        <td><p>Whether to keep the cells of the first notebook or not. If <code>None</code>, then keep both wrapping the git-diff tags</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>first_id</code></td>
+        <td><code>Optional[str]</code></td>
+        <td><p>Git hash of first file in conflict</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>last_id</code></td>
+        <td><code>Optional[str]</code></td>
+        <td><p>Git hash of last file in conflict</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>kwargs</code></td>
+        <td><code>Any</code></td>
+        <td><p>(Unused) keyword arguments to keep compatibility with <code>databooks.data_models.base.resolve</code></p></td>
+        <td><code>{}</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>List[Cell]</code></td>
+      <td><p>List of cells</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>databooks/data_models/notebook.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">resolve</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">Cells</span><span class="p">[</span><span class="n">CellsPair</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">keep_first_cells</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">first_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">last_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Cell</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Resolve differences between `databooks.data_models.notebook.Cells`.</span>
+
+<span class="sd">    :param keep_first_cells: Whether to keep the cells of the first notebook or not.</span>
+<span class="sd">     If `None`, then keep both wrapping the git-diff tags</span>
+<span class="sd">    :param first_id: Git hash of first file in conflict</span>
+<span class="sd">    :param last_id: Git hash of last file in conflict</span>
+<span class="sd">    :param kwargs: (Unused) keyword arguments to keep compatibility with</span>
+<span class="sd">     `databooks.data_models.base.resolve`</span>
+<span class="sd">    :return: List of cells</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">keep_first_cells</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span>
+            <span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">pairs</span><span class="p">[</span><span class="ow">not</span> <span class="n">keep_first_cells</span><span class="p">]</span> <span class="k">for</span> <span class="n">pairs</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span>
+        <span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span>
+            <span class="n">Cells</span><span class="o">.</span><span class="n">wrap_git</span><span class="p">(</span>
+                <span class="n">first_cells</span><span class="o">=</span><span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">last_cells</span><span class="o">=</span><span class="n">val</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="n">hash_first</span><span class="o">=</span><span class="n">first_id</span><span class="p">,</span>
+                <span class="n">hash_last</span><span class="o">=</span><span class="n">last_id</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">val</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">else</span> <span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="databooks.data_models.notebook.Cells.validate" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">validate</span><span class="p">(</span><span class="n">v</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-classmethod"><code>classmethod</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Ensure object is custom defined container.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>databooks/data_models/notebook.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Cells</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ensure object is custom defined container.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">v</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="databooks.data_models.notebook.Cells.wrap_cols" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">wrap_cols</span><span class="p">(</span><span class="n">first_cells</span><span class="p">,</span> <span class="n">last_cells</span><span class="p">,</span> <span class="o">**</span><span class="n">cols_kwargs</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-classmethod"><code>classmethod</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Wrap the first and second cells into colunmns for iterable.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>databooks/data_models/notebook.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="k">def</span> <span class="nf">wrap_cols</span><span class="p">(</span>
+    <span class="bp">cls</span><span class="p">,</span> <span class="n">first_cells</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Cell</span><span class="p">],</span> <span class="n">last_cells</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Cell</span><span class="p">],</span> <span class="o">**</span><span class="n">cols_kwargs</span><span class="p">:</span> <span class="n">Any</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Columns</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrap the first and second cells into colunmns for iterable.&quot;&quot;&quot;</span>
+    <span class="n">_empty</span> <span class="o">=</span> <span class="p">[</span><span class="n">Panel</span><span class="p">(</span><span class="n">Text</span><span class="p">(</span><span class="s2">&quot;&lt;None&gt;&quot;</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">),</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">SIMPLE</span><span class="p">)]</span>
+    <span class="n">_first</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span><span class="o">*</span><span class="n">first_cells</span> <span class="ow">or</span> <span class="n">_empty</span><span class="p">)</span>
+    <span class="n">_last</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span><span class="o">*</span><span class="n">last_cells</span> <span class="ow">or</span> <span class="n">_empty</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">Columns</span><span class="p">([</span><span class="n">_first</span><span class="p">,</span> <span class="n">_last</span><span class="p">],</span> <span class="o">**</span><span class="n">cols_kwargs</span><span class="p">)]</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="databooks.data_models.notebook.Cells.wrap_git" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">wrap_git</span><span class="p">(</span><span class="n">first_cells</span><span class="p">,</span> <span class="n">last_cells</span><span class="p">,</span> <span class="n">hash_first</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hash_last</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Wrap git-diff cells in existing notebook.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>databooks/data_models/notebook.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span> <span class="nf">wrap_git</span><span class="p">(</span>
+    <span class="n">first_cells</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Cell</span><span class="p">],</span>
+    <span class="n">last_cells</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Cell</span><span class="p">],</span>
+    <span class="n">hash_first</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">hash_last</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Cell</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrap git-diff cells in existing notebook.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">MarkdownCell</span><span class="p">(</span>
+            <span class="n">metadata</span><span class="o">=</span><span class="n">CellMetadata</span><span class="p">(</span><span class="n">git_hash</span><span class="o">=</span><span class="n">hash_first</span><span class="p">),</span>
+            <span class="n">source</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;`&lt;&lt;&lt;&lt;&lt;&lt;&lt; </span><span class="si">{</span><span class="n">hash_first</span><span class="si">}</span><span class="s2">`&quot;</span><span class="p">],</span>
+            <span class="n">cell_type</span><span class="o">=</span><span class="s2">&quot;markdown&quot;</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="o">*</span><span class="n">first_cells</span><span class="p">,</span>
+        <span class="n">MarkdownCell</span><span class="p">(</span>
+            <span class="n">source</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;`=======`&quot;</span><span class="p">],</span>
+            <span class="n">cell_type</span><span class="o">=</span><span class="s2">&quot;markdown&quot;</span><span class="p">,</span>
+            <span class="n">metadata</span><span class="o">=</span><span class="n">CellMetadata</span><span class="p">(),</span>
+        <span class="p">),</span>
+        <span class="o">*</span><span class="n">last_cells</span><span class="p">,</span>
+        <span class="n">MarkdownCell</span><span class="p">(</span>
+            <span class="n">metadata</span><span class="o">=</span><span class="n">CellMetadata</span><span class="p">(</span><span class="n">git_hash</span><span class="o">=</span><span class="n">hash_last</span><span class="p">),</span>
+            <span class="n">source</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;`&gt;&gt;&gt;&gt;&gt;&gt;&gt; </span><span class="si">{</span><span class="n">hash_last</span><span class="si">}</span><span class="s2">`&quot;</span><span class="p">],</span>
+            <span class="n">cell_type</span><span class="o">=</span><span class="s2">&quot;markdown&quot;</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">]</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="databooks.data_models.notebook.Cells[Union[CodeCell, RawCell, MarkdownCell]]" class="doc doc-heading">
+        <code>
+Cells[Union[CodeCell, RawCell, MarkdownCell]]            (<a title="databooks.data_models.notebook.Cells" href="#databooks.data_models.notebook.Cells">Cells</a>)
+        </code>
+
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-pydantic-model"><code>pydantic-model</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h3 id="databooks.data_models.notebook.Cells[Union[CodeCell, RawCell, MarkdownCell]].Config" class="doc doc-heading">
+        <code>
+Config        </code>
+
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h4 id="databooks.data_models.notebook.Cells[Union[CodeCell, RawCell, MarkdownCell]].Config.getter_dict" class="doc doc-heading">
+        <code>
+getter_dict            (<span title="pydantic.utils.Representation">Representation</span>)
+        </code>
+
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Hack to make object's smell just enough like dicts for validate_model.</p>
+<p>We can't inherit from Mapping[str, Any] because it upsets cython so we have to implement all methods ourselves.</p>
+
+
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="databooks.data_models.notebook.Cells[Union[CodeCell, RawCell, MarkdownCell]].Config.get_field_info" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">get_field_info</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-classmethod"><code>classmethod</code></small>
+  </span>
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Get properties of FieldInfo from the <code>fields</code> property of the config class.</p>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="databooks.data_models.notebook.Cells[Union[CodeCell, RawCell, MarkdownCell]].Config.json_dumps" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">json_dumps</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">skipkeys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check_circular</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">allow_nan</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Serialize <code>obj</code> to a JSON formatted <code>str</code>.</p>
+<p>If <code>skipkeys</code> is true then <code>dict</code> keys that are not basic types
+(<code>str</code>, <code>int</code>, <code>float</code>, <code>bool</code>, <code>None</code>) will be skipped
+instead of raising a <code>TypeError</code>.</p>
+<p>If <code>ensure_ascii</code> is false, then the return value can contain non-ASCII
+characters if they appear in strings contained in <code>obj</code>. Otherwise, all
+such characters are escaped in JSON strings.</p>
+<p>If <code>check_circular</code> is false, then the circular reference check
+for container types will be skipped and a circular reference will
+result in an <code>OverflowError</code> (or worse).</p>
+<p>If <code>allow_nan</code> is false, then it will be a <code>ValueError</code> to
+serialize out of range <code>float</code> values (<code>nan</code>, <code>inf</code>, <code>-inf</code>) in
+strict compliance of the JSON specification, instead of using the
+JavaScript equivalents (<code>NaN</code>, <code>Infinity</code>, <code>-Infinity</code>).</p>
+<p>If <code>indent</code> is a non-negative integer, then JSON array elements and
+object members will be pretty-printed with that indent level. An indent
+level of 0 will only insert newlines. <code>None</code> is the most compact
+representation.</p>
+<p>If specified, <code>separators</code> should be an <code>(item_separator, key_separator)</code>
+tuple.  The default is <code>(', ', ': ')</code> if <em>indent</em> is <code>None</code> and
+<code>(',', ': ')</code> otherwise.  To get the most compact JSON representation,
+you should specify <code>(',', ':')</code> to eliminate whitespace.</p>
+<p><code>default(obj)</code> is a function that should return a serializable version
+of obj or raise TypeError. The default simply raises TypeError.</p>
+<p>If <em>sort_keys</em> is true (default: <code>False</code>), then the output of
+dictionaries will be sorted by key.</p>
+<p>To use a custom <code>JSONEncoder</code> subclass (e.g. one that overrides the
+<code>.default()</code> method to serialize additional types), specify it with
+the <code>cls</code> kwarg; otherwise <code>JSONEncoder</code> is used.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>databooks/data_models/notebook.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">dumps</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">skipkeys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check_circular</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">allow_nan</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Serialize ``obj`` to a JSON formatted ``str``.</span>
+
+<span class="sd">    If ``skipkeys`` is true then ``dict`` keys that are not basic types</span>
+<span class="sd">    (``str``, ``int``, ``float``, ``bool``, ``None``) will be skipped</span>
+<span class="sd">    instead of raising a ``TypeError``.</span>
+
+<span class="sd">    If ``ensure_ascii`` is false, then the return value can contain non-ASCII</span>
+<span class="sd">    characters if they appear in strings contained in ``obj``. Otherwise, all</span>
+<span class="sd">    such characters are escaped in JSON strings.</span>
+
+<span class="sd">    If ``check_circular`` is false, then the circular reference check</span>
+<span class="sd">    for container types will be skipped and a circular reference will</span>
+<span class="sd">    result in an ``OverflowError`` (or worse).</span>
+
+<span class="sd">    If ``allow_nan`` is false, then it will be a ``ValueError`` to</span>
+<span class="sd">    serialize out of range ``float`` values (``nan``, ``inf``, ``-inf``) in</span>
+<span class="sd">    strict compliance of the JSON specification, instead of using the</span>
+<span class="sd">    JavaScript equivalents (``NaN``, ``Infinity``, ``-Infinity``).</span>
+
+<span class="sd">    If ``indent`` is a non-negative integer, then JSON array elements and</span>
+<span class="sd">    object members will be pretty-printed with that indent level. An indent</span>
+<span class="sd">    level of 0 will only insert newlines. ``None`` is the most compact</span>
+<span class="sd">    representation.</span>
+
+<span class="sd">    If specified, ``separators`` should be an ``(item_separator, key_separator)``</span>
+<span class="sd">    tuple.  The default is ``(&#39;, &#39;, &#39;: &#39;)`` if *indent* is ``None`` and</span>
+<span class="sd">    ``(&#39;,&#39;, &#39;: &#39;)`` otherwise.  To get the most compact JSON representation,</span>
+<span class="sd">    you should specify ``(&#39;,&#39;, &#39;:&#39;)`` to eliminate whitespace.</span>
+
+<span class="sd">    ``default(obj)`` is a function that should return a serializable version</span>
+<span class="sd">    of obj or raise TypeError. The default simply raises TypeError.</span>
+
+<span class="sd">    If *sort_keys* is true (default: ``False``), then the output of</span>
+<span class="sd">    dictionaries will be sorted by key.</span>
+
+<span class="sd">    To use a custom ``JSONEncoder`` subclass (e.g. one that overrides the</span>
+<span class="sd">    ``.default()`` method to serialize additional types), specify it with</span>
+<span class="sd">    the ``cls`` kwarg; otherwise ``JSONEncoder`` is used.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># cached encoder</span>
+    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">skipkeys</span> <span class="ow">and</span> <span class="n">ensure_ascii</span> <span class="ow">and</span>
+        <span class="n">check_circular</span> <span class="ow">and</span> <span class="n">allow_nan</span> <span class="ow">and</span>
+        <span class="bp">cls</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">indent</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">separators</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span>
+        <span class="n">default</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">sort_keys</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">kw</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_default_encoder</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+    <span class="k">if</span> <span class="bp">cls</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">cls</span> <span class="o">=</span> <span class="n">JSONEncoder</span>
+    <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+        <span class="n">skipkeys</span><span class="o">=</span><span class="n">skipkeys</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="n">ensure_ascii</span><span class="p">,</span>
+        <span class="n">check_circular</span><span class="o">=</span><span class="n">check_circular</span><span class="p">,</span> <span class="n">allow_nan</span><span class="o">=</span><span class="n">allow_nan</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">,</span>
+        <span class="n">separators</span><span class="o">=</span><span class="n">separators</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">default</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="n">sort_keys</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kw</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="databooks.data_models.notebook.Cells[Union[CodeCell, RawCell, MarkdownCell]].Config.json_loads" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">json_loads</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">object_hook</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parse_float</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parse_int</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parse_constant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">object_pairs_hook</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Deserialize <code>s</code> (a <code>str</code>, <code>bytes</code> or <code>bytearray</code> instance
+containing a JSON document) to a Python object.</p>
+<p><code>object_hook</code> is an optional function that will be called with the
+result of any object literal decode (a <code>dict</code>). The return value of
+<code>object_hook</code> will be used instead of the <code>dict</code>. This feature
+can be used to implement custom decoders (e.g. JSON-RPC class hinting).</p>
+<p><code>object_pairs_hook</code> is an optional function that will be called with the
+result of any object literal decoded with an ordered list of pairs.  The
+return value of <code>object_pairs_hook</code> will be used instead of the <code>dict</code>.
+This feature can be used to implement custom decoders.  If <code>object_hook</code>
+is also defined, the <code>object_pairs_hook</code> takes priority.</p>
+<p><code>parse_float</code>, if specified, will be called with the string
+of every JSON float to be decoded. By default this is equivalent to
+float(num_str). This can be used to use another datatype or parser
+for JSON floats (e.g. decimal.Decimal).</p>
+<p><code>parse_int</code>, if specified, will be called with the string
+of every JSON int to be decoded. By default this is equivalent to
+int(num_str). This can be used to use another datatype or parser
+for JSON integers (e.g. float).</p>
+<p><code>parse_constant</code>, if specified, will be called with one of the
+following strings: -Infinity, Infinity, NaN.
+This can be used to raise an exception if invalid JSON numbers
+are encountered.</p>
+<p>To use a custom <code>JSONDecoder</code> subclass, specify it with the <code>cls</code>
+kwarg; otherwise <code>JSONDecoder</code> is used.</p>
+<p>The <code>encoding</code> argument is ignored and deprecated since Python 3.1.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>databooks/data_models/notebook.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">loads</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">object_hook</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parse_float</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">parse_int</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parse_constant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">object_pairs_hook</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Deserialize ``s`` (a ``str``, ``bytes`` or ``bytearray`` instance</span>
+<span class="sd">    containing a JSON document) to a Python object.</span>
+
+<span class="sd">    ``object_hook`` is an optional function that will be called with the</span>
+<span class="sd">    result of any object literal decode (a ``dict``). The return value of</span>
+<span class="sd">    ``object_hook`` will be used instead of the ``dict``. This feature</span>
+<span class="sd">    can be used to implement custom decoders (e.g. JSON-RPC class hinting).</span>
+
+<span class="sd">    ``object_pairs_hook`` is an optional function that will be called with the</span>
+<span class="sd">    result of any object literal decoded with an ordered list of pairs.  The</span>
+<span class="sd">    return value of ``object_pairs_hook`` will be used instead of the ``dict``.</span>
+<span class="sd">    This feature can be used to implement custom decoders.  If ``object_hook``</span>
+<span class="sd">    is also defined, the ``object_pairs_hook`` takes priority.</span>
+
+<span class="sd">    ``parse_float``, if specified, will be called with the string</span>
+<span class="sd">    of every JSON float to be decoded. By default this is equivalent to</span>
+<span class="sd">    float(num_str). This can be used to use another datatype or parser</span>
+<span class="sd">    for JSON floats (e.g. decimal.Decimal).</span>
+
+<span class="sd">    ``parse_int``, if specified, will be called with the string</span>
+<span class="sd">    of every JSON int to be decoded. By default this is equivalent to</span>
+<span class="sd">    int(num_str). This can be used to use another datatype or parser</span>
+<span class="sd">    for JSON integers (e.g. float).</span>
+
+<span class="sd">    ``parse_constant``, if specified, will be called with one of the</span>
+<span class="sd">    following strings: -Infinity, Infinity, NaN.</span>
+<span class="sd">    This can be used to raise an exception if invalid JSON numbers</span>
+<span class="sd">    are encountered.</span>
+
+<span class="sd">    To use a custom ``JSONDecoder`` subclass, specify it with the ``cls``</span>
+<span class="sd">    kwarg; otherwise ``JSONDecoder`` is used.</span>
+
+<span class="sd">    The ``encoding`` argument is ignored and deprecated since Python 3.1.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\ufeff</span><span class="s1">&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">JSONDecodeError</span><span class="p">(</span><span class="s2">&quot;Unexpected UTF-8 BOM (decode using utf-8-sig)&quot;</span><span class="p">,</span>
+                                  <span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="p">(</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">bytearray</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;the JSON object must be str, bytes or bytearray, &#39;</span>
+                            <span class="sa">f</span><span class="s1">&#39;not </span><span class="si">{</span><span class="n">s</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">detect_encoding</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="s1">&#39;surrogatepass&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s2">&quot;encoding&quot;</span> <span class="ow">in</span> <span class="n">kw</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">warnings</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;&#39;encoding&#39; is ignored and deprecated. It will be removed in Python 3.9&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span>
+        <span class="p">)</span>
+        <span class="k">del</span> <span class="n">kw</span><span class="p">[</span><span class="s1">&#39;encoding&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="bp">cls</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">object_hook</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span>
+            <span class="n">parse_int</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">parse_float</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span>
+            <span class="n">parse_constant</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">object_pairs_hook</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">kw</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_default_decoder</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">if</span> <span class="bp">cls</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">cls</span> <span class="o">=</span> <span class="n">JSONDecoder</span>
+    <span class="k">if</span> <span class="n">object_hook</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">kw</span><span class="p">[</span><span class="s1">&#39;object_hook&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">object_hook</span>
+    <span class="k">if</span> <span class="n">object_pairs_hook</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">kw</span><span class="p">[</span><span class="s1">&#39;object_pairs_hook&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">object_pairs_hook</span>
+    <span class="k">if</span> <span class="n">parse_float</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">kw</span><span class="p">[</span><span class="s1">&#39;parse_float&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">parse_float</span>
+    <span class="k">if</span> <span class="n">parse_int</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">kw</span><span class="p">[</span><span class="s1">&#39;parse_int&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">parse_int</span>
+    <span class="k">if</span> <span class="n">parse_constant</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">kw</span><span class="p">[</span><span class="s1">&#39;parse_constant&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">parse_constant</span>
+    <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">kw</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="databooks.data_models.notebook.Cells[Union[CodeCell, RawCell, MarkdownCell]].Config.prepare_field" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">prepare_field</span><span class="p">(</span><span class="n">field</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-classmethod"><code>classmethod</code></small>
+  </span>
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Optional hook to check or modify fields during model creation.</p>
+
+    </div>
+
+  </div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="databooks.data_models.notebook.JupyterNotebook" class="doc doc-heading">
+        <code>
+JupyterNotebook            (<a title="databooks.data_models.base.DatabooksBase" href="../base/#databooks.data_models.base.DatabooksBase">DatabooksBase</a>)
+        </code>
+
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-pydantic-model"><code>pydantic-model</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Jupyter notebook. Extra fields yield invalid notebook.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>databooks/data_models/notebook.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">JupyterNotebook</span><span class="p">(</span><span class="n">DatabooksBase</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Jupyter notebook. Extra fields yield invalid notebook.&quot;&quot;&quot;</span>
+
+    <span class="n">nbformat</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">nbformat_minor</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">metadata</span><span class="p">:</span> <span class="n">NotebookMetadata</span>
+    <span class="n">cells</span><span class="p">:</span> <span class="n">Cells</span><span class="p">[</span><span class="n">Cell</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__rich_console__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">console</span><span class="p">:</span> <span class="n">Console</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">ConsoleOptions</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RenderResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Rich display notebook.&quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">_rich</span><span class="p">(</span><span class="n">kernel</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Text</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Display with `kernel` theme, horizontal padding and right-justified.&quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="n">Text</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;kernel&quot;</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+
+        <span class="n">kernelspec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;kernelspec&quot;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kernelspec</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>  <span class="c1"># check if this is a `DiffCells`</span>
+            <span class="n">kernelspec</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+                <span class="n">ks</span> <span class="ow">or</span> <span class="p">{</span><span class="s2">&quot;language&quot;</span><span class="p">:</span> <span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="s2">&quot;display_name&quot;</span><span class="p">:</span> <span class="s2">&quot;null&quot;</span><span class="p">}</span> <span class="k">for</span> <span class="n">ks</span> <span class="ow">in</span> <span class="n">kernelspec</span>
+            <span class="p">)</span>
+            <span class="n">lang_first</span><span class="p">,</span> <span class="n">lang_last</span> <span class="o">=</span> <span class="p">(</span><span class="n">ks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;language&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">ks</span> <span class="ow">in</span> <span class="n">kernelspec</span><span class="p">)</span>
+            <span class="n">nb_lang</span> <span class="o">=</span> <span class="n">lang_first</span> <span class="k">if</span> <span class="n">lang_first</span> <span class="o">==</span> <span class="n">lang_last</span> <span class="k">else</span> <span class="s2">&quot;text&quot;</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="s2">&quot;display_name&quot;</span> <span class="ow">in</span> <span class="n">ks</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">ks</span> <span class="ow">in</span> <span class="n">kernelspec</span><span class="p">):</span>
+                <span class="n">kernel_first</span><span class="p">,</span> <span class="n">kernel_last</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">_rich</span><span class="p">(</span><span class="n">ks</span><span class="p">[</span><span class="s2">&quot;display_name&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">ks</span> <span class="ow">in</span> <span class="n">kernelspec</span>
+                <span class="p">]</span>
+                <span class="k">yield</span> <span class="n">Columns</span><span class="p">(</span>
+                    <span class="p">[</span><span class="n">kernel_first</span><span class="p">,</span> <span class="n">kernel_last</span><span class="p">],</span>
+                    <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">width</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">max_width</span> <span class="o">//</span> <span class="mi">3</span><span class="p">,</span>
+                <span class="p">)</span> <span class="k">if</span> <span class="n">kernel_first</span> <span class="o">!=</span> <span class="n">kernel_last</span> <span class="k">else</span> <span class="n">kernel_first</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nb_lang</span> <span class="o">=</span> <span class="n">kernelspec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;language&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;display_name&quot;</span> <span class="ow">in</span> <span class="n">kernelspec</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">yield</span> <span class="n">_rich</span><span class="p">(</span><span class="n">kernelspec</span><span class="p">[</span><span class="s2">&quot;display_name&quot;</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">CodeCell</span><span class="p">):</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">CellMetadata</span><span class="p">(</span><span class="o">**</span><span class="n">cell</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="n">lang</span><span class="o">=</span><span class="n">nb_lang</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">parse_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">parse_kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JupyterNotebook</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse notebook from a path.&quot;&quot;&quot;</span>
+        <span class="n">content_arg</span> <span class="o">=</span> <span class="n">parse_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;content_type&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">content_arg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Value of `content_type` must be `json` (default), got `</span><span class="si">{</span><span class="n">content_arg</span><span class="si">}</span><span class="s2">`&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">JupyterNotebook</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="n">parse_file</span><span class="p">(</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">parse_kwargs</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">json_kwargs</span><span class="p">:</span> <span class="n">Any</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write notebook to disk.&quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">Path</span><span class="p">)</span> <span class="k">else</span> <span class="n">path</span>
+        <span class="n">json_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;indent&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="o">**</span><span class="n">json_kwargs</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;File exists at </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> exists. Specify `overwrite = True`.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">validation_error</span> <span class="o">=</span> <span class="n">validate_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">validation_error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">validation_error</span>
+        <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="n">fp</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="o">**</span><span class="n">json_kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">clear_metadata</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">notebook_metadata_keep</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">notebook_metadata_remove</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">cell_kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clear notebook and cell metadata.</span>
+
+<span class="sd">        :param notebook_metadata_keep: Metadata values to keep - simply pass an empty</span>
+<span class="sd">         sequence (i.e.: `()`) to remove all extra fields.</span>
+<span class="sd">        :param notebook_metadata_remove: Metadata values to remove</span>
+<span class="sd">        :param cell_kwargs: keyword arguments to be passed to each cell&#39;s</span>
+<span class="sd">         `databooks.data_models.cell.BaseCell.clear_metadata`</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nargs</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">notebook_metadata_keep</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="n">notebook_metadata_remove</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">nargs</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Exactly one of `notebook_metadata_keep` or `notebook_metadata_remove`&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; must be passed, got </span><span class="si">{</span><span class="n">nargs</span><span class="si">}</span><span class="s2"> arguments.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">notebook_metadata_keep</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">notebook_metadata_remove</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+                <span class="n">field</span>
+                <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span>
+                <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">notebook_metadata_keep</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">remove_fields</span><span class="p">(</span><span class="n">notebook_metadata_remove</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell_kwargs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">_clean_cells</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">_clean_cells</span><span class="p">:</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">clear_fields</span><span class="p">(</span><span class="o">**</span><span class="n">cell_kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cells</span> <span class="o">=</span> <span class="n">_clean_cells</span>
+</code></pre></div>
+        </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="databooks.data_models.notebook.JupyterNotebook.__rich_console__" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">__rich_console__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">console</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Rich display notebook.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>databooks/data_models/notebook.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">__rich_console__</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">console</span><span class="p">:</span> <span class="n">Console</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">ConsoleOptions</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RenderResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Rich display notebook.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_rich</span><span class="p">(</span><span class="n">kernel</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Text</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Display with `kernel` theme, horizontal padding and right-justified.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Text</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;kernel&quot;</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+
+    <span class="n">kernelspec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;kernelspec&quot;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kernelspec</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>  <span class="c1"># check if this is a `DiffCells`</span>
+        <span class="n">kernelspec</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+            <span class="n">ks</span> <span class="ow">or</span> <span class="p">{</span><span class="s2">&quot;language&quot;</span><span class="p">:</span> <span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="s2">&quot;display_name&quot;</span><span class="p">:</span> <span class="s2">&quot;null&quot;</span><span class="p">}</span> <span class="k">for</span> <span class="n">ks</span> <span class="ow">in</span> <span class="n">kernelspec</span>
+        <span class="p">)</span>
+        <span class="n">lang_first</span><span class="p">,</span> <span class="n">lang_last</span> <span class="o">=</span> <span class="p">(</span><span class="n">ks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;language&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">ks</span> <span class="ow">in</span> <span class="n">kernelspec</span><span class="p">)</span>
+        <span class="n">nb_lang</span> <span class="o">=</span> <span class="n">lang_first</span> <span class="k">if</span> <span class="n">lang_first</span> <span class="o">==</span> <span class="n">lang_last</span> <span class="k">else</span> <span class="s2">&quot;text&quot;</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="s2">&quot;display_name&quot;</span> <span class="ow">in</span> <span class="n">ks</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">ks</span> <span class="ow">in</span> <span class="n">kernelspec</span><span class="p">):</span>
+            <span class="n">kernel_first</span><span class="p">,</span> <span class="n">kernel_last</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">_rich</span><span class="p">(</span><span class="n">ks</span><span class="p">[</span><span class="s2">&quot;display_name&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">ks</span> <span class="ow">in</span> <span class="n">kernelspec</span>
+            <span class="p">]</span>
+            <span class="k">yield</span> <span class="n">Columns</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">kernel_first</span><span class="p">,</span> <span class="n">kernel_last</span><span class="p">],</span>
+                <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">width</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">max_width</span> <span class="o">//</span> <span class="mi">3</span><span class="p">,</span>
+            <span class="p">)</span> <span class="k">if</span> <span class="n">kernel_first</span> <span class="o">!=</span> <span class="n">kernel_last</span> <span class="k">else</span> <span class="n">kernel_first</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">nb_lang</span> <span class="o">=</span> <span class="n">kernelspec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;language&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;display_name&quot;</span> <span class="ow">in</span> <span class="n">kernelspec</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">yield</span> <span class="n">_rich</span><span class="p">(</span><span class="n">kernelspec</span><span class="p">[</span><span class="s2">&quot;display_name&quot;</span><span class="p">])</span>
+
+    <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">CodeCell</span><span class="p">):</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">CellMetadata</span><span class="p">(</span><span class="o">**</span><span class="n">cell</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="n">lang</span><span class="o">=</span><span class="n">nb_lang</span><span class="p">)</span>
+    <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="databooks.data_models.notebook.JupyterNotebook.clear_metadata" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">clear_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">notebook_metadata_keep</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">notebook_metadata_remove</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">cell_kwargs</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Clear notebook and cell metadata.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>notebook_metadata_keep</code></td>
+        <td><code>Sequence[str]</code></td>
+        <td><p>Metadata values to keep - simply pass an empty sequence (i.e.: <code>()</code>) to remove all extra fields.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>notebook_metadata_remove</code></td>
+        <td><code>Sequence[str]</code></td>
+        <td><p>Metadata values to remove</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>cell_kwargs</code></td>
+        <td><code>Any</code></td>
+        <td><p>keyword arguments to be passed to each cell's <code>databooks.data_models.cell.BaseCell.clear_metadata</code></p></td>
+        <td><code>{}</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>None</code></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>databooks/data_models/notebook.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">clear_metadata</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">notebook_metadata_keep</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">notebook_metadata_remove</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">cell_kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Clear notebook and cell metadata.</span>
+
+<span class="sd">    :param notebook_metadata_keep: Metadata values to keep - simply pass an empty</span>
+<span class="sd">     sequence (i.e.: `()`) to remove all extra fields.</span>
+<span class="sd">    :param notebook_metadata_remove: Metadata values to remove</span>
+<span class="sd">    :param cell_kwargs: keyword arguments to be passed to each cell&#39;s</span>
+<span class="sd">     `databooks.data_models.cell.BaseCell.clear_metadata`</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">nargs</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">notebook_metadata_keep</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="n">notebook_metadata_remove</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">nargs</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Exactly one of `notebook_metadata_keep` or `notebook_metadata_remove`&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot; must be passed, got </span><span class="si">{</span><span class="n">nargs</span><span class="si">}</span><span class="s2"> arguments.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">notebook_metadata_keep</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">notebook_metadata_remove</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+            <span class="n">field</span>
+            <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span>
+            <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">notebook_metadata_keep</span>
+        <span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">remove_fields</span><span class="p">(</span><span class="n">notebook_metadata_remove</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell_kwargs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">_clean_cells</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">_clean_cells</span><span class="p">:</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">clear_fields</span><span class="p">(</span><span class="o">**</span><span class="n">cell_kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cells</span> <span class="o">=</span> <span class="n">_clean_cells</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="databooks.data_models.notebook.JupyterNotebook.parse_file" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">parse_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="o">**</span><span class="n">parse_kwargs</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-classmethod"><code>classmethod</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Parse notebook from a path.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>databooks/data_models/notebook.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="k">def</span> <span class="nf">parse_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">parse_kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JupyterNotebook</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse notebook from a path.&quot;&quot;&quot;</span>
+    <span class="n">content_arg</span> <span class="o">=</span> <span class="n">parse_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;content_type&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">content_arg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Value of `content_type` must be `json` (default), got `</span><span class="si">{</span><span class="n">content_arg</span><span class="si">}</span><span class="s2">`&quot;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">JupyterNotebook</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="n">parse_file</span><span class="p">(</span>
+        <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">parse_kwargs</span>
+    <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="databooks.data_models.notebook.JupyterNotebook.write" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">json_kwargs</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Write notebook to disk.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>databooks/data_models/notebook.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">write</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">json_kwargs</span><span class="p">:</span> <span class="n">Any</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write notebook to disk.&quot;&quot;&quot;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">Path</span><span class="p">)</span> <span class="k">else</span> <span class="n">path</span>
+    <span class="n">json_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;indent&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="o">**</span><span class="n">json_kwargs</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;File exists at </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> exists. Specify `overwrite = True`.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">validation_error</span> <span class="o">=</span> <span class="n">validate_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">validation_error</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">validation_error</span>
+    <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="n">fp</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="o">**</span><span class="n">json_kwargs</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="databooks.data_models.notebook.NotebookMetadata" class="doc doc-heading">
+        <code>
+NotebookMetadata            (<a title="databooks.data_models.base.DatabooksBase" href="../base/#databooks.data_models.base.DatabooksBase">DatabooksBase</a>)
+        </code>
+
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-pydantic-model"><code>pydantic-model</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Notebook metadata. Empty by default but can accept extra fields.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>databooks/data_models/notebook.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">NotebookMetadata</span><span class="p">(</span><span class="n">DatabooksBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Notebook metadata. Empty by default but can accept extra fields.&quot;&quot;&quot;</span>
+</code></pre></div>
+        </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            Back to top
+          </a>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
+      
+        
+        <a href="../base/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Base" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Base
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../../affirm/" class="md-footer__link md-footer__link--next" aria-label="Next: Affirm" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Affirm
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Maintained by dataroots
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+      
+      
+    
+    <a href="https://github.com/datarootsio" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1zM480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2zm-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3zm-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1z"/></svg>
+    </a>
+  
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/company/dataroots/" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+    </a>
+  
+    
+    
+      
+      
+    
+    <a href="https://www.instagram.com/lifeatdataroots/" target="_blank" rel="noopener" title="www.instagram.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/></svg>
+    </a>
+  
+    
+    
+      
+      
+    
+    <a href="https://www.youtube.com/c/dataroots" target="_blank" rel="noopener" title="www.youtube.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"/></svg>
+    </a>
+  
+    
+    
+      
+      
+    
+    <a href="https://dataroots.io/" target="_blank" rel="noopener" title="dataroots.io" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M352 256c0 22.2-1.2 43.6-3.3 64H163.3c-2.2-20.4-3.3-41.8-3.3-64s1.2-43.6 3.3-64h185.4c2.2 20.4 3.3 41.8 3.3 64zm28.8-64h123.1c5.3 20.5 8.1 41.9 8.1 64s-2.8 43.5-8.1 64H380.8c2.1-20.6 3.2-42 3.2-64s-1.1-43.4-3.2-64zm112.6-32H376.7c-10-63.9-29.8-117.4-55.3-151.6 78.3 20.7 142 77.5 171.9 151.6zm-149.1 0H167.7c6.1-36.4 15.5-68.6 27-94.7 10.5-23.6 22.2-40.7 33.5-51.5C239.4 3.2 248.7 0 256 0s16.6 3.2 27.8 13.8c11.3 10.8 23 27.9 33.5 51.5 11.6 26 21 58.2 27 94.7zm-209 0H18.6c30-74.1 93.6-130.9 172-151.6-25.5 34.2-45.3 87.7-55.3 151.6zM8.1 192h123.1c-2.1 20.6-3.2 42-3.2 64s1.1 43.4 3.2 64H8.1C2.8 299.5 0 278.1 0 256s2.8-43.5 8.1-64zm186.6 254.6c-11.6-26-20.9-58.2-27-94.6h176.6c-6.1 36.4-15.5 68.6-27 94.6-10.5 23.6-22.2 40.7-33.5 51.5-11.2 10.7-20.5 13.9-27.8 13.9s-16.6-3.2-27.8-13.8c-11.3-10.8-23-27.9-33.5-51.5zM135.3 352c10 63.9 29.8 117.4 55.3 151.6-78.4-20.7-142-77.5-172-151.6h116.7zm358.1 0c-30 74.1-93.6 130.9-171.9 151.6 25.5-34.2 45.2-87.7 55.3-151.6h116.6z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top"], "search": "../../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.5a2dcb6a.min.js"></script>
+      
+    
+    
+  </body>
+</html>
