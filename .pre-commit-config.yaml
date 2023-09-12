@@ -33,9 +33,9 @@ repos:
           - types-all==1.0.0
           - typer==0.3.2
           - rich==10.16.2
-          - pydantic==1.9.0
+          - pydantic==2.2.*
           - GitPython==3.1.26
-          - typing-extensions==4.0.1
+          - typing-extensions==4.6.*
           - tomli==2.0.1
   - repo: https://github.com/codespell-project/codespell
     rev: v2.2.4
@@ -55,7 +55,7 @@ repos:
           - typer-cli==0.0.12
           - typer==0.3.2
           - rich==10.16.2
-          - pydantic==1.9.0
+          - pydantic==2.2
           - GitPython==3.1.26
-          - typing-extensions==4.0.1
+          - typing-extensions==4.6.*
           - tomli==2.0.1

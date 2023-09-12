@@ -3,7 +3,7 @@ from pathlib import Path
 from git import GitCommandError, Repo
 from pytest import raises
 
-from databooks.data_models.cell import BaseCell, CellMetadata
+from databooks.data_models.cell import CellMetadata, RawCell
 from databooks.data_models.notebook import NotebookMetadata
 from databooks.git_utils import (
     ChangeType,
@@ -99,7 +99,6 @@ def test_get_conflict_blobs(tmp_path: Path) -> None:
     assert conflict.first_contents == b"HELLO EVERYONE!"
     assert conflict.last_contents == b"hello world"
 
-from databooks.data_models.cell import RawCell
 
 def test_get_nb_diffs(tmp_path: Path) -> None:
     """Get the diffs for notebooks."""

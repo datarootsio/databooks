@@ -219,7 +219,7 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
             source="extra",
         )
         notebook_2.cells = notebook_2.cells + [extra_cell]
-        
+
         diff = notebook_1 - notebook_2
         notebook = deepcopy(notebook_1)
 

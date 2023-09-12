@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Union
 
-from pydantic import field_validator, PositiveInt
+from pydantic import PositiveInt, RootModel, field_validator
 from rich.console import Console, ConsoleOptions, ConsoleRenderable, RenderResult
 from rich.markdown import Markdown
 from rich.panel import Panel
@@ -63,9 +63,7 @@ class BaseCell(DatabooksBase):
 
         if self.cell_type == "code":
             self.outputs: CellOutputs = (
-                CellOutputs([])
-                if "outputs" not in dict(self)
-                else self.outputs
+                CellOutputs([]) if "outputs" not in dict(self) else self.outputs
             )
             self.execution_count: Optional[PositiveInt] = (
                 None if "execution_count" not in dict(self) else self.execution_count
@@ -239,7 +237,6 @@ CellOutputType = Union[
     CellStreamOutput, CellDisplayDataOutput, CellExecuteResultOutput, CellErrorOutput
 ]
 
-from pydantic import RootModel
 
 class CellOutputs(DatabooksBase, RootModel):
     """Outputs of notebook code cells."""
@@ -258,11 +255,14 @@ class CellOutputs(DatabooksBase, RootModel):
     ) -> List[CellOutputType]:
         """Alias `root` with outputs for easy referencing."""
         return self.root
-    
-    # shouldn't need this, since BaseModel should implement equality on all fields, something's not working i.e. root eq works fine, model_config eq works fine, but whole class eq doesn't work...
-    # but maybe because of multi inheritance it doesn't work anymore :shrug:
-    def __eq__(self: CellOutputs, other: CellOutputs) -> bool:
-        return self.root == other.root and self.model_config == other.model_config
+
+    # Before CellOutputs inherited from RootModel
+    # eq worked well (suppose covered by DatabooksBase,
+    # which inherits from Pydantic's BaseModel)
+    def __eq__(self: CellOutputs, other: object) -> bool:
+        """Comparison of different CellOutputs."""
+        return type(other) == CellOutputs and self.root == other.root and self.model_config == other.model_config
+
 
 class CodeCell(BaseCell):
     """Cell of type `code` - defined for rich displaying in terminal."""

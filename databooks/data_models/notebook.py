@@ -20,8 +20,7 @@ from typing import (
     cast,
 )
 
-from pydantic import BaseModel, Extra
-# from pydantic.v1 import validate_model
+from pydantic import Extra, RootModel
 from rich import box
 from rich.columns import Columns
 from rich.console import Console, ConsoleOptions, Group, RenderableType, RenderResult
@@ -38,33 +37,21 @@ Cell = Union[CodeCell, RawCell, MarkdownCell]
 CellsPair = Tuple[List[Cell], List[Cell]]
 T = TypeVar("T", Cell, CellsPair)
 
-from pydantic import RootModel
 
-class Cells(RootModel[T], BaseCells[T]):
+class Cells(RootModel[Sequence[T]], BaseCells[T]):
     """Similar to `list`, with `-` operator using `difflib.SequenceMatcher`."""
 
     root: Sequence[T]
 
-    
-    # shouldn't need this, since BaseModel should implement equality on all fields, something's not working i.e. root eq works fine, model_config eq works fine, but whole class eq doesn't work...
-    # but maybe because of multi inheritance it doesn't work anymore :shrug:
-    def __eq__(self: Cells, other: Cells) -> bool:
-        return self.root == other.root
-
-    # def __init__(self, elements: Sequence[T] = ()) -> None:
-    #     """Allow passing data as a positional argument when instantiating class."""
-    #     # super(Cells, self).__init__(elements)
+    def __eq__(self: Cells, other: object) -> bool:
+        """Compare different Cells."""
+        return type(other) == Cells and self.root == other.root
 
     @property
     def data(self) -> List[T]:  # type: ignore
         """Define property `data` required for `collections.UserList` class."""
         return list(self.root)
     
-    @data.setter
-    def data(self, value):  # type: ignore
-        """Define property `data` required for `collections.UserList` class."""
-        self._data = value
-
     def __iter__(self) -> Generator[Any, None, None]:
         """Use list property as iterable."""
         return (el for el in self.data)
@@ -93,6 +80,8 @@ class Cells(RootModel[T], BaseCells[T]):
                 f" {n_context} for {len(self)} and {len(other)} cells in"
                 " notebooks."
             )
+
+        # weird, root is Sequence type, but mypy doesn't see this, only its element type...
         return Cells[CellsPair](
             [
                 # https://github.com/python/mypy/issues/9459
@@ -100,7 +89,7 @@ class Cells(RootModel[T], BaseCells[T]):
                 for _, i1, j1, i2, j2 in chain.from_iterable(diff_opcodes)
             ]
         )
-
+    
     def __rich_console__(
         self, console: Console, options: ConsoleOptions
     ) -> RenderResult:

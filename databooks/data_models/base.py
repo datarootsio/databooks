@@ -5,7 +5,7 @@ from abc import abstractmethod
 from collections import UserList
 from typing import Any, Dict, Generic, Iterable, List, TypeVar, cast, overload
 
-from pydantic import ConfigDict, BaseModel, create_model
+from pydantic import BaseModel, ConfigDict, create_model
 from typing_extensions import Protocol, runtime_checkable
 
 T = TypeVar("T")
@@ -88,6 +88,7 @@ def resolve(
 
 class DatabooksBase(BaseModel):
     """Base Pydantic class with extras on managing fields."""
+
     model_config = ConfigDict(extra="allow")
 
     def remove_fields(

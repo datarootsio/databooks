@@ -12,7 +12,7 @@ from typer.core import TyperCommand
 from typer.testing import CliRunner
 
 from databooks.cli import _config_callback, _parse_paths, app
-from databooks.data_models.cell import BaseCell, CellMetadata, CellOutputs
+from databooks.data_models.cell import CellMetadata, CellOutputs, MarkdownCell, RawCell
 from databooks.data_models.notebook import JupyterNotebook, NotebookMetadata
 from databooks.git_utils import get_conflict_blobs
 from databooks.version import __version__
@@ -102,15 +102,12 @@ def test_meta__check(tmp_path: Path, caplog: LogCaptureFixture) -> None:
     # pdb.set_trace()
 
     # Clean notebook and check again
-    result_clean = runner.invoke(app, ["meta", str(read_path), "--yes"])
-
+    runner.invoke(app, ["meta", str(read_path), "--yes"])
 
     # import pdb
     # pdb.set_trace()
 
-
     result = runner.invoke(app, ["meta", str(read_path), "--check"])
-    
 
     # import pdb
     # pdb.set_trace()
@@ -246,8 +243,6 @@ def test_assert__config(caplog: LogCaptureFixture) -> None:
     )
 
 
-from databooks.data_models.cell import RawCell, MarkdownCell
-
 def test_fix(tmp_path: Path) -> None:
     """Fix notebook conflicts."""
     # Setup
@@ -278,7 +273,7 @@ def test_fix(tmp_path: Path) -> None:
         contents_main=notebook_1.json(),
         contents_other=notebook_2.json(),
         commit_message_main="Notebook from main",
-        commit_message_other="Notebook from other"
+        commit_message_other="Notebook from other",
     )
 
     with raises(GitCommandError):
@@ -340,16 +335,11 @@ def test_fix__config(tmp_path: Path) -> None:
         another_field_to_remove="another field",
     )
 
-    from typing import cast
-    from databooks.data_models.cell import RawCell, MarkdownCell
-
-    # ok so since notebook requires its cells to be more specific than BaseCells, we cannot pass BaseCell, since the class might depend on child class methods the base class doesn't possess
-    # contravariance?
     extra_cell = RawCell(
         metadata=CellMetadata(random_meta=["meta"]),
         source="extra",
     )
-    
+
     notebook_2.cells = notebook_2.cells + [extra_cell]
 
     notebook_2.nbformat += 1
@@ -379,7 +369,7 @@ def test_fix__config(tmp_path: Path) -> None:
 
     # import pdb
     # pdb.set_trace()
-    
+
     fixed_notebook = JupyterNotebook.parse_file(path=tmp_path / nb_path)
 
     assert len(conflict_files) == 1
@@ -417,9 +407,10 @@ def test_fix__config(tmp_path: Path) -> None:
 
     # import pdb
     # pdb.set_trace()
-    
+
     # something's wrong with root models, they are not equal
     assert fixed_notebook.cells == expected
+
 
 def test_show() -> None:
     """Show notebook in terminal."""
@@ -510,7 +501,6 @@ def test_show_no_multiple() -> None:
     result = runner.invoke(app, ["show", dirpath])
     assert result.exit_code == 1
 
-from databooks.data_models.cell import RawCell
 
 def test_diff(tmp_path: Path) -> None:
     """Show rich diffs of notebooks."""
