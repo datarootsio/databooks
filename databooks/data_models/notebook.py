@@ -20,8 +20,8 @@ from typing import (
     cast,
 )
 
-from pydantic import Extra, validate_model
-from pydantic.generics import GenericModel
+from pydantic import BaseModel, Extra
+# from pydantic.v1 import validate_model
 from rich import box
 from rich.columns import Columns
 from rich.console import Console, ConsoleOptions, Group, RenderableType, RenderResult
@@ -38,20 +38,32 @@ Cell = Union[CodeCell, RawCell, MarkdownCell]
 CellsPair = Tuple[List[Cell], List[Cell]]
 T = TypeVar("T", Cell, CellsPair)
 
+from pydantic import RootModel
 
-class Cells(GenericModel, BaseCells[T]):
+class Cells(RootModel[T], BaseCells[T]):
     """Similar to `list`, with `-` operator using `difflib.SequenceMatcher`."""
 
-    __root__: Sequence[T] = ()
+    root: Sequence[T]
 
-    def __init__(self, elements: Sequence[T] = ()) -> None:
-        """Allow passing data as a positional argument when instantiating class."""
-        super(Cells, self).__init__(__root__=elements)
+    
+    # shouldn't need this, since BaseModel should implement equality on all fields, something's not working i.e. root eq works fine, model_config eq works fine, but whole class eq doesn't work...
+    # but maybe because of multi inheritance it doesn't work anymore :shrug:
+    def __eq__(self: Cells, other: Cells) -> bool:
+        return self.root == other.root
+
+    # def __init__(self, elements: Sequence[T] = ()) -> None:
+    #     """Allow passing data as a positional argument when instantiating class."""
+    #     # super(Cells, self).__init__(elements)
 
     @property
     def data(self) -> List[T]:  # type: ignore
         """Define property `data` required for `collections.UserList` class."""
-        return list(self.__root__)
+        return list(self.root)
+    
+    @data.setter
+    def data(self, value):  # type: ignore
+        """Define property `data` required for `collections.UserList` class."""
+        self._data = value
 
     def __iter__(self) -> Generator[Any, None, None]:
         """Use list property as iterable."""
@@ -265,9 +277,11 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
                 f"File exists at {path} exists. Specify `overwrite = True`."
             )
 
-        _, _, validation_error = validate_model(self.__class__, self.dict())
-        if validation_error:
-            raise validation_error
+        self.__class__.model_validate(self.dict())
+
+        # import pdb
+        # pdb.set_trace()
+
         with path.open("w") as f:
             json.dump(self.dict(), fp=f, **json_kwargs)
 

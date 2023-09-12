@@ -60,7 +60,7 @@ def test_metadata_clear(tmp_path: Path) -> None:
     assert all(
         cell.outputs
         == CellOutputs(
-            __root__=[
+            [
                 {"name": "stdout", "output_type": "stream", "text": ["test text\n"]}
             ]
         )

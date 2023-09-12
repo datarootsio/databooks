@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Union
 
-from pydantic import PositiveInt, validator
+from pydantic import field_validator, PositiveInt
 from rich.console import Console, ConsoleOptions, ConsoleRenderable, RenderResult
 from rich.markdown import Markdown
 from rich.panel import Panel
@@ -63,7 +63,7 @@ class BaseCell(DatabooksBase):
 
         if self.cell_type == "code":
             self.outputs: CellOutputs = (
-                CellOutputs(__root__=[])
+                CellOutputs([])
                 if "outputs" not in dict(self)
                 else self.outputs
             )
@@ -118,14 +118,16 @@ class CellStreamOutput(DatabooksBase):
         """Rich display of cell stream outputs."""
         return Text("".join(self.text))
 
-    @validator("output_type")
+    @field_validator("output_type")
+    @classmethod
     def output_type_must_be_stream(cls, v: str) -> str:
         """Check if stream has `stream` type."""
         if v != "stream":
             raise ValueError(f"Invalid output type. Expected `stream`, got {v}.")
         return v
 
-    @validator("name")
+    @field_validator("name")
+    @classmethod
     def stream_name_must_match(cls, v: str) -> str:
         """Check if stream name is either `stdout` or `stderr`."""
         valid_names = ("stdout", "stderr")
@@ -178,7 +180,8 @@ class CellDisplayDataOutput(DatabooksBase):
         """Rich display of data display outputs."""
         yield from self.rich_output
 
-    @validator("output_type")
+    @field_validator("output_type")
+    @classmethod
     def output_type_must_match(cls, v: str) -> str:
         """Check if stream has `display_data` type."""
         if v != "display_data":
@@ -198,7 +201,8 @@ class CellExecuteResultOutput(CellDisplayDataOutput):
         yield Text(f"Out [{self.execution_count or ' '}]:", style="out_count")
         yield from self.rich_output
 
-    @validator("output_type")
+    @field_validator("output_type")
+    @classmethod
     def output_type_must_match(cls, v: str) -> str:
         """Check if stream has `execute_result` type."""
         if v != "execute_result":
@@ -222,7 +226,8 @@ class CellErrorOutput(DatabooksBase):
         """Rich display of error outputs."""
         return Text.from_ansi("\n".join(self.traceback))
 
-    @validator("output_type")
+    @field_validator("output_type")
+    @classmethod
     def output_type_must_match(cls, v: str) -> str:
         """Check if stream has `error` type."""
         if v != "error":
@@ -234,11 +239,12 @@ CellOutputType = Union[
     CellStreamOutput, CellDisplayDataOutput, CellExecuteResultOutput, CellErrorOutput
 ]
 
+from pydantic import RootModel
 
-class CellOutputs(DatabooksBase):
+class CellOutputs(DatabooksBase, RootModel):
     """Outputs of notebook code cells."""
 
-    __root__: List[CellOutputType]
+    root: List[CellOutputType]
 
     def __rich_console__(
         self, console: Console, options: ConsoleOptions
@@ -250,9 +256,13 @@ class CellOutputs(DatabooksBase):
     def values(
         self,
     ) -> List[CellOutputType]:
-        """Alias `__root__` with outputs for easy referencing."""
-        return self.__root__
-
+        """Alias `root` with outputs for easy referencing."""
+        return self.root
+    
+    # shouldn't need this, since BaseModel should implement equality on all fields, something's not working i.e. root eq works fine, model_config eq works fine, but whole class eq doesn't work...
+    # but maybe because of multi inheritance it doesn't work anymore :shrug:
+    def __eq__(self: CellOutputs, other: CellOutputs) -> bool:
+        return self.root == other.root and self.model_config == other.model_config
 
 class CodeCell(BaseCell):
     """Cell of type `code` - defined for rich displaying in terminal."""
@@ -273,7 +283,8 @@ class CodeCell(BaseCell):
         )
         yield self.outputs
 
-    @validator("cell_type")
+    @field_validator("cell_type")
+    @classmethod
     def cell_has_code_type(cls, v: str) -> str:
         """Extract the list values from the __root__ attribute of `CellOutputs`."""
         if v != "code":
@@ -292,7 +303,8 @@ class MarkdownCell(BaseCell):
         """Rich display of markdown cells."""
         return Panel(Markdown("".join(self.source)))
 
-    @validator("cell_type")
+    @field_validator("cell_type")
+    @classmethod
     def cell_has_md_type(cls, v: str) -> str:
         """Extract the list values from the __root__ attribute of `CellOutputs`."""
         if v != "markdown":
@@ -311,7 +323,8 @@ class RawCell(BaseCell):
         """Rich display of raw cells."""
         return Panel(Text("".join(self.source)))
 
-    @validator("cell_type")
+    @field_validator("cell_type")
+    @classmethod
     def cell_has_md_type(cls, v: str) -> str:
         """Extract the list values from the __root__ attribute of `CellOutputs`."""
         if v != "raw":

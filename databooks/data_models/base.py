@@ -5,7 +5,7 @@ from abc import abstractmethod
 from collections import UserList
 from typing import Any, Dict, Generic, Iterable, List, TypeVar, cast, overload
 
-from pydantic import BaseModel, Extra, create_model
+from pydantic import ConfigDict, BaseModel, create_model
 from typing_extensions import Protocol, runtime_checkable
 
 T = TypeVar("T")
@@ -88,11 +88,7 @@ def resolve(
 
 class DatabooksBase(BaseModel):
     """Base Pydantic class with extras on managing fields."""
-
-    class Config:
-        """Default configuration for base class."""
-
-        extra = Extra.allow
+    model_config = ConfigDict(extra="allow")
 
     def remove_fields(
         self,
@@ -158,7 +154,7 @@ class DatabooksBase(BaseModel):
             "Diff" + type(self).__name__,
             __base__=type(self),
             resolve=resolve,
-            is_diff=True,
+            is_diff=(bool, True),
             **fields_d,
         )
         return cast(DiffModel, DiffInstance())  # it'll be filled in with the defaults

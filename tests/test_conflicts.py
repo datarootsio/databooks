@@ -9,6 +9,7 @@ from databooks.data_models.notebook import NotebookMetadata
 from tests.test_data_models.test_notebook import TestJupyterNotebook
 from tests.test_git_utils import ConflictFile, init_repo_diff
 
+from databooks.data_models.cell import RawCell
 
 def test_path2diff(tmp_path: Path) -> None:
     """Return a DiffFile based on a path and git conflicts."""
@@ -22,8 +23,7 @@ def test_path2diff(tmp_path: Path) -> None:
         field_to_remove=["Field to remove"],
         another_field_to_remove="another field",
     )
-    extra_cell = BaseCell(
-        cell_type="raw",
+    extra_cell = RawCell(
         metadata=CellMetadata(random_meta=["meta"]),
         source="extra",
     )

@@ -98,11 +98,28 @@ def test_meta__check(tmp_path: Path, caplog: LogCaptureFixture) -> None:
     assert nb_read == nb_write
     assert logs[0].message == "Found unwanted metadata in 1 out of 1 files."
 
+    # import pdb
+    # pdb.set_trace()
+
     # Clean notebook and check again
-    runner.invoke(app, ["meta", str(read_path), "--yes"])
+    result_clean = runner.invoke(app, ["meta", str(read_path), "--yes"])
+
+
+    # import pdb
+    # pdb.set_trace()
+
+
     result = runner.invoke(app, ["meta", str(read_path), "--check"])
+    
+
+    # import pdb
+    # pdb.set_trace()
 
     logs = list(caplog.records)
+
+    # import pdb
+    # pdb.set_trace()
+
     assert result.exit_code == 0
     assert len(logs) == 4
     assert logs[-1].message == "No unwanted metadata!"
@@ -123,7 +140,7 @@ def test_meta__config(tmp_path: Path) -> None:
 
     assert result.exit_code == 0
     assert nb_read != nb_write, "Notebook was not overwritten"
-    assert all(c.outputs == CellOutputs(__root__=[]) for c in nb_write.cells)
+    assert all(c.outputs == CellOutputs([]) for c in nb_write.cells)
     assert all(c.execution_count is not None for c in nb_write.cells)
 
     # Override config file arguments
@@ -229,6 +246,8 @@ def test_assert__config(caplog: LogCaptureFixture) -> None:
     )
 
 
+from databooks.data_models.cell import RawCell, MarkdownCell
+
 def test_fix(tmp_path: Path) -> None:
     """Fix notebook conflicts."""
     # Setup
@@ -244,11 +263,11 @@ def test_fix(tmp_path: Path) -> None:
         another_field_to_remove="another field",
     )
 
-    extra_cell = BaseCell(
-        cell_type="raw",
+    extra_cell = RawCell(
         metadata=CellMetadata(random_meta=["meta"]),
         source="extra",
     )
+
     notebook_2.cells = notebook_2.cells + [extra_cell]
     notebook_2.nbformat += 1
     notebook_2.nbformat_minor += 1
@@ -259,8 +278,9 @@ def test_fix(tmp_path: Path) -> None:
         contents_main=notebook_1.json(),
         contents_other=notebook_2.json(),
         commit_message_main="Notebook from main",
-        commit_message_other="Notebook from other",
+        commit_message_other="Notebook from other"
     )
+
     with raises(GitCommandError):
         git_repo.git.merge("other")  # merge fails and raises error due to conflict
 
@@ -286,18 +306,18 @@ def test_fix(tmp_path: Path) -> None:
     assert fixed_notebook.nbformat == notebook_1.nbformat
     assert fixed_notebook.nbformat_minor == notebook_1.nbformat_minor
     assert fixed_notebook.cells == notebook_1.cells + [
-        BaseCell(
+        MarkdownCell(
             metadata=CellMetadata(git_hash=id_main),
             source=[f"`<<<<<<< {id_main}`"],
             cell_type="markdown",
         ),
-        BaseCell(
+        MarkdownCell(
             source=["`=======`"],
             cell_type="markdown",
             metadata=CellMetadata(),
         ),
         extra_cell,
-        BaseCell(
+        MarkdownCell(
             metadata=CellMetadata(git_hash=id_other),
             source=[f"`>>>>>>> {id_other}`"],
             cell_type="markdown",
@@ -320,12 +340,18 @@ def test_fix__config(tmp_path: Path) -> None:
         another_field_to_remove="another field",
     )
 
-    extra_cell = BaseCell(
-        cell_type="raw",
+    from typing import cast
+    from databooks.data_models.cell import RawCell, MarkdownCell
+
+    # ok so since notebook requires its cells to be more specific than BaseCells, we cannot pass BaseCell, since the class might depend on child class methods the base class doesn't possess
+    # contravariance?
+    extra_cell = RawCell(
         metadata=CellMetadata(random_meta=["meta"]),
         source="extra",
     )
+    
     notebook_2.cells = notebook_2.cells + [extra_cell]
+
     notebook_2.nbformat += 1
     notebook_2.nbformat_minor += 1
 
@@ -350,6 +376,10 @@ def test_fix__config(tmp_path: Path) -> None:
         result = runner.invoke(
             app, ["fix", str(tmp_path), "--config", str(config_path)]
         )
+
+    # import pdb
+    # pdb.set_trace()
+    
     fixed_notebook = JupyterNotebook.parse_file(path=tmp_path / nb_path)
 
     assert len(conflict_files) == 1
@@ -365,25 +395,31 @@ def test_fix__config(tmp_path: Path) -> None:
     assert fixed_notebook.metadata == NotebookMetadata(**expected_metadata)
     assert fixed_notebook.nbformat == notebook_2.nbformat
     assert fixed_notebook.nbformat_minor == notebook_2.nbformat_minor
-    assert fixed_notebook.cells == notebook_1.cells + [
-        BaseCell(
+
+    expected = notebook_1.cells + [
+        MarkdownCell(
             metadata=CellMetadata(git_hash=id_main),
             source=[f"`<<<<<<< {id_main}`"],
             cell_type="markdown",
         ),
-        BaseCell(
+        MarkdownCell(
             source=["`=======`"],
             cell_type="markdown",
             metadata=CellMetadata(),
         ),
         extra_cell,
-        BaseCell(
+        MarkdownCell(
             metadata=CellMetadata(git_hash=id_other),
             source=[f"`>>>>>>> {id_other}`"],
             cell_type="markdown",
         ),
     ]
 
+    # import pdb
+    # pdb.set_trace()
+    
+    # something's wrong with root models, they are not equal
+    assert fixed_notebook.cells == expected
 
 def test_show() -> None:
     """Show notebook in terminal."""
@@ -474,6 +510,7 @@ def test_show_no_multiple() -> None:
     result = runner.invoke(app, ["show", dirpath])
     assert result.exit_code == 1
 
+from databooks.data_models.cell import RawCell
 
 def test_diff(tmp_path: Path) -> None:
     """Show rich diffs of notebooks."""
@@ -489,8 +526,7 @@ def test_diff(tmp_path: Path) -> None:
         another_field_to_remove="another field",
     )
 
-    extra_cell = BaseCell(
-        cell_type="raw",
+    extra_cell = RawCell(
         metadata=CellMetadata(random_meta=["meta"]),
         source="extra",
     )
@@ -577,8 +613,7 @@ def test_diff_svg(tmp_path: Path) -> None:
         another_field_to_remove="another field",
     )
 
-    extra_cell = BaseCell(
-        cell_type="raw",
+    extra_cell = RawCell(
         metadata=CellMetadata(random_meta=["meta"]),
         source="extra",
     )

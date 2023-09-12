@@ -99,6 +99,7 @@ def test_get_conflict_blobs(tmp_path: Path) -> None:
     assert conflict.first_contents == b"HELLO EVERYONE!"
     assert conflict.last_contents == b"hello world"
 
+from databooks.data_models.cell import RawCell
 
 def test_get_nb_diffs(tmp_path: Path) -> None:
     """Get the diffs for notebooks."""
@@ -112,8 +113,7 @@ def test_get_nb_diffs(tmp_path: Path) -> None:
         field_to_remove=["Field to remove"],
         another_field_to_remove="another field",
     )
-    extra_cell = BaseCell(
-        cell_type="raw",
+    extra_cell = RawCell(
         metadata=CellMetadata(random_meta=["meta"]),
         source="extra",
     )

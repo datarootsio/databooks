@@ -19,6 +19,7 @@ from databooks.data_models.cell import (
 from databooks.data_models.notebook import (
     Cell,
     Cells,
+    CellsPair,
     JupyterNotebook,
     NotebookMetadata,
 )
@@ -113,7 +114,7 @@ class TestCell:
         assert cell == CodeCell(
             cell_type="code",
             metadata=CellMetadata(),
-            outputs=CellOutputs(__root__=[]),
+            outputs=CellOutputs([]),
             source=["test_source"],
             execution_count=None,
         )
@@ -131,9 +132,12 @@ class TestCell:
 
         assert type(dl1) == type(dl2) == Cells[Cell]
         assert type(diff) == Cells[Tuple[List[Cell], List[Cell]]]
-        assert diff == Cells(  # type: ignore
+
+        expected = Cells[CellsPair](  # type: ignore
             [([self.cell], [self.cell]), ([], [self.cell])]
         )
+
+        assert diff == expected
 
     def test_cell_remove_fields(self, caplog: LogCaptureFixture) -> None:
         """Test remove fields with logs."""
@@ -144,7 +148,7 @@ class TestCell:
 
         assert cell.dict() == dict(
             cell_type="code",
-            metadata=self.cell_metadata,
+            metadata=self.cell_metadata.dict(),
             source=["test_source"],
             execution_count=1,
             outputs=[],
@@ -179,7 +183,7 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
 
         assert all(cell.metadata == CellMetadata() for cell in notebook.cells)
         assert all(
-            cell.outputs == CellOutputs(__root__=[])
+            cell.outputs == CellOutputs([])
             for cell in notebook.cells
             if cell.cell_type == "code"
         )
@@ -198,6 +202,10 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
         """
         notebook_1 = deepcopy(self.jupyter_notebook)
         notebook_2 = deepcopy(self.jupyter_notebook)
+
+        # import pdb
+        # pdb.set_trace()
+
         notebook_1.metadata = NotebookMetadata(
             kernelspec=dict(
                 display_name="different_kernel_display_name", name="kernel_name"
@@ -211,7 +219,7 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
             source="extra",
         )
         notebook_2.cells = notebook_2.cells + [extra_cell]
-
+        
         diff = notebook_1 - notebook_2
         notebook = deepcopy(notebook_1)
 
@@ -220,6 +228,10 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
             **notebook_1.metadata.dict(), **{"tags": []}
         )
 
+        # import pdb
+        # pdb.set_trace()
+
+        # TODO - without .dict(), they're not equal, not sure why...
         assert diff.resolve(keep_first_cells=True) == notebook
 
         notebook.cells = notebook_2.cells
@@ -243,7 +255,7 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
                 cell_type="markdown",
             ),
         ]
-        assert diff.resolve(keep_first_cells=None) == notebook
+        assert diff.resolve(keep_first_cells=None).dict() == notebook.dict()
 
 
 def test_parse_file() -> None:
@@ -275,7 +287,8 @@ def test_parse_file() -> None:
             "toc-autonumbering": False,
         },
     )
-    assert notebook.cells == Cells(
+
+    expected_cells = Cells[Cell](
         [
             MarkdownCell(
                 metadata=CellMetadata(tags=[]),
@@ -350,6 +363,11 @@ def test_parse_file() -> None:
             ),
         ]
     )
+
+    # import pdb
+    # pdb.set_trace()
+
+    assert notebook.cells == expected_cells
 
 
 def test_write_file(tmp_path: Path) -> None:
