@@ -137,6 +137,9 @@ class TestCell:
             [([self.cell], [self.cell]), ([], [self.cell])]
         )
 
+        # import pdb
+        # pdb.set_trace()
+
         assert diff == expected
 
     def test_cell_remove_fields(self, caplog: LogCaptureFixture) -> None:

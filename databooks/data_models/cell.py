@@ -261,7 +261,11 @@ class CellOutputs(DatabooksBase, RootModel):
     # which inherits from Pydantic's BaseModel)
     def __eq__(self: CellOutputs, other: object) -> bool:
         """Comparison of different CellOutputs."""
-        return type(other) == CellOutputs and self.root == other.root and self.model_config == other.model_config
+        return (
+            type(other) == CellOutputs
+            and self.root == other.root
+            and self.model_config == other.model_config
+        )
 
 
 class CodeCell(BaseCell):
