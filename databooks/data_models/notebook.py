@@ -267,9 +267,6 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
 
         self.__class__.model_validate(self.dict())
 
-        # import pdb
-        # pdb.set_trace()
-
         with path.open("w") as f:
             json.dump(self.dict(), fp=f, **json_kwargs)
 

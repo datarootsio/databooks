@@ -98,24 +98,12 @@ def test_meta__check(tmp_path: Path, caplog: LogCaptureFixture) -> None:
     assert nb_read == nb_write
     assert logs[0].message == "Found unwanted metadata in 1 out of 1 files."
 
-    # import pdb
-    # pdb.set_trace()
-
     # Clean notebook and check again
     runner.invoke(app, ["meta", str(read_path), "--yes"])
 
-    # import pdb
-    # pdb.set_trace()
-
     result = runner.invoke(app, ["meta", str(read_path), "--check"])
 
-    # import pdb
-    # pdb.set_trace()
-
     logs = list(caplog.records)
-
-    # import pdb
-    # pdb.set_trace()
 
     assert result.exit_code == 0
     assert len(logs) == 4
@@ -367,9 +355,6 @@ def test_fix__config(tmp_path: Path) -> None:
             app, ["fix", str(tmp_path), "--config", str(config_path)]
         )
 
-    # import pdb
-    # pdb.set_trace()
-
     fixed_notebook = JupyterNotebook.parse_file(path=tmp_path / nb_path)
 
     assert len(conflict_files) == 1
@@ -405,10 +390,6 @@ def test_fix__config(tmp_path: Path) -> None:
         ),
     ]
 
-    # import pdb
-    # pdb.set_trace()
-
-    # something's wrong with root models, they are not equal
     assert fixed_notebook.cells == expected
 
 

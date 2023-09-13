@@ -137,9 +137,6 @@ class TestCell:
             [([self.cell], [self.cell]), ([], [self.cell])]
         )
 
-        # import pdb
-        # pdb.set_trace()
-
         assert diff == expected
 
     def test_cell_remove_fields(self, caplog: LogCaptureFixture) -> None:
@@ -206,9 +203,6 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
         notebook_1 = deepcopy(self.jupyter_notebook)
         notebook_2 = deepcopy(self.jupyter_notebook)
 
-        # import pdb
-        # pdb.set_trace()
-
         notebook_1.metadata = NotebookMetadata(
             kernelspec=dict(
                 display_name="different_kernel_display_name", name="kernel_name"
@@ -231,10 +225,6 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
             **notebook_1.metadata.dict(), **{"tags": []}
         )
 
-        # import pdb
-        # pdb.set_trace()
-
-        # TODO - without .dict(), they're not equal, not sure why...
         assert diff.resolve(keep_first_cells=True) == notebook
 
         notebook.cells = notebook_2.cells
@@ -366,9 +356,6 @@ def test_parse_file() -> None:
             ),
         ]
     )
-
-    # import pdb
-    # pdb.set_trace()
 
     assert notebook.cells == expected_cells
 
