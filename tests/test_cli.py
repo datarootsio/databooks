@@ -292,18 +292,15 @@ def test_fix(tmp_path: Path) -> None:
         MarkdownCell(
             metadata=CellMetadata(git_hash=id_main),
             source=[f"`<<<<<<< {id_main}`"],
-            cell_type="markdown",
         ),
         MarkdownCell(
             source=["`=======`"],
-            cell_type="markdown",
             metadata=CellMetadata(),
         ),
         extra_cell,
         MarkdownCell(
             metadata=CellMetadata(git_hash=id_other),
             source=[f"`>>>>>>> {id_other}`"],
-            cell_type="markdown",
         ),
     ]
 
@@ -375,18 +372,15 @@ def test_fix__config(tmp_path: Path) -> None:
         MarkdownCell(
             metadata=CellMetadata(git_hash=id_main),
             source=[f"`<<<<<<< {id_main}`"],
-            cell_type="markdown",
         ),
         MarkdownCell(
             source=["`=======`"],
-            cell_type="markdown",
             metadata=CellMetadata(),
         ),
         extra_cell,
         MarkdownCell(
             metadata=CellMetadata(git_hash=id_other),
             source=[f"`>>>>>>> {id_other}`"],
-            cell_type="markdown",
         ),
     ]
 

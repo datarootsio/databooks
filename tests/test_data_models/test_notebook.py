@@ -78,7 +78,6 @@ class TestCell:
     def cell(self) -> CodeCell:
         """`CodeCell` property to test on."""
         return CodeCell(
-            cell_type="code",
             metadata=self.cell_metadata,
             source=["test_source"],
             execution_count=1,
@@ -112,7 +111,6 @@ class TestCell:
         logs = list(caplog.records)
 
         assert cell == CodeCell(
-            cell_type="code",
             metadata=CellMetadata(),
             outputs=CellOutputs([]),
             source=["test_source"],
@@ -209,7 +207,6 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
             another_field_to_remove="another field",
         )
         extra_cell = RawCell(
-            cell_type="raw",
             metadata=CellMetadata(random_meta=["meta"]),
             source="extra",
         )
@@ -232,18 +229,15 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
             MarkdownCell(
                 metadata=CellMetadata(git_hash=None),
                 source=["`<<<<<<< None`"],
-                cell_type="markdown",
             ),
             MarkdownCell(
                 source=["`=======`"],
-                cell_type="markdown",
                 metadata=CellMetadata(),
             ),
             extra_cell,
             MarkdownCell(
                 metadata=CellMetadata(git_hash=None),
                 source=["`>>>>>>> None`"],
-                cell_type="markdown",
             ),
         ]
         assert diff.resolve(keep_first_cells=None) == notebook
@@ -284,13 +278,11 @@ def test_parse_file() -> None:
             MarkdownCell(
                 metadata=CellMetadata(tags=[]),
                 source=["# `databooks` demo!"],
-                cell_type="markdown",
                 id="9adc7c77-95f1-4cb9-b987-1411e28f2976",
             ),
             CodeCell(
                 metadata=CellMetadata(tags=["random-tag"]),
                 source=["from random import random  # cell with tags"],
-                cell_type="code",
                 outputs=[],
                 execution_count=1,
                 id="6a6eafec-a799-455b-8c1b-fd43a0a1f3ca",
@@ -298,7 +290,6 @@ def test_parse_file() -> None:
             CodeCell(
                 metadata=CellMetadata(tags=[]),
                 source=["random()"],
-                cell_type="code",
                 outputs=[
                     {
                         "data": {"text/plain": ["0.9995123767309688"]},
@@ -313,7 +304,6 @@ def test_parse_file() -> None:
             CodeCell(
                 metadata=CellMetadata(),
                 source=['print("notebooks + git ❤️")'],
-                cell_type="code",
                 outputs=[
                     {
                         "name": "stdout",
@@ -327,7 +317,6 @@ def test_parse_file() -> None:
             CodeCell(
                 metadata=CellMetadata(),
                 source=["throw error"],
-                cell_type="code",
                 outputs=[
                     {
                         "ename": "SyntaxError",
@@ -349,7 +338,6 @@ def test_parse_file() -> None:
             RawCell(
                 metadata=CellMetadata(),
                 source=["This is a raw cell! 🚀"],
-                cell_type="raw",
                 id="b2cf154d-0d1d-44d1-9ab8-7ee4b3d37f12",
             ),
         ]

@@ -141,19 +141,16 @@ class Cells(RootModel[Sequence[T]], BaseCells[T]):
             MarkdownCell(
                 metadata=CellMetadata(git_hash=hash_first),
                 source=[f"`<<<<<<< {hash_first}`"],
-                cell_type="markdown",
             ),
             *first_cells,
             MarkdownCell(
                 source=["`=======`"],
-                cell_type="markdown",
                 metadata=CellMetadata(),
             ),
             *last_cells,
             MarkdownCell(
                 metadata=CellMetadata(git_hash=hash_last),
                 source=[f"`>>>>>>> {hash_last}`"],
-                cell_type="markdown",
             ),
         ]
 
