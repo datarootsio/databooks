@@ -39,7 +39,7 @@ The key features include:
 ## Installation
 
 ```
-pip install databooks
+pip install databooks[images]
 ```
 
 ## Usage

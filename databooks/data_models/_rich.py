@@ -1,9 +1,19 @@
 """Rich helpers functions for rich renderables in data models."""
+import base64
 from html.parser import HTMLParser
+from io import BytesIO
 from typing import Any, List, Optional, Tuple
 
 from rich import box
 from rich.table import Table
+
+try:
+    from PIL import Image
+    from rich_pixels import Pixels
+
+    _IMG_INSTALLED = True
+except ImportError:
+    _IMG_INSTALLED = False
 
 HtmlAttr = Tuple[str, Optional[str]]
 
@@ -72,3 +82,10 @@ class HtmlTable(HTMLParser):
         for row in self.rows:
             table.add_row(*row)
         return table
+
+
+def img2rich(_base64: str, max_size: Tuple[int, int]) -> Pixels:
+    """Get rich pixels from base64 image."""
+    with Image.open(BytesIO(base64.b64decode(_base64))) as image:
+        image.thumbnail(max_size, Image.ANTIALIAS)
+        return Pixels.from_image(image)

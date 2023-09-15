@@ -10,8 +10,13 @@ from rich.panel import Panel
 from rich.syntax import Syntax
 from rich.text import Text
 
+from databooks.data_models._rich import (
+    _IMG_INSTALLED,
+    HtmlTable,
+    RichHtmlTableError,
+    img2rich,
+)
 from databooks.data_models.base import DatabooksBase
-from databooks.data_models.rich_helpers import HtmlTable, RichHtmlTableError
 from databooks.logging import get_logger
 
 logger = get_logger(__file__)
@@ -157,6 +162,9 @@ class CellDisplayDataOutput(DatabooksBase):
 
         mime_func: Dict[str, Callable[[str], Optional[ConsoleRenderable]]] = {
             "text/html": lambda s: _try_parse_html(s),
+            "image/png": lambda s: img2rich(s, self.max_size)
+            if _IMG_INSTALLED
+            else None,
             "text/plain": lambda s: Text("".join(s)),
         }
         _rich = {
@@ -176,6 +184,10 @@ class CellDisplayDataOutput(DatabooksBase):
         self, console: Console, options: ConsoleOptions
     ) -> RenderResult:
         """Rich display of data display outputs."""
+        self.max_size = (
+            int(options.max_width * 2.5),
+            int(options.max_height * 2.5),
+        )  # arbitrarily choose `2.5` for image size
         yield from self.rich_output
 
     @validator("output_type")
