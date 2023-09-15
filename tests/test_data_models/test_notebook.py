@@ -133,9 +133,7 @@ class TestCell:
         assert type(dl1) == type(dl2) == Cells[Cell]
         assert type(diff) == Cells[Tuple[List[Cell], List[Cell]]]
 
-        expected = Cells[CellsPair](  # type: ignore
-            [([self.cell], [self.cell]), ([], [self.cell])]
-        )
+        expected = Cells[CellsPair]([([self.cell], [self.cell]), ([], [self.cell])])
 
         assert diff == expected
 
