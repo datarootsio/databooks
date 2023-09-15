@@ -248,7 +248,7 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
                 cell_type="markdown",
             ),
         ]
-        assert diff.resolve(keep_first_cells=None).dict() == notebook.dict()
+        assert diff.resolve(keep_first_cells=None) == notebook
 
 
 def test_parse_file() -> None:
