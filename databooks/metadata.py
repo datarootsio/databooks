@@ -60,9 +60,6 @@ def clear(
     )
     nb_equals = notebook == JupyterNotebook.parse_file(read_path)
 
-    # import pdb
-    # pdb.set_trace()
-
     if nb_equals or check:
         msg = (
             "no metadata to remove."

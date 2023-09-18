@@ -27,9 +27,6 @@ def test_metadata_clear__check_verbose(
     )
     logs = list(caplog.records)
 
-    # import pdb
-    # pdb.set_trace()
-
     assert (
         JupyterNotebook.parse_file(path=read_path)
         == TestJupyterNotebook().jupyter_notebook

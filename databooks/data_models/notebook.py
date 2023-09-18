@@ -77,9 +77,6 @@ class Cells(RootModel[Sequence[T]], BaseCells[T]):
                 " notebooks."
             )
 
-        # import pdb
-        # pdb.set_trace()
-
         return Cells[CellsPair](
             [
                 # https://github.com/python/mypy/issues/9459
@@ -249,9 +246,6 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
 
         with open(path, "r+") as file:
             raw_json = file.read()
-
-        # import pdb
-        # pdb.set_trace()
 
         return JupyterNotebook.model_validate_json(json_data=raw_json)
 

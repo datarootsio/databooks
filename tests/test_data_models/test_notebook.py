@@ -220,9 +220,6 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
             **notebook_1.metadata.dict(), **{"tags": []}
         )
 
-        # import pdb
-        # pdb.set_trace()
-
         assert diff.resolve(keep_first_cells=True) == notebook
 
         notebook.cells = notebook_2.cells

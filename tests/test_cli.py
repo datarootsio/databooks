@@ -92,9 +92,6 @@ def test_meta__check(tmp_path: Path, caplog: LogCaptureFixture) -> None:
     result = runner.invoke(app, ["meta", str(read_path), "--check"])
     nb_write = JupyterNotebook.parse_file(path=read_path)
 
-    # import pdb
-    # pdb.set_trace()
-
     logs = list(caplog.records)
     assert result.exit_code == 1
     assert len(logs) == 1
@@ -108,14 +105,7 @@ def test_meta__check(tmp_path: Path, caplog: LogCaptureFixture) -> None:
 
     logs = list(caplog.records)
 
-    # import pdb
-    # pdb.set_trace()
-
     assert result.exit_code == 0
-
-    # import pdb
-    # pdb.set_trace()
-
     assert len(logs) == 4
     assert logs[-1].message == "No unwanted metadata!"
 
@@ -393,9 +383,6 @@ def test_fix__config(tmp_path: Path) -> None:
             source=[f"`>>>>>>> {id_other}`"],
         ),
     ]
-
-    # import pdb
-    # pdb.set_trace()
 
     assert fixed_notebook.cells == expected
 

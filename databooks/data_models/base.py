@@ -113,12 +113,7 @@ class DatabooksBase(BaseModel):
             if recursive and isinstance(field_val, DatabooksBase):
                 field_val.remove_fields(fields)
             elif field in d_model:
-                # import pdb
-                # pdb.set_trace()
                 delattr(self, field)
-
-        # import pdb
-        # pdb.set_trace()
 
     def __str__(self) -> str:
         """Return outputs of __repr__."""
@@ -140,9 +135,6 @@ class DatabooksBase(BaseModel):
         # Get field and values for each instance
         self_d = dict(self)
         other_d = dict(other)
-
-        # import pdb
-        # pdb.set_trace()
 
         # Build dict with {field: (type, value)} for each field
         fields_d: Dict[str, Any] = {}
