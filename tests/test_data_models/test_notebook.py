@@ -112,7 +112,7 @@ class TestCell:
 
         assert cell == CodeCell(
             metadata=CellMetadata(),
-            outputs=CellOutputs(root=[]),
+            outputs=CellOutputs([]),
             source=["test_source"],
             execution_count=None,
         )
@@ -179,7 +179,7 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
 
         assert all(cell.metadata == CellMetadata() for cell in notebook.cells)
         assert all(
-            cell.outputs == CellOutputs(root=[])
+            cell.outputs == CellOutputs([])
             for cell in notebook.cells
             if cell.cell_type == "code"
         )

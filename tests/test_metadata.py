@@ -60,7 +60,7 @@ def test_metadata_clear(tmp_path: Path) -> None:
     assert all(
         cell.outputs
         == CellOutputs(
-            root=[{"name": "stdout", "output_type": "stream", "text": ["test text\n"]}]
+            [{"name": "stdout", "output_type": "stream", "text": ["test text\n"]}]
         )
         for cell in nb_write.cells
         if cell.cell_type == "code"
