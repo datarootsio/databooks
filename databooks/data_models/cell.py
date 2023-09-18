@@ -238,7 +238,7 @@ CellOutputType = Union[
 ]
 
 
-class CellOutputs(DatabooksBase, RootModel):
+class CellOutputs(RootModel):
     """Outputs of notebook code cells."""
 
     root: List[CellOutputType]
@@ -255,17 +255,6 @@ class CellOutputs(DatabooksBase, RootModel):
     ) -> List[CellOutputType]:
         """Alias `root` with outputs for easy referencing."""
         return self.root
-
-    # Before CellOutputs inherited from RootModel
-    # eq worked well (suppose covered by DatabooksBase,
-    # which inherits from Pydantic's BaseModel)
-    def __eq__(self: CellOutputs, other: object) -> bool:
-        """Comparison of different CellOutputs."""
-        return (
-            type(other) == CellOutputs
-            and self.root == other.root
-            and self.model_config == other.model_config
-        )
 
 
 class CodeCell(BaseCell):

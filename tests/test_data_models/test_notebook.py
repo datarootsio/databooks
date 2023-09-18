@@ -112,7 +112,7 @@ class TestCell:
 
         assert cell == CodeCell(
             metadata=CellMetadata(),
-            outputs=CellOutputs([]),
+            outputs=CellOutputs(root=[]),
             source=["test_source"],
             execution_count=None,
         )
@@ -179,7 +179,7 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
 
         assert all(cell.metadata == CellMetadata() for cell in notebook.cells)
         assert all(
-            cell.outputs == CellOutputs([])
+            cell.outputs == CellOutputs(root=[])
             for cell in notebook.cells
             if cell.cell_type == "code"
         )
@@ -219,6 +219,9 @@ class TestJupyterNotebook(TestNotebookMetadata, TestCell):
         notebook.metadata = NotebookMetadata(
             **notebook_1.metadata.dict(), **{"tags": []}
         )
+
+        # import pdb
+        # pdb.set_trace()
 
         assert diff.resolve(keep_first_cells=True) == notebook
 

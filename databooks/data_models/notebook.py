@@ -43,10 +43,6 @@ class Cells(RootModel[Sequence[T]], BaseCells[T]):
 
     root: Sequence[T]
 
-    def __eq__(self: Cells[T], other: object) -> bool:
-        """Compare different Cells."""
-        return isinstance(other, Cells) and self.root == other.root
-
     @property
     def data(self) -> List[T]:  # type: ignore
         """Define property `data` required for `collections.UserList` class."""
@@ -80,6 +76,9 @@ class Cells(RootModel[Sequence[T]], BaseCells[T]):
                 f" {n_context} for {len(self)} and {len(other)} cells in"
                 " notebooks."
             )
+
+        # import pdb
+        # pdb.set_trace()
 
         return Cells[CellsPair](
             [
@@ -247,9 +246,14 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
             raise ValueError(
                 f"Value of `content_type` must be `json` (default), got `{content_arg}`"
             )
-        return super(JupyterNotebook, cls).parse_file(
-            path=path, content_type="json", **parse_kwargs
-        )
+
+        with open(path, "r+") as file:
+            raw_json = file.read()
+
+        # import pdb
+        # pdb.set_trace()
+
+        return JupyterNotebook.model_validate_json(json_data=raw_json)
 
     def write(
         self, path: Path | str, overwrite: bool = False, **json_kwargs: Any
