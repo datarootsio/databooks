@@ -252,7 +252,6 @@ def test_multiple_diff_nb() -> None:
     notebook_2.cells = notebook_2.cells + [extra_cell, extra_cell, extra_cell]
 
     diff = notebook_1 - notebook_2
-
     assert render(diff) == dedent(
         """\
       kernel_display_name           another_kernel
