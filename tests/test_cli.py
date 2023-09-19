@@ -12,7 +12,7 @@ from typer.core import TyperCommand
 from typer.testing import CliRunner
 
 from databooks.cli import _config_callback, _parse_paths, app
-from databooks.data_models.cell import BaseCell, CellMetadata, CellOutputs
+from databooks.data_models.cell import CellMetadata, CellOutputs, MarkdownCell, RawCell
 from databooks.data_models.notebook import JupyterNotebook, NotebookMetadata
 from databooks.git_utils import get_conflict_blobs
 from databooks.version import __version__
@@ -100,9 +100,11 @@ def test_meta__check(tmp_path: Path, caplog: LogCaptureFixture) -> None:
 
     # Clean notebook and check again
     runner.invoke(app, ["meta", str(read_path), "--yes"])
+
     result = runner.invoke(app, ["meta", str(read_path), "--check"])
 
     logs = list(caplog.records)
+
     assert result.exit_code == 0
     assert len(logs) == 4
     assert logs[-1].message == "No unwanted metadata!"
@@ -123,7 +125,7 @@ def test_meta__config(tmp_path: Path) -> None:
 
     assert result.exit_code == 0
     assert nb_read != nb_write, "Notebook was not overwritten"
-    assert all(c.outputs == CellOutputs(__root__=[]) for c in nb_write.cells)
+    assert all(c.outputs == CellOutputs([]) for c in nb_write.cells)
     assert all(c.execution_count is not None for c in nb_write.cells)
 
     # Override config file arguments
@@ -244,11 +246,11 @@ def test_fix(tmp_path: Path) -> None:
         another_field_to_remove="another field",
     )
 
-    extra_cell = BaseCell(
-        cell_type="raw",
+    extra_cell = RawCell(
         metadata=CellMetadata(random_meta=["meta"]),
         source="extra",
     )
+
     notebook_2.cells = notebook_2.cells + [extra_cell]
     notebook_2.nbformat += 1
     notebook_2.nbformat_minor += 1
@@ -261,6 +263,7 @@ def test_fix(tmp_path: Path) -> None:
         commit_message_main="Notebook from main",
         commit_message_other="Notebook from other",
     )
+
     with raises(GitCommandError):
         git_repo.git.merge("other")  # merge fails and raises error due to conflict
 
@@ -286,21 +289,18 @@ def test_fix(tmp_path: Path) -> None:
     assert fixed_notebook.nbformat == notebook_1.nbformat
     assert fixed_notebook.nbformat_minor == notebook_1.nbformat_minor
     assert fixed_notebook.cells == notebook_1.cells + [
-        BaseCell(
+        MarkdownCell(
             metadata=CellMetadata(git_hash=id_main),
             source=[f"`<<<<<<< {id_main}`"],
-            cell_type="markdown",
         ),
-        BaseCell(
+        MarkdownCell(
             source=["`=======`"],
-            cell_type="markdown",
             metadata=CellMetadata(),
         ),
         extra_cell,
-        BaseCell(
+        MarkdownCell(
             metadata=CellMetadata(git_hash=id_other),
             source=[f"`>>>>>>> {id_other}`"],
-            cell_type="markdown",
         ),
     ]
 
@@ -320,12 +320,13 @@ def test_fix__config(tmp_path: Path) -> None:
         another_field_to_remove="another field",
     )
 
-    extra_cell = BaseCell(
-        cell_type="raw",
+    extra_cell = RawCell(
         metadata=CellMetadata(random_meta=["meta"]),
         source="extra",
     )
+
     notebook_2.cells = notebook_2.cells + [extra_cell]
+
     notebook_2.nbformat += 1
     notebook_2.nbformat_minor += 1
 
@@ -350,6 +351,7 @@ def test_fix__config(tmp_path: Path) -> None:
         result = runner.invoke(
             app, ["fix", str(tmp_path), "--config", str(config_path)]
         )
+
     fixed_notebook = JupyterNotebook.parse_file(path=tmp_path / nb_path)
 
     assert len(conflict_files) == 1
@@ -365,24 +367,24 @@ def test_fix__config(tmp_path: Path) -> None:
     assert fixed_notebook.metadata == NotebookMetadata(**expected_metadata)
     assert fixed_notebook.nbformat == notebook_2.nbformat
     assert fixed_notebook.nbformat_minor == notebook_2.nbformat_minor
-    assert fixed_notebook.cells == notebook_1.cells + [
-        BaseCell(
+
+    expected = notebook_1.cells + [
+        MarkdownCell(
             metadata=CellMetadata(git_hash=id_main),
             source=[f"`<<<<<<< {id_main}`"],
-            cell_type="markdown",
         ),
-        BaseCell(
+        MarkdownCell(
             source=["`=======`"],
-            cell_type="markdown",
             metadata=CellMetadata(),
         ),
         extra_cell,
-        BaseCell(
+        MarkdownCell(
             metadata=CellMetadata(git_hash=id_other),
             source=[f"`>>>>>>> {id_other}`"],
-            cell_type="markdown",
         ),
     ]
+
+    assert fixed_notebook.cells == expected
 
 
 def test_show() -> None:
@@ -489,8 +491,7 @@ def test_diff(tmp_path: Path) -> None:
         another_field_to_remove="another field",
     )
 
-    extra_cell = BaseCell(
-        cell_type="raw",
+    extra_cell = RawCell(
         metadata=CellMetadata(random_meta=["meta"]),
         source="extra",
     )
@@ -577,8 +578,7 @@ def test_diff_svg(tmp_path: Path) -> None:
         another_field_to_remove="another field",
     )
 
-    extra_cell = BaseCell(
-        cell_type="raw",
+    extra_cell = RawCell(
         metadata=CellMetadata(random_meta=["meta"]),
         source="extra",
     )

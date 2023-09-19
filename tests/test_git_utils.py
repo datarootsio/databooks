@@ -3,7 +3,7 @@ from pathlib import Path
 from git import GitCommandError, Repo
 from pytest import raises
 
-from databooks.data_models.cell import BaseCell, CellMetadata
+from databooks.data_models.cell import CellMetadata, RawCell
 from databooks.data_models.notebook import NotebookMetadata
 from databooks.git_utils import (
     ChangeType,
@@ -112,8 +112,7 @@ def test_get_nb_diffs(tmp_path: Path) -> None:
         field_to_remove=["Field to remove"],
         another_field_to_remove="another field",
     )
-    extra_cell = BaseCell(
-        cell_type="raw",
+    extra_cell = RawCell(
         metadata=CellMetadata(random_meta=["meta"]),
         source="extra",
     )

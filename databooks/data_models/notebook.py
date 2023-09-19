@@ -20,8 +20,7 @@ from typing import (
     cast,
 )
 
-from pydantic import Extra, validate_model
-from pydantic.generics import GenericModel
+from pydantic import Extra, RootModel
 from rich import box
 from rich.columns import Columns
 from rich.console import Console, ConsoleOptions, Group, RenderableType, RenderResult
@@ -39,19 +38,15 @@ CellsPair = Tuple[List[Cell], List[Cell]]
 T = TypeVar("T", Cell, CellsPair)
 
 
-class Cells(GenericModel, BaseCells[T]):
+class Cells(RootModel[Sequence[T]], BaseCells[T]):
     """Similar to `list`, with `-` operator using `difflib.SequenceMatcher`."""
 
-    __root__: Sequence[T] = ()
-
-    def __init__(self, elements: Sequence[T] = ()) -> None:
-        """Allow passing data as a positional argument when instantiating class."""
-        super(Cells, self).__init__(__root__=elements)
+    root: Sequence[T]
 
     @property
     def data(self) -> List[T]:  # type: ignore
         """Define property `data` required for `collections.UserList` class."""
-        return list(self.__root__)
+        return list(self.root)
 
     def __iter__(self) -> Generator[Any, None, None]:
         """Use list property as iterable."""
@@ -81,6 +76,7 @@ class Cells(GenericModel, BaseCells[T]):
                 f" {n_context} for {len(self)} and {len(other)} cells in"
                 " notebooks."
             )
+
         return Cells[CellsPair](
             [
                 # https://github.com/python/mypy/issues/9459
@@ -141,19 +137,16 @@ class Cells(GenericModel, BaseCells[T]):
             MarkdownCell(
                 metadata=CellMetadata(git_hash=hash_first),
                 source=[f"`<<<<<<< {hash_first}`"],
-                cell_type="markdown",
             ),
             *first_cells,
             MarkdownCell(
                 source=["`=======`"],
-                cell_type="markdown",
                 metadata=CellMetadata(),
             ),
             *last_cells,
             MarkdownCell(
                 metadata=CellMetadata(git_hash=hash_last),
                 source=[f"`>>>>>>> {hash_last}`"],
-                cell_type="markdown",
             ),
         ]
 
@@ -250,9 +243,9 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
             raise ValueError(
                 f"Value of `content_type` must be `json` (default), got `{content_arg}`"
             )
-        return super(JupyterNotebook, cls).parse_file(
-            path=path, content_type="json", **parse_kwargs
-        )
+
+        path = Path(path) if not isinstance(path, Path) else path
+        return JupyterNotebook.model_validate_json(json_data=path.read_text())
 
     def write(
         self, path: Path | str, overwrite: bool = False, **json_kwargs: Any
@@ -265,9 +258,8 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
                 f"File exists at {path} exists. Specify `overwrite = True`."
             )
 
-        _, _, validation_error = validate_model(self.__class__, self.dict())
-        if validation_error:
-            raise validation_error
+        self.__class__.model_validate(self.dict())
+
         with path.open("w") as f:
             json.dump(self.dict(), fp=f, **json_kwargs)
 
