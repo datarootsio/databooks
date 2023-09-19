@@ -244,10 +244,8 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
                 f"Value of `content_type` must be `json` (default), got `{content_arg}`"
             )
 
-        with open(path, "r+") as file:
-            raw_json = file.read()
-
-        return JupyterNotebook.model_validate_json(json_data=raw_json)
+        path = Path(path) if not isinstance(path, Path) else path
+        return JupyterNotebook.model_validate_json(json_data=path.read_text())
 
     def write(
         self, path: Path | str, overwrite: bool = False, **json_kwargs: Any
