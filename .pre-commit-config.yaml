@@ -17,7 +17,7 @@ repos:
       - id: isort
         files: (databooks/|tests/)
   - repo: https://github.com/pycqa/flake8
-    rev: 4.0.1
+    rev: 5.0.0
     hooks:
       - id: flake8
         files: (databooks/|tests/)
@@ -30,7 +30,6 @@ repos:
       - id: mypy
         files: databooks/
         additional_dependencies:
-          - types-all==1.0.0
           - typer==0.3.2
           - rich==10.16.2
           - pydantic==2.3.*
