@@ -20,6 +20,7 @@ repos:
     rev: 5.0.0
     hooks:
       - id: flake8
+        args: ["--extend-ignore=W604,E231"]
         files: (databooks/|tests/)
         additional_dependencies:
           - flake8-docstrings==1.6.0
