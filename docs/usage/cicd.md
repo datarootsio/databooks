@@ -31,7 +31,7 @@ jobs:
       - name: Install dependencies and clean metadata
         run: |
           pip install databooks
-          databooks meta . --overwrite
+          databooks meta . --yes
       - name: Commit changes and push
         run: |
           git commit -am "Automated commit - clean notebook metadata"
