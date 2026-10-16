@@ -104,7 +104,7 @@ def diff2contents(
     if not_exists:
         return None
     elif ref is None:
-        return path.read_text()
+        return path.read_text(encoding="utf-8")
     else:
         return blob2str(blob)
 

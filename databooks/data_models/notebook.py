@@ -245,7 +245,9 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
             )
 
         path = Path(path) if not isinstance(path, Path) else path
-        return JupyterNotebook.model_validate_json(json_data=path.read_text())
+        return JupyterNotebook.model_validate_json(
+            json_data=path.read_text(encoding="utf-8")
+        )
 
     def write(
         self, path: Path | str, overwrite: bool = False, **json_kwargs: Any
@@ -260,7 +262,7 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
 
         self.__class__.model_validate(self.dict())
 
-        with path.open("w") as f:
+        with path.open("w", encoding="utf-8") as f:
             json.dump(self.dict(), fp=f, **json_kwargs)
 
     def clear_metadata(
