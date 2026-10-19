@@ -1,10 +1,10 @@
 set positional-arguments
 
-# Update both version fields for review and commit.
+# Preview version stamping locally (CI normally does this automatically).
 release-prepare VERSION:
     poetry run python scripts/release.py prepare "$1"
 
-# Validate merged, committed metadata and create an annotated tag at HEAD.
+# Validate merged HEAD and create an annotated version tag.
 release-tag VERSION:
     poetry run python scripts/release.py tag "$1"
 

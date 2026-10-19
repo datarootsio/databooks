@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "databooks"
-version = "0.0.0-dev"
+version = "0.0.0-dev"  # dynamically set in CI
 description = "A CLI tool to resolve git conflicts and remove metadata in notebooks."
 authors = ["Murilo Cunha <murilo@dataroots.io>"]
 license = "MIT"

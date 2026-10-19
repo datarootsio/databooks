@@ -19,9 +19,7 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: '3.11'
-      - name: Install metadata parser
-        run: python -m pip install tomli==2.0.1
-      - name: Validate exact version, committed metadata, and main ancestry
+      - name: Validate exact version, event commit, and main ancestry
         env:
           RELEASE_VERSION: ${{ github.ref_name }}
         run: python scripts/release.py validate "$RELEASE_VERSION" --commit "$GITHUB_SHA"
@@ -30,6 +28,8 @@ jobs:
     needs: validate
     # The relative path uses the reusable workflow from this same tagged commit.
     uses: ./.github/workflows/tests.yml
+    with:
+      release-version: ${{ github.ref_name }}
 
   publish:
     runs-on: ubuntu-22.04
@@ -43,7 +43,11 @@ jobs:
           python-version: '3.11'
       - name: Install Poetry
         run: python -m pip install poetry==1.2.2
-      - name: Build committed metadata
+      - name: Stamp package and runtime versions from the tag
+        env:
+          RELEASE_VERSION: ${{ github.ref_name }}
+        run: python scripts/release.py prepare "$RELEASE_VERSION"
+      - name: Build release packages
         run: poetry build
       - name: Publish to TestPyPI and PyPI
         env:
@@ -90,6 +94,10 @@ jobs:
         run: |
           python -m pip install poetry==1.2.2
           poetry install --no-interaction --no-ansi
+      - name: Stamp docs version from the tag
+        env:
+          RELEASE_VERSION: ${{ github.ref_name }}
+        run: poetry run python scripts/release.py prepare "$RELEASE_VERSION"
       - name: Configure git user
         run: |
           git config user.name 'github-actions[bot]'

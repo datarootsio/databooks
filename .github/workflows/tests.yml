@@ -5,6 +5,12 @@ on:
       - '**'
   pull_request:
   workflow_call:
+    inputs:
+      release-version:
+        description: Tag version to stamp for release tests; omitted for branch and PR CI
+        required: false
+        type: string
+        default: ''
 
 permissions:
   contents: read
@@ -34,6 +40,11 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+      - name: Stamp release metadata from the tag
+        if: inputs.release-version != ''
+        env:
+          RELEASE_VERSION: ${{ inputs.release-version }}
+        run: poetry run python scripts/release.py prepare "$RELEASE_VERSION"
       - name: Unit tests and coverage
         run: poetry run pytest -vv --cov=./ --cov-report=xml
       - name: Upload coverage

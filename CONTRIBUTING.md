@@ -131,47 +131,43 @@ pytest --cov-report html --cov=databooks tests/
 
 ## Publishing
 
-Releases start with a new, plain stable version tag such as `1.3.11`. Choose the next
-version separately; `v` prefixes, prereleases, build suffixes, and leading zeroes are
-rejected. CI builds the metadata committed at the tagged commit.
+Releases start with a new, plain stable version tag such as `1.3.11`. The tag is the
+release version: **CI dynamically writes it into `pyproject.toml` and
+`databooks/version.py` before release tests, package builds, and docs deployment.**
+The repository keeps its development placeholder (`0.0.0-dev`); no version metadata
+commit is needed. Choose the next version separately; `v` prefixes, prereleases,
+build suffixes, and leading zeroes are rejected.
 
 Required tools: Git with access to `origin`, [Just](https://github.com/casey/just), and
 Poetry with the project environment installed (`poetry install`). Run these commands
-from the repository root:
+from the repository root after merging the changes you want to release into `main`:
 
-1. Start with clean tracked files on a release preparation branch:
+```bash
+git switch main
+git pull --ff-only origin main
+just release-tag 1.3.11
+just release-push 1.3.11
+```
 
-   ```bash
-   just release-prepare 1.3.11
-   git diff -- pyproject.toml databooks/version.py
-   git add pyproject.toml databooks/version.py
-   git commit -m "Prepare release 1.3.11"
-   ```
-
-2. Open a pull request and merge the metadata changes into `main`. Check out the
-   resulting commit on `main` (especially after a squash or rebase merge):
-
-   ```bash
-   git switch main
-   git pull --ff-only origin main
-   just release-tag 1.3.11
-   just release-push 1.3.11
-   ```
-
-Preparation updates `pyproject.toml` and `databooks/version.py` without committing.
 Tagging requires clean tracked files, fetches `origin/main`, checks that `HEAD` is in
-its history and that both committed fields match, then creates an annotated tag.
-Pushing repeats those checks against the **tagged commit**, even if you have since
-changed branches, and pushes only that tag. Existing local tags cannot be recreated;
-existing remote tags cannot be pushed again or replaced. Untracked files are ignored.
-Do not delete or move published tags; choose a new version for another release.
+its history, then creates an annotated tag. Pushing repeats the ancestry check against
+the **tagged commit**, even if you have since changed branches, and pushes only that
+tag. Existing local tags cannot be recreated; existing remote tags cannot be pushed
+again or replaced. Untracked files are ignored. Do not delete or move published tags;
+choose a new version for another release. A push to `main` alone does not publish.
+
+`just release-prepare VERSION` is available as an optional local preview of CI's
+version stamping. It updates both fields without committing. It is **not required**
+for a release; discard preview changes before tagging so tracked files are clean.
 
 Only new version tag pushes trigger publishing. Tag updates and deletions are skipped;
-CI validates the exact version, metadata, and main history before calling the reusable
-test workflow from the tagged commit. Every Python 3.7–3.11 matrix job must pass before
-publishing to TestPyPI and PyPI (using `TEST_PIPY_TOKEN` and `PIPY_TOKEN`). After that,
-CI creates a GitHub release with generated notes and deploys docs under the tag version,
-updating `latest`. Branch and pull request tests continue to run independently.
+CI validates the exact version and main history before calling the reusable test
+workflow from the tagged commit. The workflow stamps the tag version and runs every
+Python 3.7–3.11 matrix job. All jobs must pass before CI stamps and builds the packages,
+publishes to TestPyPI and PyPI (using `TEST_PIPY_TOKEN` and `PIPY_TOKEN`), then creates a
+GitHub release with generated notes and deploys docs under the tag version, updating
+`latest`. Branch and pull request tests continue to use the committed development
+version.
 
 Before changing release tooling, run:
 

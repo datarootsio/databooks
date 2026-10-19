@@ -1,13 +1,10 @@
-"""Prepare, validate, tag, and push releases from committed version metadata."""
+"""Prepare, validate, tag, and push releases with CI version stamping."""
 
 import argparse
-import ast
 import re
 import subprocess
 import sys
 from pathlib import Path
-
-import tomli
 
 STABLE_VERSION = re.compile(r"(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)")
 
@@ -31,45 +28,13 @@ def require_clean() -> None:
         )
 
 
-def check_metadata(version: str, project: str, runtime: str) -> None:
-    """Read metadata as data; never import or execute the package."""
-    package_version = tomli.loads(project)["tool"]["poetry"]["version"]
-    assignments = [
-        node.value
-        for node in ast.parse(runtime).body
-        if isinstance(node, ast.Assign)
-        and any(
-            isinstance(target, ast.Name) and target.id == "__version__"
-            for target in node.targets
-        )
-    ]
-    if len(assignments) != 1:
-        raise ReleaseError(
-            "Expected one __version__ assignment in databooks/version.py."
-        )
-    runtime_version = ast.literal_eval(assignments[0])
-    for name, value in [
-        ("pyproject.toml", package_version),
-        ("databooks/version.py", runtime_version),
-    ]:
-        if value != version:
-            raise ReleaseError(
-                "{} version {!r} does not match {}.".format(name, value, version)
-            )
-
-
-def validate_commit(version: str, commit: str) -> None:
-    """Fetch main and require matching metadata in a commit in its history."""
+def validate_commit(commit: str) -> None:
+    """Fetch main and require the release commit to belong to its history."""
     git("fetch", "--no-tags", "origin", "+refs/heads/main:refs/remotes/origin/main")
     try:
         git("merge-base", "--is-ancestor", commit, "refs/remotes/origin/main")
     except subprocess.CalledProcessError:
         raise ReleaseError("Release commit must belong to the history of origin/main.")
-    check_metadata(
-        version,
-        git("show", commit + ":pyproject.toml"),
-        git("show", commit + ":databooks/version.py"),
-    )
 
 
 def tagged_commit(version: str) -> str:
@@ -83,7 +48,7 @@ def tagged_commit(version: str) -> str:
 
 
 def prepare(version: str) -> None:
-    """Update the two version fields for a contributor to review and commit."""
+    """Stamp both version fields for CI builds or an optional local preview."""
     require_clean()
     # Poetry preserves the TOML structure and validates the existing project.
     subprocess.run(["poetry", "version", version], check=True)
@@ -102,14 +67,14 @@ def tag(version: str) -> None:
             "Local tag {} already exists; tags are never replaced.".format(version)
         )
     commit = git("rev-parse", "HEAD")
-    validate_commit(version, commit)
+    validate_commit(commit)
     git("tag", "-a", version, "-m", "Release " + version, commit)
 
 
 def push(version: str) -> None:
     """Revalidate the tagged commit and push only the explicitly requested tag."""
     commit = tagged_commit(version)
-    validate_commit(version, commit)
+    validate_commit(commit)
     ref = "refs/tags/" + version
     if git("ls-remote", "--tags", "origin", ref):
         raise ReleaseError(
@@ -148,7 +113,7 @@ def main() -> int:
                 "rev-parse", "--verify", args.commit + "^{commit}"
             ):
                 raise ReleaseError("Tag does not match the CI event commit.")
-            validate_commit(args.version, commit)
+            validate_commit(commit)
         else:
             actions = {"prepare": prepare, "tag": tag, "push": push}
             actions[args.command](args.version)

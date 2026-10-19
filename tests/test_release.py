@@ -47,7 +47,9 @@ def release(
     )
 
 
-def metadata(repo: Path, package: str = "1.3.11", runtime: str = "1.3.11") -> None:
+def metadata(
+    repo: Path, package: str = "0.0.0-dev", runtime: str = "0.0.0-dev"
+) -> None:
     """Write independent, minimal package metadata."""
     (repo / "databooks").mkdir(exist_ok=True)
     (repo / "pyproject.toml").write_text(
@@ -61,7 +63,7 @@ def metadata(repo: Path, package: str = "1.3.11", runtime: str = "1.3.11") -> No
 def commit(repo: Path) -> str:
     """Commit fixture changes."""
     git(repo, "add", ".")
-    git(repo, "commit", "-m", "Metadata")
+    git(repo, "commit", "--allow-empty", "-m", "Metadata")
     return git(repo, "rev-parse", "HEAD")
 
 
@@ -154,19 +156,23 @@ def test_tag_is_annotated_and_duplicate_is_rejected(repo: Path) -> None:
     assert git(repo, "rev-parse", "refs/tags/1.3.11") == original
 
 
-@pytest.mark.parametrize("package,runtime", [("2.0.0", "1.3.11"), ("1.3.11", "2.0.0")])
+@pytest.mark.parametrize(
+    "package,runtime",
+    [("0.0.0-dev", "0.0.0-dev"), ("2.0.0", "1.3.11"), ("1.3.11", "2.0.0")],
+)
 @pytest.mark.parametrize("command", ["tag", "push", "validate"])
-def test_metadata_mismatch_rejected(
+def test_tag_version_is_independent_of_committed_metadata(
     repo: Path, package: str, runtime: str, command: str
 ) -> None:
-    """Both committed fields must independently match the requested tag."""
+    """CI stamps the tag version later; committed metadata may be a placeholder."""
     metadata(repo, package, runtime)
     commit(repo)
     git(repo, "push", "origin", "main")
     if command != "tag":
-        git(repo, "tag", "-a", "1.3.11", "-m", "Invalid release")
-    assert_failed(release(repo, command, "1.3.11"), "does not match")
-    assert git(repo, "ls-remote", "--tags", "origin") == ""
+        git(repo, "tag", "-a", "1.3.11", "-m", "Release")
+    result = release(repo, command, "1.3.11")
+    assert result.returncode == 0, result.stderr
+    assert git(repo, "status", "--porcelain") == ""
 
 
 @pytest.mark.parametrize("command", ["tag", "push", "validate"])
@@ -227,7 +233,7 @@ def test_missing_tag_rejected(repo: Path, command: str) -> None:
 
 
 def test_ci_validates_event_commit(repo: Path) -> None:
-    """Validation binds metadata and main history to the triggering commit."""
+    """Validation binds the tag and main history to the triggering commit."""
     initial = git(repo, "rev-parse", "HEAD")
     assert release(repo, "tag", "1.3.11").returncode == 0
     assert release(repo, "validate", "1.3.11", "--commit", initial).returncode == 0
@@ -255,3 +261,16 @@ def test_just_passes_version_as_literal_argument(repo: Path) -> None:
     )
     assert result.returncode != 0
     assert not (repo / "INJECTED").exists()
+
+
+def test_ci_stamps_both_versions_after_tag_validation(repo: Path) -> None:
+    """A placeholder checkout becomes a release build without a metadata commit."""
+    original = git(repo, "rev-parse", "HEAD")
+    assert release(repo, "tag", "1.3.11").returncode == 0
+    assert release(repo, "validate", "1.3.11", "--commit", original).returncode == 0
+    result = release(repo, "prepare", "1.3.11")
+    assert result.returncode == 0, result.stderr
+    assert 'version = "1.3.11"' in (repo / "pyproject.toml").read_text()
+    assert '__version__ = "1.3.11"' in (repo / "databooks/version.py").read_text()
+    assert git(repo, "rev-parse", "HEAD") == original
+    assert 'version = "0.0.0-dev"' in git(repo, "show", "HEAD:pyproject.toml")
