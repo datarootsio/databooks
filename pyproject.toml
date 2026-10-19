@@ -76,6 +76,8 @@ deprecated = "ignore"
 [tool.ruff]
 line-length = 88
 extend-exclude = ["tests/files"]
+# Keep the exclusion when a path is passed explicitly (e.g. by an editor hook)
+force-exclude = true
 
 [tool.ruff.lint]
 # The old flake8 + docstrings + print + isort coverage, plus ANN to keep
