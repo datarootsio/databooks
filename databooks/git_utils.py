@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Union, cast, overload
 
 from git import Git, InvalidGitRepositoryError, NoSuchPathError
+from git.index import IndexFile
 from git.objects.blob import Blob
 from git.objects.commit import Commit
 from git.objects.tree import Tree
@@ -91,7 +92,7 @@ def blob2commit(blob: Blob, repo: Repo) -> str:
 
 def diff2contents(
     blob: Blob,
-    ref: Optional[Union[Tree, Commit, str]],
+    ref: Optional[Union[IndexFile, Tree, Commit, str]],
     path: Path,
     not_exists: bool = False,
 ) -> Optional[str | bytes]:
@@ -175,12 +176,12 @@ def get_nb_diffs(
     if repo is None or repo.working_dir is None:
         raise ValueError("No repo found - cannot compute diffs.")
 
-    ref_base = repo.index if ref_base is None else repo.tree(ref_base)
-    ref_remote = ref_remote if ref_remote is None else repo.tree(ref_remote)
+    base = repo.index if ref_base is None else repo.tree(ref_base)
+    remote = None if ref_remote is None else repo.tree(ref_remote)
 
     logger.debug(
         f"Looking for diffs on path(s) {[p.resolve() for p in paths]}.\n"
-        f"Comparing `{ref_base}` and `{ref_remote}`."
+        f"Comparing `{base}` and `{remote}`."
     )
     repo_root_dir = Path(repo.working_dir)
     return [
@@ -189,23 +190,23 @@ def get_nb_diffs(
                 path=Path(cast(str, d.a_path)),
                 contents=diff2contents(
                     blob=cast(Blob, d.a_blob),
-                    ref=ref_base,
+                    ref=base,
                     path=repo_root_dir / cast(str, d.a_path),
-                    not_exists=d.change_type is ChangeType.A,  # type: ignore
+                    not_exists=d.change_type is ChangeType.A,
                 ),
             ),
             b=Contents(
                 path=Path(cast(str, d.b_path)),
                 contents=diff2contents(
                     blob=cast(Blob, d.b_blob),
-                    ref=ref_remote,
+                    ref=remote,
                     path=repo_root_dir / cast(str, d.b_path),
-                    not_exists=d.change_type is ChangeType.D,  # type: ignore
+                    not_exists=d.change_type is ChangeType.D,
                 ),
             ),
             change_type=ChangeType[cast(str, d.change_type)],
         )
-        for d in ref_base.diff(
-            other=ref_remote, paths=list(paths) or list(repo_root_dir.rglob("*.ipynb"))
+        for d in base.diff(
+            other=remote, paths=list(paths) or list(repo_root_dir.rglob("*.ipynb"))
         )
     ]

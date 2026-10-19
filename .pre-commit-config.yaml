@@ -28,9 +28,9 @@ repos:
         entry: uv run --locked codespell
   - repo: local
     hooks:
-      - id: mypy
-        name: mypy (locked project environment)
-        entry: poetry run mypy
+      - id: ty
+        name: ty (locked project environment)
+        entry: uv run --locked ty check
         language: system
         pass_filenames: false
         types: [python]

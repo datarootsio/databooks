@@ -102,7 +102,8 @@ class BaseCell(DatabooksBase):
             cell_metadata_remove = tuple(
                 field for field, _ in self.metadata if field not in cell_metadata_keep
             )
-        self.metadata.remove_fields(cell_metadata_remove)  # type: ignore
+        # Non-None here: exactly one of keep/remove is given and keep became remove
+        self.metadata.remove_fields(cell_metadata_remove)  # ty: ignore[invalid-argument-type]
 
         self.remove_fields(fields=cell_remove_fields, missing_ok=True)
 

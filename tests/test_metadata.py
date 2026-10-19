@@ -14,7 +14,7 @@ def test_metadata_clear__check_verbose(
 ) -> None:
     """Clear metadata from a notebook and write clean notebook."""
     caplog.set_level(logging.DEBUG)
-    read_path = tmp_path / "test_nb.ipynb"  # type: ignore
+    read_path = tmp_path / "test_nb.ipynb"
     TestJupyterNotebook().jupyter_notebook.write(read_path)
     write_path = read_path.parent / f"clean_{read_path.name}"
 
@@ -41,7 +41,7 @@ def test_metadata_clear__check_verbose(
 
 def test_metadata_clear(tmp_path: Path) -> None:
     """Clear metadata from a notebook and write clean notebook."""
-    read_path = tmp_path / "test_nb.ipynb"  # type: ignore
+    read_path = tmp_path / "test_nb.ipynb"
     TestJupyterNotebook().jupyter_notebook.write(read_path)
     write_path = read_path.parent / f"clean_{read_path.name}"
 

@@ -62,6 +62,17 @@ build-backend = "uv_build"
 [tool.uv.build-backend]
 module-root = ""
 
+[tool.ty.src]
+include = ["databooks", "tests"]
+# Notebook fixtures, some of them deliberately broken
+exclude = ["tests/files"]
+
+[tool.ty.rules]
+# The models and tests still use pydantic's v1-style API (`parse_raw`, `.json()`,
+# `.dict()`, `__fields__`) that pydantic 2 only deprecates, and `ast.slice` stays in
+# the affirm allowlist. Migrating those is a separate change; re-enable this then.
+deprecated = "ignore"
+
 [tool.ruff]
 line-length = 88
 extend-exclude = ["tests/files"]

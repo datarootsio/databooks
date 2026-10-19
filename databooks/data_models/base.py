@@ -13,8 +13,8 @@ T = TypeVar("T")
 
 
 @runtime_checkable
-class DiffModel(Protocol, Iterable):
-    """Protocol for mypy static type checking."""
+class DiffModel(Iterable, Protocol):
+    """Protocol for static type checking."""
 
     is_diff: bool
 
@@ -144,8 +144,9 @@ class DatabooksBase(BaseModel):
                 isinstance(val, (DatabooksBase, BaseCells))
                 for val in (self_val, other_val)
             ):
-                # Recursively get the diffs for nested models
-                fields_d[name] = (Any, self_val - other_val)  # type: ignore
+                # Recursively get the diffs for nested models; the `all(...)` check
+                # above does not narrow the values for the type checker
+                fields_d[name] = (Any, self_val - other_val)  # ty: ignore[unsupported-operator]
             else:
                 fields_d[name] = (tuple, (self_val, other_val))
 

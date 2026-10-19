@@ -54,7 +54,7 @@ def test_config_callback() -> None:
 
 def test_meta(tmp_path: Path) -> None:
     """Remove notebook metadata."""
-    read_path = tmp_path / "test_meta_nb.ipynb"  # type: ignore
+    read_path = tmp_path / "test_meta_nb.ipynb"
     TestJupyterNotebook().jupyter_notebook.write(read_path)
 
     nb_read = JupyterNotebook.parse_file(path=read_path)
@@ -85,7 +85,7 @@ def test_meta__check(tmp_path: Path, caplog: LogCaptureFixture) -> None:
     """Report on existing notebook metadata (both when it is and isn't present)."""
     caplog.set_level(logging.INFO)
 
-    read_path = tmp_path / "test_meta_nb.ipynb"  # type: ignore
+    read_path = tmp_path / "test_meta_nb.ipynb"
     TestJupyterNotebook().jupyter_notebook.write(read_path)
 
     nb_read = JupyterNotebook.parse_file(path=read_path)
@@ -112,7 +112,7 @@ def test_meta__check(tmp_path: Path, caplog: LogCaptureFixture) -> None:
 
 def test_meta__config(tmp_path: Path) -> None:
     """Check notebook metadata with configuration overriding defaults."""
-    read_path = tmp_path / "test_meta_nb.ipynb"  # type: ignore
+    read_path = tmp_path / "test_meta_nb.ipynb"
     TestJupyterNotebook().jupyter_notebook.write(read_path)
 
     nb_read = JupyterNotebook.parse_file(path=read_path)
@@ -140,7 +140,7 @@ def test_meta__config(tmp_path: Path) -> None:
 
 def test_meta__script(tmp_path: Path) -> None:
     """Raise `typer.BadParameter` when passing a script instead of a notebook."""
-    py_path = tmp_path / "a_script.py"  # type: ignore
+    py_path = tmp_path / "a_script.py"
     py_path.write_text("# some python code", encoding="utf-8")
 
     result = runner.invoke(app, ["meta", str(py_path)])
@@ -150,7 +150,7 @@ def test_meta__script(tmp_path: Path) -> None:
 
 def test_meta__no_confirm(tmp_path: Path) -> None:
     """Don't make any changes without confirmation to overwrite files (prompt)."""
-    nb_path = tmp_path / "test_meta_nb.ipynb"  # type: ignore
+    nb_path = tmp_path / "test_meta_nb.ipynb"
     TestJupyterNotebook().jupyter_notebook.write(nb_path)
 
     result = runner.invoke(app, ["meta", str(nb_path)])
@@ -165,7 +165,7 @@ def test_meta__no_confirm(tmp_path: Path) -> None:
 
 def test_meta__confirm(tmp_path: Path) -> None:
     """Make changes when confirming overwrite via the prompt."""
-    nb_path = tmp_path / "test_meta_nb.ipynb"  # type: ignore
+    nb_path = tmp_path / "test_meta_nb.ipynb"
     TestJupyterNotebook().jupyter_notebook.write(nb_path)
 
     result = runner.invoke(app, ["meta", str(nb_path)], input="y")
@@ -182,7 +182,7 @@ def test_meta__confirm(tmp_path: Path) -> None:
 def test_meta__no_notebooks_found(tmp_path: Path, caplog: LogCaptureFixture) -> None:
     """Log that no notebook was found in the paths passed."""
     caplog.set_level(logging.INFO)
-    nb_path = tmp_path / "inexistent_nb.ipynb"  # type: ignore
+    nb_path = tmp_path / "inexistent_nb.ipynb"
 
     result = runner.invoke(app, ["meta", str(nb_path), "--check"])
     logs = list(caplog.records)

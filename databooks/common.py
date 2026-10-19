@@ -2,7 +2,7 @@
 
 from itertools import chain
 from pathlib import Path
-from typing import Iterable, List, Optional, Sequence
+from typing import Collection, List, Optional, Sequence
 
 from databooks.logging import get_logger
 
@@ -44,7 +44,7 @@ def expand_paths(
     return valid_filepaths
 
 
-def find_common_parent(paths: Iterable[Path]) -> Path:
+def find_common_parent(paths: Collection[Path]) -> Path:
     """Find common parent amongst several file paths (includes current path)."""
     if not paths:
         raise ValueError(f"Expected non-empty `paths`, got {paths}.")

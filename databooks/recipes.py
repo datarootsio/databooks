@@ -61,5 +61,4 @@ class CookBook:
         return {getattr(cls, name).src: name.replace("_", "-") for name in names}
 
 
-# https://github.com/python/mypy/issues/5317
-Recipe = Enum("Recipe", CookBook._recipes())  # type: ignore[misc]
+Recipe = Enum("Recipe", CookBook._recipes())
