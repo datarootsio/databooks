@@ -37,7 +37,7 @@ passing `--rm-outs`. Or if there is some metadata you'd like to keep, such as ce
 you can do so by passing `--cell-meta-keep tags`. Also, if you do want to save the clean
 notebook you can either pass a prefix (`--prefix ...`) or a suffix (`--suffix ...`) that
 will be added before writing the file, or you can simply overwrite the source file
-(`--overwrite`).
+(`--yes`).
 
 ## `databooks fix`
 

@@ -43,8 +43,8 @@ indicate additional arguments to pass to the tool.
 The `pre-commit` tool doesn't actually commit any changes if the staged files are modified.
 Therefore, if there **is** any unwanted metadata at the time of committing the changes,
 the files would be modified, no commit would be made, and it'd be up to the developer to
-inspect the changes, add them and commit. That's why we specify `args: ["--overwrite"]`
-by default.
+inspect the changes, add them and commit. That's why the hook includes `--yes` in its
+entry command by default.
 
 #### `databooks assert`
 
