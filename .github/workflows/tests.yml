@@ -58,7 +58,7 @@ jobs:
           uvx twine==7.0.0 check --strict dist/*
           uv export -q --frozen --no-default-groups --no-emit-project -o "$RUNNER_TEMP/runtime.txt"
           uv venv -q "$RUNNER_TEMP/smoke"
-          uv pip install -q --python "$RUNNER_TEMP/smoke" -r "$RUNNER_TEMP/runtime.txt" dist/databooks-*.whl
+          uv pip install -q --no-build --python "$RUNNER_TEMP/smoke" -r "$RUNNER_TEMP/runtime.txt" dist/databooks-*.whl
           uv pip check --python "$RUNNER_TEMP/smoke"
           "$RUNNER_TEMP/smoke/bin/databooks" --version
       - name: Configure git user for QA tests
