@@ -156,8 +156,9 @@ class Cells(RootModel[Sequence[T]], BaseCells[T]):
             ),
         ]
 
-    def resolve(
-        self,
+    # Only diff cells (Cells[CellsPair]) can be resolved: narrower self than BaseCells
+    def resolve(  # ty: ignore[invalid-method-override]
+        self: Cells[CellsPair],
         *,
         keep_first_cells: Optional[bool] = None,
         first_id: Optional[str] = None,
@@ -175,10 +176,9 @@ class Cells(RootModel[Sequence[T]], BaseCells[T]):
          `databooks.data_models.base.resolve`
         :return: List of cells
         """
-        pairs = cast(List[CellsPair], self.data)
         if keep_first_cells is not None:
             return list(
-                chain.from_iterable(pair[not keep_first_cells] for pair in pairs)
+                chain.from_iterable(pairs[not keep_first_cells] for pairs in self.data)
             )
         return list(
             chain.from_iterable(
@@ -192,7 +192,7 @@ class Cells(RootModel[Sequence[T]], BaseCells[T]):
                     if val[0] != val[1]
                     else val[0]
                 )
-                for val in pairs
+                for val in self.data
             )
         )
 
