@@ -1,9 +1,14 @@
 """Rich helpers functions for rich renderables in data models."""
+
 from html.parser import HTMLParser
 from typing import Any, List, Optional, Tuple
 
 from rich import box
+from rich.console import Console, ConsoleOptions, RenderResult
+from rich.markdown import Heading, Markdown
+from rich.panel import Panel
 from rich.table import Table
+from rich.text import Text
 
 HtmlAttr = Tuple[str, Optional[str]]
 
@@ -72,3 +77,26 @@ class HtmlTable(HTMLParser):
         for row in self.rows:
             table.add_row(*row)
         return table
+
+
+class NotebookHeading(Heading):
+    """Preserve the notebook heading layout across Rich versions."""
+
+    def __rich_console__(
+        self, console: Console, options: ConsoleOptions
+    ) -> RenderResult:
+        """Center headings and draw the original double border around H1."""
+        text = self.text.copy()
+        text.justify = "center"
+        if self.tag == "h1":
+            yield Panel(text, box=box.DOUBLE, style="markdown.h1.border")
+        else:
+            if self.tag == "h2":
+                yield Text("")
+            yield text
+
+
+class NotebookMarkdown(Markdown):
+    """Use notebook heading styles without modifying Rich's global renderer."""
+
+    elements = {**Markdown.elements, "heading_open": NotebookHeading}

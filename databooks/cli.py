@@ -1,4 +1,5 @@
 """Main CLI application."""
+
 from itertools import compress
 from pathlib import Path
 from typing import List, Optional, Tuple
@@ -90,9 +91,10 @@ def _check_paths(paths: List[Path], ignore: List[str]) -> List[Path]:
 
 
 def _parse_paths(
-    *refs: Optional[str], paths: List[Path]
+    *refs: Optional[str], paths: Optional[List[Path]]
 ) -> Tuple[Tuple[Optional[str], ...], List[Path]]:
     """Detect paths from `refs` and add to `paths`."""
+    paths = list(paths or ())
     first, *rest = refs
     if first is not None and Path(first).exists():
         paths += [Path(first)]

@@ -10,13 +10,13 @@ permissions:
 jobs:
   validate:
     if: github.event.created == true && github.event.deleted == false && github.event.forced == false
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
         with:
           ref: ${{ github.sha }}
           fetch-depth: 0
-      - uses: actions/setup-python@v7
+      - uses: actions/setup-python@v7.0.0
         with:
           python-version: '3.11'
       - name: Validate exact version, event commit, and main ancestry
@@ -32,17 +32,17 @@ jobs:
       release-version: ${{ github.ref_name }}
 
   publish:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: [validate, tests]
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
         with:
           ref: ${{ github.sha }}
-      - uses: actions/setup-python@v7
+      - uses: actions/setup-python@v7.0.0
         with:
           python-version: '3.11'
       - name: Install Poetry
-        run: python -m pip install poetry==2.3.2
+        run: python -m pip install poetry==2.5.1
       - name: Stamp package and runtime versions from the tag
         env:
           RELEASE_VERSION: ${{ github.ref_name }}
@@ -59,13 +59,13 @@ jobs:
           poetry publish --no-interaction
 
   release:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: publish
     permissions:
       contents: write
     steps:
       - name: Create GitHub release with generated notes
-        uses: actions/github-script@v9
+        uses: actions/github-script@v9.0.0
         env:
           RELEASE_VERSION: ${{ github.ref_name }}
         with:
@@ -78,21 +78,21 @@ jobs:
             });
 
   docs:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: release
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
         with:
           ref: ${{ github.sha }}
           fetch-depth: 0
-      - uses: actions/setup-python@v7
+      - uses: actions/setup-python@v7.0.0
         with:
           python-version: '3.11'
       - name: Install dependencies
         run: |
-          python -m pip install poetry==2.3.2
+          python -m pip install poetry==2.5.1
           poetry install --no-interaction --no-ansi
       - name: Stamp docs version from the tag
         env:

@@ -1,8 +1,9 @@
 import io
 from importlib import resources
 from textwrap import dedent
+from typing import Any
 
-from rich.console import Console, ConsoleRenderable
+from rich.console import Console
 
 from databooks.data_models.cell import CellMetadata, RawCell
 from databooks.data_models.notebook import JupyterNotebook, NotebookMetadata
@@ -31,7 +32,7 @@ Out [2]:
 0.570736084214906
 In [3]:
 ╭────────────────────────────────────────────────╮
-│ print("notebooks + git ❤️")                     │
+│ print("notebooks + git ❤️")                    │
 ╰────────────────────────────────────────────────╯
 notebooks + git ❤️
 
@@ -78,43 +79,39 @@ In [ ]:
 """
 
 
-def render(obj: ConsoleRenderable, width: int = 50) -> str:
+def render(obj: Any, width: int = 50) -> str:
     """Render object to string (instead of terminal)."""
     console = Console(file=io.StringIO(), width=width, legacy_windows=False)
     console.print(obj)
+    assert isinstance(console.file, io.StringIO)
     return console.file.getvalue()
 
 
 def test_code_cell() -> None:
     """Prints code cell with no outputs."""
-    assert render(nb.cells[1]) == dedent(
-        """\
+    assert render(nb.cells[1]) == dedent("""\
 In [1]:
 ╭────────────────────────────────────────────────╮
 │ from random import random  # cell with tags    │
 ╰────────────────────────────────────────────────╯
-"""
-    )
+""")
 
 
 def test_code_cell_outputs() -> None:
     """Prints code cell with outputs."""
-    assert render(nb.cells[2]) == dedent(
-        """\
+    assert render(nb.cells[2]) == dedent("""\
 In [2]:
 ╭────────────────────────────────────────────────╮
 │ random()                                       │
 ╰────────────────────────────────────────────────╯
 Out [2]:
 0.570736084214906
-"""
-    )
+""")
 
 
 def test_code_cell_error() -> None:
     """Prints code cell with errors."""
-    assert render(nb.cells[4]) == dedent(
-        """\
+    assert render(nb.cells[4]) == dedent("""\
 In [4]:
 ╭────────────────────────────────────────────────╮
 │ throw error                                    │
@@ -123,14 +120,12 @@ In [4]:
     throw error
           ^
 SyntaxError: invalid syntax
-"""
-    )
+""")
 
 
 def test_code_cell_df() -> None:
     """Prints code cell data frame and has print statement."""
-    assert render(nb.cells[6]) == (
-        """\
+    assert render(nb.cells[6]) == ("""\
 In [5]:
 ╭────────────────────────────────────────────────╮
 │ import pandas as pd                            │
@@ -156,32 +151,27 @@ Out [5]:
   8   0.708324   0.895195   0.769364  \n\
   9   0.860726   0.381919   0.329727  \n\
                                       \n\
-"""
-    )
+""")
 
 
 def test_md_cell() -> None:
     """Prints markdown cell."""
-    assert render(nb.cells[0]) == dedent(
-        """\
+    assert render(nb.cells[0]) == dedent("""\
 ╭────────────────────────────────────────────────╮
 │ ╔════════════════════════════════════════════╗ │
 │ ║              databooks demo!               ║ │
 │ ╚════════════════════════════════════════════╝ │
 ╰────────────────────────────────────────────────╯
-"""
-    )
+""")
 
 
 def test_raw_cell() -> None:
     """Prints raw cell."""
-    assert render(nb.cells[5]) == dedent(
-        """\
+    assert render(nb.cells[5]) == dedent("""\
 ╭────────────────────────────────────────────────╮
 │ This is a raw cell! 🚀                         │
 ╰────────────────────────────────────────────────╯
-"""
-    )
+""")
 
 
 def test_notebook() -> None:
@@ -194,6 +184,7 @@ def test_print_nb() -> None:
     console = Console(file=io.StringIO(), width=50, legacy_windows=False)
     with resources.path("tests.files", "tui-demo.ipynb") as path:
         nb2rich(path, console=console)
+    assert isinstance(console.file, io.StringIO)
     assert console.file.getvalue() == "\n".join(
         ("───────────────── tui-demo.ipynb ─────────────────", rich_nb)
     )
@@ -210,8 +201,7 @@ def test_diff_nb() -> None:
     notebook_2.cells = notebook_2.cells + [extra_cell]
 
     diff = notebook_1 - notebook_2
-    assert render(diff) == dedent(
-        """\
+    assert render(diff) == dedent("""\
                                kernel_display_name
 In [1]:
 ╭────────────────────────────────────────────────╮
@@ -228,8 +218,7 @@ test text
                           ╭──────────────────────╮
          <None>           │ extra                │
                           ╰──────────────────────╯
-"""
-    )
+""")
 
 
 def test_multiple_diff_nb() -> None:
@@ -252,8 +241,7 @@ def test_multiple_diff_nb() -> None:
     notebook_2.cells = notebook_2.cells + [extra_cell, extra_cell, extra_cell]
 
     diff = notebook_1 - notebook_2
-    assert render(diff) == dedent(
-        """\
+    assert render(diff) == dedent("""\
       kernel_display_name           another_kernel
 In [1]:
 ╭────────────────────────────────────────────────╮
@@ -276,5 +264,4 @@ test text
                           ╭──────────────────────╮
                           │ extra                │
                           ╰──────────────────────╯
-"""
-    )
+""")

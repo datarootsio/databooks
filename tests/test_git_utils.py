@@ -59,8 +59,8 @@ def test_get_repo(tmp_path: Path) -> None:
     """Find git repository."""
     Repo.init(tmp_path)
     repo = get_repo(tmp_path)
-    assert repo.working_dir is not None
     assert isinstance(repo, Repo)
+    assert repo.working_dir is not None
     assert Path(repo.working_dir).stem == "test_get_repo0"
 
 
@@ -153,3 +153,15 @@ def test_get_repo_with_conditional_config(tmp_path: Path) -> None:
     found = get_repo(tmp_path)
     assert found is not None
     assert Path(found.working_dir) == tmp_path
+
+
+def test_get_repo_linked_worktree(tmp_path: Path) -> None:
+    """Find a repository when .git is a worktree pointer file."""
+    repo = Repo.init(tmp_path / "main")
+    repo.git.commit("--allow-empty", "-m", "Initial commit")
+    worktree = tmp_path / "linked"
+    repo.git.worktree("add", "-b", "linked", str(worktree))
+    found = get_repo(worktree)
+    assert found is not None
+    assert found.working_dir is not None
+    assert Path(found.working_dir) == worktree

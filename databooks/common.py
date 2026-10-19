@@ -1,4 +1,5 @@
 """Common set of miscellaneous functions."""
+
 from itertools import chain
 from pathlib import Path
 from typing import Iterable, List, Optional, Sequence

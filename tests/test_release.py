@@ -1,4 +1,5 @@
 """Exercise release commands against real repositories and a local bare remote."""
+
 import os
 import shutil
 import subprocess

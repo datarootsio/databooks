@@ -1,4 +1,5 @@
 """Metadata wrapper functions for cleaning notebook metadata."""
+
 from pathlib import Path
 from typing import Any, Callable, List, Optional, Sequence
 
@@ -46,7 +47,7 @@ def clear(
 
     # Get fields to remove from cells and keep notebook schema
     cell_fields = {field for cell in notebook.cells for field, _ in cell if field}
-    cell_fields_keep = list(cell_fields_keep) + list(BaseCell.__fields__)
+    cell_fields_keep = list(cell_fields_keep) + list(BaseCell.model_fields)
 
     cell_remove_fields = [
         field for field in cell_fields if field not in cell_fields_keep

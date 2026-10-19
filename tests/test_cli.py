@@ -392,9 +392,7 @@ def test_show() -> None:
     with resources.path("tests.files", "tui-demo.ipynb") as nb_path:
         result = runner.invoke(app, ["show", str(nb_path)])
     assert result.exit_code == 0
-    assert (
-        result.output
-        == """\
+    assert result.output == """\
 ──────────────────────────────── tui-demo.ipynb ────────────────────────────────
                                                             Python 3 (ipykernel)
 ╭──────────────────────────────────────────────────────────────────────────────╮
@@ -414,7 +412,7 @@ Out [2]:
 0.570736084214906
 In [3]:
 ╭──────────────────────────────────────────────────────────────────────────────╮
-│ print("notebooks + git ❤️")                                                   │
+│ print("notebooks + git ❤️")                                                  │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 notebooks + git ❤️
 
@@ -460,7 +458,6 @@ In [ ]:
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
 """
-    )
 
 
 def test_show_no_multiple() -> None:
@@ -510,8 +507,7 @@ def test_diff(tmp_path: Path) -> None:
 
     # Test passing another branch to compare
     result = runner.invoke(app, ["diff", "other", str(tmp_path)])
-    assert result.output == dedent(
-        """\
+    assert result.output == dedent("""\
 ────── a/test_conflicts_nb.ipynb ───────────── b/test_conflicts_nb.ipynb ───────
                      kernel_display_name           different_kernel_display_name
 In [1]:
@@ -530,15 +526,13 @@ test text
                  <None>                  │ extra                               │
                                          ╰─────────────────────────────────────╯
 
-"""
-    )
+""")
 
     # Test comparing to index
     notebook_1.cells = notebook_1.cells + [extra_cell]
     notebook_1.write(tmp_path / nb_path, overwrite=True)
     result = runner.invoke(app, ["diff", str(tmp_path)])
-    assert result.output == dedent(
-        """\
+    assert result.output == dedent("""\
 ────── a/test_conflicts_nb.ipynb ───────────── b/test_conflicts_nb.ipynb ───────
                                                    different_kernel_display_name
 In [1]:
@@ -560,8 +554,7 @@ test text
                  <None>                  │ extra                               │
                                          ╰─────────────────────────────────────╯
 
-"""
-    )
+""")
 
 
 def test_diff_svg(tmp_path: Path) -> None:
@@ -597,10 +590,9 @@ def test_diff_svg(tmp_path: Path) -> None:
 
     # Test passing another branch to compare
     result = runner.invoke(app, ["diff", "other", str(tmp_path), "-x", "HTML"])
-    assert (
-        result.output
-        == """\
+    assert result.output == """\
 <!DOCTYPE html>
+<html>
 <head>
 <meta charset="UTF-8">
 <style>
@@ -615,11 +607,10 @@ body {
 }
 </style>
 </head>
-<html>
 <body>
-    <code>
-        <pre style="font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',\
-monospace"><span class="r1">────── </span>a/test_conflicts_nb.ipynb<span class="r1">\
+    <pre style="font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',\
+monospace"><code style="font-family:inherit">\
+<span class="r1">────── </span>a/test_conflicts_nb.ipynb<span class="r1">\
  ───────────── </span>b/test_conflicts_nb.ipynb<span class="r1"> ───────</span>
 <span class="r2">                     kernel_display_name</span> <span class="r2">\
           different_kernel_display_name</span>
@@ -640,10 +631,13 @@ test text
                                          ╭─────────────────────────────────────╮
                  &lt;None&gt;                  │ extra                               │
                                          ╰─────────────────────────────────────╯
-</pre>
-    </code>
+</code></pre>
 </body>
 </html>
 
 """
-    )
+
+
+def test_parse_paths_without_variadic_paths() -> None:
+    """Normalize Typer's omitted variadic argument before detecting path refs."""
+    assert _parse_paths(__file__, None, paths=None) == ((None, None), [Path(__file__)])

@@ -1,4 +1,5 @@
 """Read and write UTF-8 notebooks independently of the system encoding."""
+
 import json
 from pathlib import Path
 
