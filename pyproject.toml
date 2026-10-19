@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "databooks"
-version = "0.0.0-dev"  # dynamically set in CI
+version = "0.0.0-dev"
 description = "A CLI tool to resolve git conflicts and remove metadata in notebooks."
 authors = ["Murilo Cunha <murilo@dataroots.io>"]
 license = "MIT"
@@ -39,7 +39,7 @@ build-backend = "poetry.core.masonry.api"
 
 # Devtools not in environment, but used in `pre-commit`
 [tool.black]
-include = "(databooks/|tests/)"
+include = "(databooks/|tests/|scripts/)"
 extend-exclude = "tests/files/"
 
 [tool.mypy]

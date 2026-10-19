@@ -1,2 +1,2 @@
-"""Package version information - this file is dynamically overwritten in CI."""
+"""Package version information."""
 __version__ = "0.0.0-dev"
