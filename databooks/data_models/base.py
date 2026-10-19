@@ -154,7 +154,7 @@ class DatabooksBase(BaseModel):
         DiffInstance = create_model(
             "Diff" + type(self).__name__,
             __base__=type(self),
-            resolve=resolve,
+            __namespace__={"resolve": resolve},
             is_diff=(bool, True),
             **fields_d,
         )

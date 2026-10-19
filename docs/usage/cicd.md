@@ -23,7 +23,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: '3.11'
       - name: Configure git user
         run: |
           git config --global user.name 'github-actions[bot]'
@@ -53,7 +53,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: '3.11'
       - name: Install dependencies and check metadata
         run: |
           pip install databooks

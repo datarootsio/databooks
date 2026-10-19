@@ -15,15 +15,15 @@ That means you need to install poetry but from there you can use the tool to cre
 environment.
 
 ```bash
-pip install poetry==1.2.2
+pip install poetry==2.3.2
 poetry install  # installs prod and dev dependencies
 ```
 
 #### Usage
 
 Remember that to use the environment you can use the `poetry run <COMMAND>` command or
-initialize the shell with `poetry shell`. For example, if you want to create the
-coverage report you could run
+initialize the shell with `eval "$(poetry env activate)"`. For example, if you want to
+create the coverage report you could run
 
 ```bash
 poetry run pytest --cov=databooks tests/
@@ -32,7 +32,7 @@ poetry run pytest --cov=databooks tests/
 or alternatively
 
 ```bash
-poetry shell
+eval "$(poetry env activate)"
 pytest --cov=databooks tests/
 ```
 
@@ -45,7 +45,7 @@ few standards we adhere to, that are required for new features.
 
 We use type hints! Not only that, they are enforced and checked (with
 [Mypy](https://mypy.readthedocs.io/en/stable/index.html)). This is actually the reason
-for supporting Python 3.8+. There are a couple of reasons for using type hints, mainly:
+for supporting Python 3.10+. There are a couple of reasons for using type hints, mainly:
 
 1. Better code coverage (avoid errors during runtime)
 2. Improve code understanding
@@ -163,7 +163,8 @@ for a release; discard preview changes before tagging so tracked files are clean
 Only new version tag pushes trigger publishing. Tag updates and deletions are skipped;
 CI validates the exact version and main history before calling the reusable test
 workflow from the tagged commit. The workflow stamps the tag version and runs every
-Python 3.7–3.11 matrix job. All jobs must pass before CI stamps and builds the packages,
+Python 3.10–3.15 matrix job, with the pinned QA hooks checked separately on Python 3.11.
+All jobs must pass before CI stamps and builds the packages,
 publishes to TestPyPI and PyPI (using `TEST_PIPY_TOKEN` and `PIPY_TOKEN`), then creates a
 GitHub release with generated notes and deploys docs under the tag version, updating
 `latest`. Branch and pull request tests continue to use the committed development
