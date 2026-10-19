@@ -141,3 +141,15 @@ def test_get_nb_diffs(tmp_path: Path) -> None:
             change_type=ChangeType.M,
         )
     ]
+
+
+def test_get_repo_with_conditional_config(tmp_path: Path) -> None:
+    """Discover repos whose conditional includes are used by checkout v7."""
+    repo = Repo.init(tmp_path)
+    config = Path(repo.git_dir) / "config"
+    with config.open("a") as stream:
+        stream.write('\n[includeIf "gitdir:/unused/"]\n\tpath = /unused/config\n')
+
+    found = get_repo(tmp_path)
+    assert found is not None
+    assert Path(found.working_dir) == tmp_path

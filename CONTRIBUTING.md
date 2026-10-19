@@ -15,7 +15,7 @@ That means you need to install poetry but from there you can use the tool to cre
 environment.
 
 ```bash
-pip install poetry==1.1.12
+pip install poetry==1.2.2
 poetry install  # installs prod and dev dependencies
 ```
 
@@ -131,9 +131,59 @@ pytest --cov-report html --cov=databooks tests/
 
 ## Publishing
 
-Publishing is automatically done via [Github Actions](https://github.com/features/actions)
-to PyPI. After published, a new tag and release are created. A new docs version is also
-published if all previous steps are successful.
+Releases start with a new, plain stable version tag such as `1.3.11`. The tag is the
+release version: **CI dynamically writes it into `pyproject.toml` and
+`databooks/version.py` before release tests, package builds, and docs deployment.**
+The repository keeps its development placeholder (`0.0.0-dev`); no version metadata
+commit is needed. Choose the next version separately; `v` prefixes, prereleases,
+build suffixes, and leading zeroes are rejected.
+
+Required tools: Git with access to `origin`, [Just](https://github.com/casey/just), and
+Poetry with the project environment installed (`poetry install`). Run these commands
+from the repository root after merging the changes you want to release into `main`:
+
+```bash
+git switch main
+git pull --ff-only origin main
+just release-tag 1.3.11
+just release-push 1.3.11
+```
+
+Tagging requires clean tracked files, fetches `origin/main`, checks that `HEAD` is in
+its history, then creates an annotated tag. Pushing repeats the ancestry check against
+the **tagged commit**, even if you have since changed branches, and pushes only that
+tag. Existing local tags cannot be recreated; existing remote tags cannot be pushed
+again or replaced. Untracked files are ignored. Do not delete or move published tags;
+choose a new version for another release. A push to `main` alone does not publish.
+
+`just release-prepare VERSION` is available as an optional local preview of CI's
+version stamping. It updates both fields without committing. It is **not required**
+for a release; discard preview changes before tagging so tracked files are clean.
+
+Only new version tag pushes trigger publishing. Tag updates and deletions are skipped;
+CI validates the exact version and main history before calling the reusable test
+workflow from the tagged commit. The workflow stamps the tag version and runs every
+Python 3.7–3.11 matrix job. All jobs must pass before CI stamps and builds the packages,
+publishes to TestPyPI and PyPI (using `TEST_PIPY_TOKEN` and `PIPY_TOKEN`), then creates a
+GitHub release with generated notes and deploys docs under the tag version, updating
+`latest`. Branch and pull request tests continue to use the committed development
+version.
+
+Before changing release tooling, run:
+
+```bash
+poetry run pytest tests/test_release.py
+poetry run pytest
+poetry run pre-commit run --all-files
+actionlint
+just --list
+just --dry-run release-prepare 1.3.11
+just --dry-run release-tag 1.3.11
+just --dry-run release-push 1.3.11
+```
+
+The helper tests use temporary repositories and a local bare remote. Install
+[actionlint](https://github.com/rhysd/actionlint) to check workflow syntax.
 
 ## Contributors 👨‍💻👩‍💻
 

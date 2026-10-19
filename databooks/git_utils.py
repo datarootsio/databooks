@@ -115,7 +115,7 @@ def get_repo(path: Path) -> Optional[Repo]:
         obj_name=".git", start=Path(path.anchor), finish=path, is_dir=True
     )
     if repo_dir is not None:
-        repo = Repo(path=repo_dir)
+        repo = Repo(path=repo_dir.parent)
         logger.debug(f"Repo found at: {repo.working_dir}.")
         return repo
     else:

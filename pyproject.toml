@@ -39,7 +39,7 @@ build-backend = "poetry.core.masonry.api"
 
 # Devtools not in environment, but used in `pre-commit`
 [tool.black]
-include = "(databooks/|tests/)"
+include = "(databooks/|tests/|scripts/)"
 extend-exclude = "tests/files/"
 
 [tool.mypy]
