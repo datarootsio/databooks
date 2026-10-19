@@ -4,19 +4,21 @@ hide:
 ---
 <!-- [[[cog
 import subprocess
+import sys
 import cog
 
 result = subprocess.run(
     [
-        "python",
+        sys.executable,
         "-m",
-        "typer_cli",
+        "typer",
         "databooks.cli",
         "utils",
         "docs",
         "--name",
         "databooks",
     ],
+    check=True,
     stdout=subprocess.PIPE,
     stderr=subprocess.PIPE,
     encoding="utf-8",
@@ -42,11 +44,41 @@ $ databooks [OPTIONS] COMMAND [ARGS]...
 
 **Commands**:
 
-* `assert`: Assert notebook metadata has desired values.
-* `diff`: Show differences between notebooks.
-* `fix`: Fix git conflicts for notebooks.
 * `meta`: Clear both notebook and cell metadata.
+* `assert`: Assert notebook metadata has desired values.
+* `fix`: Fix git conflicts for notebooks.
 * `show`: Show rich representation of notebook.
+* `diff`: Show differences between notebooks.
+
+## `databooks meta`
+
+Clear both notebook and cell metadata.
+
+**Usage**:
+
+```console
+$ databooks meta [OPTIONS] {paths}...
+```
+
+**Arguments**:
+
+* `paths...`: Path(s) of notebook files  [required]
+
+**Options**:
+
+* `--ignore <str>`: Glob expression(s) of files to ignore  [default: !*]
+* `--prefix <str>`: Prefix to add to filepath when writing files
+* `--suffix <str>`: Suffix to add to filepath when writing files
+* `--rm-outs / --no-rm-outs`: Whether to remove cell outputs  [default: no-rm-outs]
+* `--rm-exec / --no-rm-exec`: Whether to remove the cell execution counts  [default: rm-exec]
+* `--nb-meta-keep <str>`: Notebook metadata fields to keep
+* `--cell-meta-keep <str>`: Cells metadata fields to keep
+* `--cell-fields-keep <str>`: Other (excluding `execution_counts` and `outputs`) cell fields to keep
+* `-y, --yes`: Confirm overwrite of files
+* `--check`: Don&#x27;t write files but check whether there is unwanted metadata
+* `-v, --verbose`: Log processed files in console
+* `-c, --config <path>`: Get CLI options from configuration file
+* `--help`: Show this message and exit
 
 ## `databooks assert`
 
@@ -61,20 +93,73 @@ Pass one (or multiple) strings or recipes. The available variables in scope incl
 **Usage**:
 
 ```console
-$ databooks assert [OPTIONS] PATHS...
+$ databooks assert [OPTIONS] {paths}...
 ```
 
 **Arguments**:
 
-* `PATHS...`: Path(s) of notebook files  [required]
+* `paths...`: Path(s) of notebook files  [required]
 
 **Options**:
 
-* `--ignore TEXT`: Glob expression(s) of files to ignore  [default: !*]
-* `-x, --expr TEXT`: Expressions to assert on notebooks  [default: ]
-* `-r, --recipe [has-tags|has-tags-code|max-cells|no-empty-code|seq-exec|seq-increase|startswith-md]`: Common recipes of expressions - see https://databooks.dev/latest/usage/overview/#recipes  [default: ]
-* `-v, --verbose`: Log processed files in console  [default: False]
-* `-c, --config PATH`: Get CLI options from configuration file
+* `--ignore <str>`: Glob expression(s) of files to ignore  [default: !*]
+* `-x, --expr <str>`: Expressions to assert on notebooks
+* `-r, --recipe <has-tags|has-tags-code|max-cells|no-empty-code|seq-exec|seq-increase|startswith-md>`: Common recipes of expressions - see https://databooks.dev/latest/usage/overview/#recipes
+* `-v, --verbose`: Log processed files in console
+* `-c, --config <path>`: Get CLI options from configuration file
+* `--help`: Show this message and exit
+
+## `databooks fix`
+
+Fix git conflicts for notebooks.
+
+Perform by getting the unmerged blobs from git index, comparing them and returning
+ a valid notebook summarizing the differences - see
+ (https://git-scm.com/docs/git-ls-files).
+
+**Usage**:
+
+```console
+$ databooks fix [OPTIONS] {paths}...
+```
+
+**Arguments**:
+
+* `paths...`: Path(s) of notebook files with conflicts  [required]
+
+**Options**:
+
+* `--ignore <str>`: Glob expression(s) of files to ignore  [default: !*]
+* `--metadata-head / --no-metadata-head`: Whether or not to keep the metadata from the head/current notebook  [default: metadata-head]
+* `--cells-head / --no-cells-head`: Whether to keep the cells from the head/base notebook. Omit to keep both
+* `--cell-fields-ignore <str>`: Cell fields to remove before comparing cells  [default: id, execution_count]
+* `-i, --interactive`: Interactively resolve the conflicts (not implemented)
+* `-v, --verbose`: Log processed files in console
+* `-c, --config <path>`: Get CLI options from configuration file
+* `--help`: Show this message and exit
+
+## `databooks show`
+
+Show rich representation of notebook.
+
+**Usage**:
+
+```console
+$ databooks show [OPTIONS] {paths}...
+```
+
+**Arguments**:
+
+* `paths...`: Path(s) of notebook files with conflicts  [required]
+
+**Options**:
+
+* `--ignore <str>`: Glob expression(s) of files to ignore  [default: !*]
+* `-x, --export <HTML|SVG|TXT>`: Export rich outputs as a string.
+* `-p, --pager`: Use pager instead of printing to terminal
+* `-v, --verbose`: Increase verbosity for debugging
+* `-y, --yes`: Show multiple files
+* `-c, --config <path>`: Get CLI options from configuration file
 * `--help`: Show this message and exit
 
 ## `databooks diff`
@@ -89,106 +174,23 @@ This is similar to `git-diff`, but in practice it is a subset of `git-diff`
 **Usage**:
 
 ```console
-$ databooks diff [OPTIONS] [REF_BASE] [REF_REMOTE] [PATHS]...
+$ databooks diff [OPTIONS] [ref_base] [ref_remote] [paths]...
 ```
 
 **Arguments**:
 
-* `[REF_BASE]`: Base reference (hash, branch, etc.), defaults to index
-* `[REF_REMOTE]`: Remote reference (hash, branch, etc.), defaults to working tree
-* `[PATHS]...`: Path(s) of notebook files to compare
+* `ref_base`: Base reference (hash, branch, etc.), defaults to index
+* `ref_remote`: Remote reference (hash, branch, etc.), defaults to working tree
+* `paths...`: Path(s) of notebook files to compare
 
 **Options**:
 
-* `--ignore TEXT`: Glob expression(s) of files to ignore  [default: !*]
-* `-x, --export [HTML|SVG|TXT]`: Export rich outputs as a string.
-* `-p, --pager`: Use pager instead of printing to terminal  [default: False]
-* `-v, --verbose`: Increase verbosity for debugging  [default: False]
-* `-y, --yes`: Show multiple files  [default: False]
-* `-c, --config PATH`: Get CLI options from configuration file
-* `--help`: Show this message and exit
-
-## `databooks fix`
-
-Fix git conflicts for notebooks.
-
-Perform by getting the unmerged blobs from git index, comparing them and returning
- a valid notebook summarizing the differences - see
- [git docs](https://git-scm.com/docs/git-ls-files).
-
-**Usage**:
-
-```console
-$ databooks fix [OPTIONS] PATHS...
-```
-
-**Arguments**:
-
-* `PATHS...`: Path(s) of notebook files with conflicts  [required]
-
-**Options**:
-
-* `--ignore TEXT`: Glob expression(s) of files to ignore  [default: !*]
-* `--metadata-head / --no-metadata-head`: Whether or not to keep the metadata from the head/current notebook  [default: True]
-* `--cells-head / --no-cells-head`: Whether to keep the cells from the head/base notebook. Omit to keep both
-* `--cell-fields-ignore TEXT`: Cell fields to remove before comparing cells  [default: id, execution_count]
-* `-i, --interactive`: Interactively resolve the conflicts (not implemented)  [default: False]
-* `-v, --verbose`: Log processed files in console  [default: False]
-* `-c, --config PATH`: Get CLI options from configuration file
-* `--help`: Show this message and exit
-
-## `databooks meta`
-
-Clear both notebook and cell metadata.
-
-**Usage**:
-
-```console
-$ databooks meta [OPTIONS] PATHS...
-```
-
-**Arguments**:
-
-* `PATHS...`: Path(s) of notebook files  [required]
-
-**Options**:
-
-* `--ignore TEXT`: Glob expression(s) of files to ignore  [default: !*]
-* `--prefix TEXT`: Prefix to add to filepath when writing files  [default: ]
-* `--suffix TEXT`: Suffix to add to filepath when writing files  [default: ]
-* `--rm-outs / --no-rm-outs`: Whether to remove cell outputs  [default: False]
-* `--rm-exec / --no-rm-exec`: Whether to remove the cell execution counts  [default: True]
-* `--nb-meta-keep TEXT`: Notebook metadata fields to keep  [default: ]
-* `--cell-meta-keep TEXT`: Cells metadata fields to keep  [default: ]
-* `--cell-fields-keep TEXT`: Other (excluding `execution_counts` and `outputs`) cell fields to keep  [default: ]
-* `-y, --yes`: Confirm overwrite of files  [default: False]
-* `--check`: Don't write files but check whether there is unwanted metadata  [default: False]
-* `-v, --verbose`: Log processed files in console  [default: False]
-* `-c, --config PATH`: Get CLI options from configuration file
-* `--help`: Show this message and exit
-
-## `databooks show`
-
-Show rich representation of notebook.
-
-**Usage**:
-
-```console
-$ databooks show [OPTIONS] PATHS...
-```
-
-**Arguments**:
-
-* `PATHS...`: Path(s) of notebook files with conflicts  [required]
-
-**Options**:
-
-* `--ignore TEXT`: Glob expression(s) of files to ignore  [default: !*]
-* `-x, --export [HTML|SVG|TXT]`: Export rich outputs as a string.
-* `-p, --pager`: Use pager instead of printing to terminal  [default: False]
-* `-v, --verbose`: Increase verbosity for debugging  [default: False]
-* `-y, --yes`: Show multiple files  [default: False]
-* `-c, --config PATH`: Get CLI options from configuration file
+* `--ignore <str>`: Glob expression(s) of files to ignore  [default: !*]
+* `-x, --export <HTML|SVG|TXT>`: Export rich outputs as a string.
+* `-p, --pager`: Use pager instead of printing to terminal
+* `-v, --verbose`: Increase verbosity for debugging
+* `-y, --yes`: Show multiple files
+* `-c, --config <path>`: Get CLI options from configuration file
 * `--help`: Show this message and exit
 
 <!-- [[[end]]] -->

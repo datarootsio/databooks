@@ -1,17 +1,21 @@
 """Data models - Cells and components."""
+
 from __future__ import annotations
 
 from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Union
 
 from pydantic import PositiveInt, RootModel, field_validator
 from rich.console import Console, ConsoleOptions, ConsoleRenderable, RenderResult
-from rich.markdown import Markdown
 from rich.panel import Panel
 from rich.syntax import Syntax
 from rich.text import Text
 
 from databooks.data_models.base import DatabooksBase
-from databooks.data_models.rich_helpers import HtmlTable, RichHtmlTableError
+from databooks.data_models.rich_helpers import (
+    HtmlTable,
+    NotebookMarkdown,
+    RichHtmlTableError,
+)
 from databooks.logging import get_logger
 
 logger = get_logger(__file__)
@@ -50,7 +54,7 @@ class BaseCell(DatabooksBase):
          fields for cell type.
         """
         # Ignore required `BaseCell` fields
-        cell_fields = BaseCell.__fields__  # required fields
+        cell_fields = BaseCell.model_fields  # required fields
         if any(field in fields for field in cell_fields):
             logger.debug(
                 "Ignoring removal of required fields "
@@ -72,8 +76,8 @@ class BaseCell(DatabooksBase):
     def clear_fields(
         self,
         *,
-        cell_metadata_keep: Sequence[str] = None,
-        cell_metadata_remove: Sequence[str] = None,
+        cell_metadata_keep: Optional[Sequence[str]] = None,
+        cell_metadata_remove: Optional[Sequence[str]] = None,
         cell_remove_fields: Sequence[str] = (),
     ) -> None:
         """
@@ -159,8 +163,12 @@ class CellDisplayDataOutput(DatabooksBase):
             "text/html": lambda s: _try_parse_html(s),
             "text/plain": lambda s: Text("".join(s)),
         }
+
+        def unsupported(s: str) -> None:
+            return None
+
         _rich = {
-            mime: mime_func.get(mime, lambda s: None)(content)  # try to render element
+            mime: mime_func.get(mime, unsupported)(content)  # try to render element
             for mime, content in self.data.items()
         }
         return [
@@ -222,7 +230,7 @@ class CellErrorOutput(DatabooksBase):
         self,
     ) -> ConsoleRenderable:
         """Rich display of error outputs."""
-        return Text.from_ansi("\n".join(self.traceback))
+        return Text.from_ansi("\n".join(self.traceback).rstrip("\n"))
 
     @field_validator("output_type")
     @classmethod
@@ -294,7 +302,7 @@ class MarkdownCell(BaseCell):
         self,
     ) -> ConsoleRenderable:
         """Rich display of markdown cells."""
-        return Panel(Markdown("".join(self.source)))
+        return Panel(NotebookMarkdown("".join(self.source)))
 
     @field_validator("cell_type")
     @classmethod

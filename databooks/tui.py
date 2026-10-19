@@ -1,7 +1,9 @@
 """Terminal user interface (TUI) helper functions and components."""
+
 from contextlib import AbstractContextManager, nullcontext
 from dataclasses import asdict
 from enum import Enum
+from io import StringIO
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union, overload
 
@@ -33,8 +35,7 @@ def nbs2rich(
     *,
     context: ImgFmt,
     **kwargs: Any,
-) -> str:
-    ...
+) -> str: ...
 
 
 @overload
@@ -43,8 +44,7 @@ def nbs2rich(
     *,
     context: bool,
     **kwargs: Any,
-) -> None:
-    ...
+) -> None: ...
 
 
 def nbs2rich(
@@ -68,12 +68,14 @@ def nbs2rich(
             "Specify `record` parameter of console via `context` argument."
         )
     theme = console_kwargs.pop("theme", DATABOOKS_TUI)
+    if isinstance(context, ImgFmt):
+        console_kwargs["file"] = StringIO()
     console = Console(record=isinstance(context, ImgFmt), theme=theme, **console_kwargs)
     ctx_map: Dict[Union[ImgFmt, bool], AbstractContextManager] = {
         True: console.pager(styles=True),
         False: nullcontext(),
     }
-    with ctx_map.get(context, console.capture()):
+    with ctx_map.get(context, nullcontext()):
         for path in paths:
             nb2rich(path, console=console)
     if isinstance(context, ImgFmt):
@@ -87,10 +89,12 @@ def diff2rich(
 ) -> None:
     """Show rich representation of notebook diff in terminal."""
     a_nb, b_nb = (
-        JupyterNotebook.parse_raw(c)
-        if c is not None
-        else JupyterNotebook(
-            nbformat=0, nbformat_minor=0, metadata=NotebookMetadata(), cells=[]
+        (
+            JupyterNotebook.model_validate_json(c)
+            if c is not None
+            else JupyterNotebook(
+                nbformat=0, nbformat_minor=0, metadata=NotebookMetadata(), cells=[]
+            )
         )
         for c in (diff.a.contents, diff.b.contents)
     )
@@ -114,8 +118,7 @@ def diffs2rich(
     *,
     context: ImgFmt,
     **kwargs: Any,
-) -> str:
-    ...
+) -> str: ...
 
 
 @overload
@@ -124,8 +127,7 @@ def diffs2rich(
     *,
     context: bool,
     **kwargs: Any,
-) -> None:
-    ...
+) -> None: ...
 
 
 def diffs2rich(
@@ -145,12 +147,14 @@ def diffs2rich(
     :return: console output if `context` is `ImgFmt`, else `None`
     """
     theme = console_kwargs.pop("theme", DATABOOKS_TUI)
+    if isinstance(context, ImgFmt):
+        console_kwargs["file"] = StringIO()
     console = Console(record=isinstance(context, ImgFmt), theme=theme, **console_kwargs)
     ctx_map: Dict[Union[ImgFmt, bool], AbstractContextManager] = {
         True: console.pager(styles=True),
         False: nullcontext(),
     }
-    with ctx_map.get(context, console.capture()):
+    with ctx_map.get(context, nullcontext()):
         for diff in diffs:
             diff2rich(diff, console=console)
     if isinstance(context, ImgFmt):

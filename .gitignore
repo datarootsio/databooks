@@ -130,3 +130,6 @@ dmypy.json
 
 # IDE files
 .idea/
+
+# Frozen dependency audit evidence
+audit-reports/

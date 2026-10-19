@@ -1,4 +1,5 @@
 """Data models - Jupyter Notebooks and components."""
+
 from __future__ import annotations
 
 import json
@@ -20,7 +21,7 @@ from typing import (
     cast,
 )
 
-from pydantic import Extra, RootModel
+from pydantic import RootModel
 from rich import box
 from rich.columns import Columns
 from rich.console import Console, ConsoleOptions, Group, RenderableType, RenderResult
@@ -54,7 +55,7 @@ class Cells(RootModel[Sequence[T]], BaseCells[T]):
 
     def __sub__(self: Cells[Cell], other: Cells[Cell]) -> Cells[CellsPair]:
         """Return the difference using `difflib.SequenceMatcher`."""
-        if type(self) != type(other):
+        if type(self) is not type(other):
             raise TypeError(
                 f"Unsupported operand types for `-`: `{type(self).__name__}` and"
                 f" `{type(other).__name__}`"
@@ -95,9 +96,11 @@ class Cells(RootModel[Sequence[T]], BaseCells[T]):
         """Get the Rich renderables, depending on whether `Cells` is a diff or not."""
         if all(isinstance(el, tuple) for el in self.data):
             return chain.from_iterable(
-                Cells.wrap_cols(val[0], val[1], **wrap_cols_kwargs)
-                if val[0] != val[1]
-                else val[0]
+                (
+                    Cells.wrap_cols(val[0], val[1], **wrap_cols_kwargs)
+                    if val[0] != val[1]
+                    else val[0]
+                )
                 for val in cast(List[CellsPair], self.data)
             )
         return cast(List[Cell], self.data)
@@ -175,14 +178,16 @@ class Cells(RootModel[Sequence[T]], BaseCells[T]):
             )
         return list(
             chain.from_iterable(
-                Cells.wrap_git(
-                    first_cells=val[0],
-                    last_cells=val[1],
-                    hash_first=first_id,
-                    hash_last=last_id,
+                (
+                    Cells.wrap_git(
+                        first_cells=val[0],
+                        last_cells=val[1],
+                        hash_first=first_id,
+                        hash_last=last_id,
+                    )
+                    if val[0] != val[1]
+                    else val[0]
                 )
-                if val[0] != val[1]
-                else val[0]
                 for val in self.data
             )
         )
@@ -192,7 +197,7 @@ class NotebookMetadata(DatabooksBase):
     """Notebook metadata. Empty by default but can accept extra fields."""
 
 
-class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
+class JupyterNotebook(DatabooksBase, extra="forbid"):
     """Jupyter notebook. Extra fields yield invalid notebook."""
 
     nbformat: int
@@ -209,7 +214,7 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
             """Display with `kernel` theme, horizontal padding and right-justified."""
             return Text(kernel, style="kernel", justify="right")
 
-        kernelspec = self.metadata.dict().get("kernelspec", {})
+        kernelspec = self.metadata.model_dump().get("kernelspec", {})
         if isinstance(kernelspec, tuple):  # check if this is a `DiffCells`
             kernelspec = tuple(
                 ks or {"language": "text", "display_name": "null"} for ks in kernelspec
@@ -220,11 +225,15 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
                 kernel_first, kernel_last = [
                     _rich(ks["display_name"]) for ks in kernelspec
                 ]
-                yield Columns(
-                    [kernel_first, kernel_last],
-                    expand=True,
-                    width=options.max_width // 3,
-                ) if kernel_first != kernel_last else kernel_first
+                yield (
+                    Columns(
+                        [kernel_first, kernel_last],
+                        expand=True,
+                        width=options.max_width // 3,
+                    )
+                    if kernel_first != kernel_last
+                    else kernel_first
+                )
         else:
             nb_lang = kernelspec.get("language", "text")
             if "display_name" in kernelspec.keys():
@@ -232,7 +241,7 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
 
         for cell in self.cells:
             if isinstance(cell, CodeCell):
-                cell.metadata = CellMetadata(**cell.metadata.dict(), lang=nb_lang)
+                cell.metadata = CellMetadata(**cell.metadata.model_dump(), lang=nb_lang)
         yield self.cells
 
     @classmethod
@@ -260,16 +269,16 @@ class JupyterNotebook(DatabooksBase, extra=Extra.forbid):
                 f"File exists at {path} exists. Specify `overwrite = True`."
             )
 
-        self.__class__.model_validate(self.dict())
+        self.__class__.model_validate(self.model_dump())
 
         with path.open("w", encoding="utf-8") as f:
-            json.dump(self.dict(), fp=f, **json_kwargs)
+            json.dump(self.model_dump(), fp=f, **json_kwargs)
 
     def clear_metadata(
         self,
         *,
-        notebook_metadata_keep: Sequence[str] = None,
-        notebook_metadata_remove: Sequence[str] = None,
+        notebook_metadata_keep: Optional[Sequence[str]] = None,
+        notebook_metadata_remove: Optional[Sequence[str]] = None,
         **cell_kwargs: Any,
     ) -> None:
         """

@@ -1,4 +1,5 @@
 """Test data models for notebook components."""
+
 import json
 import logging
 from copy import deepcopy
@@ -128,8 +129,8 @@ class TestCell:
 
         diff = dl1 - dl2
 
-        assert type(dl1) == type(dl2) == Cells[Cell]
-        assert type(diff) == Cells[Tuple[List[Cell], List[Cell]]]
+        assert type(dl1) is type(dl2) is Cells[Cell]
+        assert type(diff) is Cells[Tuple[List[Cell], List[Cell]]]
 
         expected = Cells[CellsPair]([([self.cell], [self.cell]), ([], [self.cell])])
 

@@ -1,4 +1,5 @@
 """Data models - Base Pydantic model with custom methods."""
+
 from __future__ import annotations
 
 from abc import abstractmethod
@@ -34,16 +35,14 @@ class BaseCells(UserList, Generic[T]):
 def resolve(
     model: DiffModel,
     **kwargs: Any,
-) -> DatabooksBase:
-    ...
+) -> DatabooksBase: ...
 
 
 @overload
 def resolve(
     model: BaseCells,
     **kwargs: Any,
-) -> List[T]:
-    ...
+) -> List[T]: ...
 
 
 def resolve(
@@ -126,7 +125,7 @@ class DatabooksBase(BaseModel):
         The difference basically return models that replace each fields by a tuple,
          where for each field we have `field = (self_value, other_value)`
         """
-        if type(self) != type(other):
+        if type(self) is not type(other):
             raise TypeError(
                 f"Unsupported operand types for `-`: `{type(self).__name__}` and"
                 f" `{type(other).__name__}`"

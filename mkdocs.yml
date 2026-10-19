@@ -35,12 +35,10 @@ plugins:
 - autorefs
 - coverage
 - mkdocstrings:
-    watch:
-      - databooks
     handlers:
       python:
-        selection:
-          docstring_style: restructured-text
+        options:
+          docstring_style: sphinx
 
 extra_css:
   - stylesheets/extra.css

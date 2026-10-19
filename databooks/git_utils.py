@@ -1,23 +1,32 @@
 """Git helper functions."""
+
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Union, cast, overload
 
-from git import Git
-from git.diff import DiffIndex
+from git import Git, InvalidGitRepositoryError, NoSuchPathError
 from git.objects.blob import Blob
 from git.objects.commit import Commit
 from git.objects.tree import Tree
 from git.repo import Repo
 
-from databooks.common import find_common_parent, find_obj
+from databooks.common import find_common_parent
 from databooks.logging import get_logger, set_verbose
 
 logger = get_logger(name=__file__)
 
-# https://github.com/python/mypy/issues/5317
-ChangeType = Enum("ChangeType", [*DiffIndex.change_type, "U"])  # type: ignore[misc]
+
+class ChangeType(Enum):
+    """Git change kinds, retaining the original public enum values."""
+
+    A = 1
+    C = 2
+    D = 3
+    R = 4
+    M = 5
+    T = 6
+    U = 7
 
 
 @dataclass
@@ -35,8 +44,8 @@ class ConflictFile:
     filename: Path
     first_log: str
     last_log: str
-    first_contents: str
-    last_contents: str
+    first_contents: str | bytes
+    last_contents: str | bytes
 
 
 @dataclass
@@ -44,7 +53,7 @@ class Contents:
     """Container for path of file versions."""
 
     path: Optional[Path]
-    contents: Optional[str]
+    contents: Optional[str | bytes]
 
 
 @dataclass
@@ -57,16 +66,14 @@ class DiffContents:
 
 
 @overload
-def blob2str(blob: None) -> None:
-    ...
+def blob2str(blob: None) -> None: ...
 
 
 @overload
-def blob2str(blob: Blob) -> str:
-    ...
+def blob2str(blob: Blob) -> bytes: ...
 
 
-def blob2str(blob: Optional[Blob]) -> Optional[str]:
+def blob2str(blob: Optional[Blob]) -> Optional[bytes]:
     """Get the blob contents if they exist (otherwise return `None`)."""
     return blob.data_stream.read() if blob is not None else None
 
@@ -87,7 +94,7 @@ def diff2contents(
     ref: Optional[Union[Tree, Commit, str]],
     path: Path,
     not_exists: bool = False,
-) -> Optional[str]:
+) -> Optional[str | bytes]:
     """
     Get the blob contents from the diff.
 
@@ -111,15 +118,13 @@ def diff2contents(
 
 def get_repo(path: Path) -> Optional[Repo]:
     """Find git repo in current or parent directories."""
-    repo_dir = find_obj(
-        obj_name=".git", start=Path(path.anchor), finish=path, is_dir=True
-    )
-    if repo_dir is not None:
-        repo = Repo(path=repo_dir.parent)
-        logger.debug(f"Repo found at: {repo.working_dir}.")
-        return repo
-    else:
+    try:
+        repo = Repo(path=path, search_parent_directories=True)
+    except (InvalidGitRepositoryError, NoSuchPathError):
         logger.debug(f"No repo found at {path}.")
+        return None
+    logger.debug(f"Repo found at: {repo.working_dir}.")
+    return repo
 
 
 def get_conflict_blobs(repo: Repo) -> List[ConflictFile]:
@@ -181,24 +186,24 @@ def get_nb_diffs(
     return [
         DiffContents(
             a=Contents(
-                path=Path(d.a_path),
+                path=Path(cast(str, d.a_path)),
                 contents=diff2contents(
                     blob=cast(Blob, d.a_blob),
                     ref=ref_base,
-                    path=repo_root_dir / d.a_path,
+                    path=repo_root_dir / cast(str, d.a_path),
                     not_exists=d.change_type is ChangeType.A,  # type: ignore
                 ),
             ),
             b=Contents(
-                path=Path(d.b_path),
+                path=Path(cast(str, d.b_path)),
                 contents=diff2contents(
                     blob=cast(Blob, d.b_blob),
                     ref=ref_remote,
-                    path=repo_root_dir / d.b_path,
+                    path=repo_root_dir / cast(str, d.b_path),
                     not_exists=d.change_type is ChangeType.D,  # type: ignore
                 ),
             ),
-            change_type=ChangeType[d.change_type],
+            change_type=ChangeType[cast(str, d.change_type)],
         )
         for d in ref_base.diff(
             other=ref_remote, paths=list(paths) or list(repo_root_dir.rglob("*.ipynb"))

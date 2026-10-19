@@ -1,4 +1,5 @@
 """Functions to safely evaluate strings and inspect notebook."""
+
 import ast
 from collections import abc
 from copy import deepcopy
@@ -59,7 +60,7 @@ _ALLOWED_NODES = (
     ast.Name,
     ast.Not,
     ast.NotEq,
-    ast.NotIn,
+    ast.NotIn,  # codespell:ignore notin
     ast.operator,
     ast.Or,
     ast.RShift,
@@ -117,7 +118,7 @@ class DatabooksParser(ast.NodeVisitor):
                     f" `{allowed_attrs}`, got `{attr}` for {obj}."
                 )
 
-    def _get_iter(self, node: ast.AST) -> Iterable:
+    def _get_iter(self, node: ast.expr) -> Iterable:
         """Use `DatabooksParser.safe_eval_ast` to get the iterable object."""
         tree = ast.Expression(body=node)
         return iter(self.safe_eval_ast(tree))
@@ -176,7 +177,7 @@ class DatabooksParser(ast.NodeVisitor):
             )
         self.generic_visit(node)
 
-    def safe_eval_ast(self, ast_tree: ast.AST) -> Any:
+    def safe_eval_ast(self, ast_tree: ast.Expression) -> Any:
         """Evaluate safe AST trees only (raise errors otherwise)."""
         self.visit(ast_tree)
         exe = compile(ast_tree, filename="", mode="eval")
