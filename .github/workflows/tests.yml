@@ -30,6 +30,9 @@ jobs:
       - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884  # v10.3.0
         with:
           version: "0.13.1"
+          # sha256 of uv-x86_64-unknown-linux-gnu.tar.gz for this uv version; bump it
+          # with `version` in every setup-uv step (setup-uv's table stops at 0.13.0)
+          checksum: "eadd9d27c134ab5ac1ffd4473b97a741407f3ea238288f03121fc4deddf90220"
           python-version: '3.11'
       - name: Install dependencies
         run: uv sync --locked
@@ -46,12 +49,17 @@ jobs:
           --python .venv/bin/python
           --hooks "$PRE_COMMIT_HOME" --output audit-reports/qa
       # Exercise the build backend on every change, before tests and docs
-      # generate files: uv_build does not honour .gitignore.
+      # generate files: uv_build does not honour .gitignore. The smoke test installs
+      # the wheel with the locked (and audited) runtime set, hash-checked.
       - name: Build and check release packages
         run: |
           uv build --no-sources
           uvx twine==7.0.0 check --strict dist/*
-          uvx --from dist/databooks-*.whl databooks --version
+          uv export -q --frozen --no-default-groups --no-emit-project -o "$RUNNER_TEMP/runtime.txt"
+          uv venv -q "$RUNNER_TEMP/smoke"
+          uv pip install -q --python "$RUNNER_TEMP/smoke" -r "$RUNNER_TEMP/runtime.txt" dist/databooks-*.whl
+          uv pip check --python "$RUNNER_TEMP/smoke"
+          "$RUNNER_TEMP/smoke/bin/databooks" --version
       - name: Configure git user for QA tests
         run: |
           git config --global user.name 'github-actions[bot]'
@@ -82,6 +90,7 @@ jobs:
         uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884  # v10.3.0
         with:
           version: "0.13.1"
+          checksum: "eadd9d27c134ab5ac1ffd4473b97a741407f3ea238288f03121fc4deddf90220"
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: uv sync --locked --no-default-groups

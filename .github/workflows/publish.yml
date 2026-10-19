@@ -23,6 +23,9 @@ jobs:
       - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884  # v10.3.0
         with:
           version: "0.13.1"
+          # sha256 of uv-x86_64-unknown-linux-gnu.tar.gz for this uv version; bump it
+          # with `version` in every setup-uv step (setup-uv's table stops at 0.13.0)
+          checksum: "eadd9d27c134ab5ac1ffd4473b97a741407f3ea238288f03121fc4deddf90220"
           python-version: '3.11'
       - name: Validate exact version, event commit, and main ancestry
         env:
@@ -46,6 +49,7 @@ jobs:
       - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884  # v10.3.0
         with:
           version: "0.13.1"
+          checksum: "eadd9d27c134ab5ac1ffd4473b97a741407f3ea238288f03121fc4deddf90220"
           python-version: '3.11'
       - name: Stamp package and runtime versions from the tag
         env:
@@ -53,8 +57,10 @@ jobs:
         run: uv run --no-project scripts/release.py prepare "$RELEASE_VERSION"
       - name: Build release packages
         run: uv build --no-sources
-      # --check-url lets a re-run after a partial upload skip identical files
-      # that are already published instead of failing on them.
+      # Explicit upload URLs so committed uv config can't redirect the tokens.
+      # --check-url compares with what the index already has: identical files from
+      # an earlier partial run are skipped, and a same-named file that differs fails
+      # before upload.
       - name: Publish to TestPyPI
         env:
           UV_PUBLISH_TOKEN: ${{ secrets.TEST_PIPY_TOKEN }}
@@ -62,7 +68,7 @@ jobs:
       - name: Publish to PyPI
         env:
           UV_PUBLISH_TOKEN: ${{ secrets.PIPY_TOKEN }}
-        run: uv publish --check-url https://pypi.org/simple/
+        run: uv publish --publish-url https://upload.pypi.org/legacy/ --check-url https://pypi.org/simple/
 
   release:
     runs-on: ubuntu-24.04
@@ -96,6 +102,7 @@ jobs:
       - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884  # v10.3.0
         with:
           version: "0.13.1"
+          checksum: "eadd9d27c134ab5ac1ffd4473b97a741407f3ea238288f03121fc4deddf90220"
           python-version: '3.11'
       - name: Install dependencies
         run: uv sync --locked
