@@ -169,9 +169,7 @@ tag. Existing local tags cannot be recreated; existing remote tags cannot be pus
 again or replaced. Untracked files are ignored. Do not delete or move published tags;
 choose a new version for another release. A push to `main` alone does not publish.
 
-`just release-prepare VERSION` is available as an optional local preview of CI's
-version stamping. It updates both fields without committing. It is **not required**
-for a release; discard preview changes before tagging so tracked files are clean.
+`just release-prepare VERSION` is available as an optional local preview of CI's version stamping. It updates both fields without committing, and any later plain `uv run` records the previewed version in `uv.lock` too. It is **not required** for a release; discard all three files before tagging so tracked files are clean, e.g. `git checkout -- pyproject.toml databooks/version.py uv.lock`.
 
 Only new version tag pushes trigger publishing. Tag updates and deletions are skipped; CI validates the exact version and main history before calling the reusable test workflow from the tagged commit. The workflow stamps the tag version and runs every Python 3.10 to 3.15 matrix job, with the pinned QA hooks checked separately on Python 3.11. The QA job also builds the packages and checks them with twine on every push and pull request, so the build backend is exercised long before a release. All jobs must pass before CI stamps and builds the packages with `uv build`, publishes them to TestPyPI and PyPI with `uv publish` (using `TEST_PIPY_TOKEN` and `PIPY_TOKEN`), then creates a GitHub release with generated notes and deploys docs under the tag version, updating `latest`. Branch and pull request tests continue to use the committed development version.
 
