@@ -42,7 +42,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install Poetry
-        run: python -m pip install poetry==1.2.2
+        run: python -m pip install poetry==2.3.2
       - name: Stamp package and runtime versions from the tag
         env:
           RELEASE_VERSION: ${{ github.ref_name }}
@@ -92,7 +92,7 @@ jobs:
           python-version: '3.11'
       - name: Install dependencies
         run: |
-          python -m pip install poetry==1.2.2
+          python -m pip install poetry==2.3.2
           poetry install --no-interaction --no-ansi
       - name: Stamp docs version from the tag
         env:
