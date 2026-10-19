@@ -67,11 +67,15 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["databooks"]
+# 2.5 (hatchling 1.32's default) is rejected by twine < 7 and packaging < 26
+core-metadata-version = "2.4"
 
 [tool.hatch.build.targets.sdist]
 # Keep the sdist scope of the old Poetry builds: the package plus the metadata
 # files hatchling always adds (pyproject.toml, README.md, LICENSE, .gitignore).
 include = ["/databooks"]
+# Same as the wheel: 2.5 is rejected by twine < 7 and packaging < 26
+core-metadata-version = "2.4"
 
 [tool.ty.src]
 include = ["databooks", "tests"]
