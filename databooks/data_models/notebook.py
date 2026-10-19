@@ -310,7 +310,7 @@ class JupyterNotebook(DatabooksBase, extra="forbid"):
                 if field not in notebook_metadata_keep
             )
         # Non-None here: exactly one of keep/remove is given and keep became remove
-        self.metadata.remove_fields(notebook_metadata_remove)  # ty: ignore[invalid-argument-type]
+        self.metadata.remove_fields(cast(Sequence[str], notebook_metadata_remove))
 
         if len(cell_kwargs) > 0:
             _clean_cells = deepcopy(self.cells)

@@ -146,7 +146,8 @@ class DatabooksBase(BaseModel):
             ):
                 # Recursively get the diffs for nested models; the `all(...)` check
                 # above does not narrow the values for the type checker
-                fields_d[name] = (Any, self_val - other_val)  # ty: ignore[unsupported-operator]
+                diff = self_val - other_val  # ty: ignore[unsupported-operator]
+                fields_d[name] = (Any, diff)
             else:
                 fields_d[name] = (tuple, (self_val, other_val))
 
