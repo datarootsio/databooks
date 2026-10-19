@@ -392,7 +392,9 @@ def test_show() -> None:
     with resources.path("tests.files", "tui-demo.ipynb") as nb_path:
         result = runner.invoke(app, ["show", str(nb_path)])
     assert result.exit_code == 0
-    assert result.output == """\
+    assert (
+        result.output
+        == """\
 ──────────────────────────────── tui-demo.ipynb ────────────────────────────────
                                                             Python 3 (ipykernel)
 ╭──────────────────────────────────────────────────────────────────────────────╮
@@ -458,6 +460,7 @@ In [ ]:
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
 """
+    )
 
 
 def test_show_no_multiple() -> None:
@@ -590,7 +593,9 @@ def test_diff_svg(tmp_path: Path) -> None:
 
     # Test passing another branch to compare
     result = runner.invoke(app, ["diff", "other", str(tmp_path), "-x", "HTML"])
-    assert result.output == """\
+    assert (
+        result.output
+        == """\
 <!DOCTYPE html>
 <html>
 <head>
@@ -636,6 +641,7 @@ test text
 </html>
 
 """
+    )
 
 
 def test_parse_paths_without_variadic_paths() -> None:
