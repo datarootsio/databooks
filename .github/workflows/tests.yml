@@ -50,11 +50,12 @@ jobs:
           --hooks "$PRE_COMMIT_HOME" --output audit-reports/qa
       # Exercise the build backend on every change, before tests and docs generate
       # files (hatchling honours .gitignore and the sdist has an explicit include
-      # list, so this guards that selection). The smoke test installs the wheel
-      # with the locked (and audited) runtime set, hash-checked.
+      # list, so this guards that selection). The build uses the same hash-pinned
+      # backend as the publish job. The smoke test installs the wheel with the
+      # locked (and audited) runtime set, hash-checked.
       - name: Build and check release packages
         run: |
-          uv build --no-sources
+          uv build --no-sources --build-constraints .github/build-constraints.txt --require-hashes
           uvx twine==7.0.0 check --strict dist/*
           uv export -q --frozen --no-default-groups --no-emit-project -o "$RUNNER_TEMP/runtime.txt"
           uv venv -q "$RUNNER_TEMP/smoke"

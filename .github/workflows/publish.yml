@@ -55,8 +55,9 @@ jobs:
         env:
           RELEASE_VERSION: ${{ github.ref_name }}
         run: uv run --no-project scripts/release.py prepare "$RELEASE_VERSION"
+      # hatchling and its own dependencies come hash-pinned from the constraints file
       - name: Build release packages
-        run: uv build --no-sources
+        run: uv build --no-sources --build-constraints .github/build-constraints.txt --require-hashes
       # Explicit upload URLs so committed uv config can't redirect the tokens.
       # --check-url compares with what the index already has: identical files from
       # an earlier partial run are skipped, and a same-named file that differs fails
