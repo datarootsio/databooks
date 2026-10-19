@@ -54,13 +54,24 @@ dev = [
 [tool.uv]
 default-groups = ["test", "dev"]
 required-version = ">=0.13.1"
+# Pin the backend for uv-driven builds (CI release, uv sync) so a new hatchling
+# release cannot change the artifacts unnoticed; bump it deliberately.
+build-constraint-dependencies = ["hatchling==1.32.4"]
 
 [build-system]
-requires = ["uv_build>=0.13.1,<0.14"]
-build-backend = "uv_build"
+# Pure Python, so pip-driven source builds (pre-commit hook users, git installs)
+# work on noexec temp dirs and without a native binary. 1.27 is the first release
+# that writes PEP 639 license metadata (core metadata 2.4) by default.
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
 
-[tool.uv.build-backend]
-module-root = ""
+[tool.hatch.build.targets.wheel]
+packages = ["databooks"]
+
+[tool.hatch.build.targets.sdist]
+# Keep the sdist scope of the old Poetry builds: the package plus the metadata
+# files hatchling always adds (pyproject.toml, README.md, LICENSE, .gitignore).
+include = ["/databooks"]
 
 [tool.ty.src]
 include = ["databooks", "tests"]

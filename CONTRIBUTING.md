@@ -123,7 +123,7 @@ uv run pytest --cov-report html --cov=databooks tests/
 
 ### Dependency upgrades and audits
 
-Use uv (0.13.1 or newer, the version CI pins) and Python 3.11 for QA and documentation. The `test` group runs on Python 3.10 to 3.15; tools in the `dev` group have Python 3.11+ markers. Use `uv sync --no-default-groups` for runtime dependencies only, `uv sync --no-default-groups --group test` for tests, and `uv sync` for everything. Re-resolve the lock after changing constraints with `uv lock --upgrade`. The build backend is constrained to `uv_build>=0.13.1,<0.14`; bump it together with the uv version pinned in CI.
+Use uv (0.13.1 or newer, the version CI pins) and Python 3.11 for QA and documentation. The `test` group runs on Python 3.10 to 3.15; tools in the `dev` group have Python 3.11+ markers. Use `uv sync --no-default-groups` for runtime dependencies only, `uv sync --no-default-groups --group test` for tests, and `uv sync` for everything. Re-resolve the lock after changing constraints with `uv lock --upgrade`. The build backend is hatchling: consumers that build from source (pip, pre-commit hook users) get `hatchling>=1.27,<2` from `[build-system]`, while uv-driven builds (`uv build`, `uv sync`) use the single release pinned in `build-constraint-dependencies` under `[tool.uv]`. Bump that pin deliberately and re-lock; it is not tied to the uv version.
 
 The ruff, ty, codespell, and cog hooks run from the locked project environment, avoiding duplicate dependency pins and unscannable development versions from source checkouts. The remaining Python hook environment uses Python 3.11. Refresh those hooks with `uv run pre-commit autoupdate`, then check that every selected revision is stable (the updater can select prerelease tags).
 

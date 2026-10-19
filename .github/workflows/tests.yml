@@ -48,9 +48,10 @@ jobs:
           uv run --no-project --with pip-audit==2.10.1 scripts/audit.py
           --python .venv/bin/python
           --hooks "$PRE_COMMIT_HOME" --output audit-reports/qa
-      # Exercise the build backend on every change, before tests and docs
-      # generate files: uv_build does not honour .gitignore. The smoke test installs
-      # the wheel with the locked (and audited) runtime set, hash-checked.
+      # Exercise the build backend on every change, before tests and docs generate
+      # files (hatchling honours .gitignore and the sdist has an explicit include
+      # list, so this guards that selection). The smoke test installs the wheel
+      # with the locked (and audited) runtime set, hash-checked.
       - name: Build and check release packages
         run: |
           uv build --no-sources

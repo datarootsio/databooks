@@ -6,6 +6,9 @@ resolution-markers = [
     "python_full_version < '3.11'",
 ]
 
+[manifest]
+build-constraints = [{ name = "hatchling", specifier = "==1.32.4" }]
+
 [[package]]
 name = "annotated-doc"
 version = "0.0.5"
