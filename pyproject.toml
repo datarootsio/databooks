@@ -61,3 +61,24 @@ build-backend = "uv_build"
 
 [tool.uv.build-backend]
 module-root = ""
+
+[tool.ruff]
+line-length = 88
+extend-exclude = ["tests/files"]
+
+[tool.ruff.lint]
+# The old flake8 + docstrings + print + isort coverage, plus ANN to keep
+# mypy's disallow_untyped_defs guarantee now that ty does the type checking
+select = ["E", "W", "F", "I", "D", "T20", "ANN"]
+ignore = ["ANN401"]  # mypy allowed explicit Any
+
+[tool.ruff.lint.flake8-annotations]
+mypy-init-return = true
+
+[tool.ruff.lint.pydocstyle]
+convention = "pep257"
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401", "D104"]
+"tests/*" = ["D100", "D104"]
+"databooks/version.py" = ["D100"]
