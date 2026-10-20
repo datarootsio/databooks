@@ -113,8 +113,8 @@ jobs:
         run: uv run --no-project scripts/release.py prepare "$RELEASE_VERSION"
       - name: Configure git user
         run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
       - name: Create coverage report
         run: uv run --no-sync pytest --cov-report html --cov=databooks tests/
       - name: Deploy versioned docs and update latest
