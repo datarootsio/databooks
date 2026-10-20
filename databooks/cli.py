@@ -109,7 +109,7 @@ def _parse_paths(
 def callback(  # noqa: D103
     version: Optional[bool] = Option(
         None, "--version", callback=_version_callback, is_eager=True
-    )
+    ),
 ) -> None:
     """CLI tool to resolve git conflicts and remove metadata in notebooks."""
 

@@ -50,8 +50,9 @@ def tagged_commit(version: str) -> str:
 def prepare(version: str) -> None:
     """Stamp both version fields for CI builds or an optional local preview."""
     require_clean()
-    # Poetry preserves the TOML structure and validates the existing project.
-    subprocess.run(["poetry", "version", version], check=True)
+    # uv preserves the TOML layout; --frozen skips re-locking and syncing because
+    # CI installs the environment before stamping.
+    subprocess.run(["uv", "version", "--frozen", version], check=True)
     Path("databooks/version.py").write_text(
         '"""Package version information."""\n__version__ = "{}"\n'.format(version),
         encoding="utf-8",

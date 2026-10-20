@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Union
+from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Union, cast
 
 from pydantic import PositiveInt, RootModel, field_validator
 from rich.console import Console, ConsoleOptions, ConsoleRenderable, RenderResult
@@ -102,7 +102,8 @@ class BaseCell(DatabooksBase):
             cell_metadata_remove = tuple(
                 field for field, _ in self.metadata if field not in cell_metadata_keep
             )
-        self.metadata.remove_fields(cell_metadata_remove)  # type: ignore
+        # Non-None here: exactly one of keep/remove is given and keep became remove
+        self.metadata.remove_fields(cast(Sequence[str], cell_metadata_remove))
 
         self.remove_fields(fields=cell_remove_fields, missing_ok=True)
 

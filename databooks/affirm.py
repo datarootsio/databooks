@@ -82,8 +82,7 @@ class DatabooksParser(ast.NodeVisitor):
 
     def __init__(self, **variables: Any) -> None:
         """Instantiate with variables and callables (built-ins) scope."""
-        # https://github.com/python/mypy/issues/3728
-        self.builtins = {b.__name__: b for b in _ALLOWED_BUILTINS}  # type: ignore
+        self.builtins = {b.__name__: b for b in _ALLOWED_BUILTINS}
         self.names = deepcopy(variables) or {}
         self.scope = {
             **self.names,

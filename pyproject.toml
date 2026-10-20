@@ -1,14 +1,16 @@
-[tool.poetry]
+[project]
 name = "databooks"
 version = "0.0.0-dev"  # dynamically set in CI
 description = "A CLI tool to resolve git conflicts and remove metadata in notebooks."
-authors = ["Murilo Cunha <murilo@dataroots.io>"]
-license = "MIT"
 readme = "README.md"
-homepage = "https://datarootsio.github.io/databooks/"
-repository = "https://github.com/datarootsio/databooks/"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Murilo Cunha", email = "murilo@dataroots.io" }]
+requires-python = ">=3.10"
 keywords = ["jupyter-notebooks", "cli"]
 classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -16,56 +18,95 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
     "Programming Language :: Python :: 3.15",
 ]
+dependencies = [
+    "typer>=0.27.3,<0.28",
+    "rich>=15.0.0,<16",
+    "pydantic>=2.14.1,<3",
+    "gitpython>=3.2.1,<4",
+    "tomli>=2.5.0,<3",
+    "typing-extensions>=4.16.0,<5",
+]
 
-[tool.poetry.scripts]
+[project.urls]
+Homepage = "https://datarootsio.github.io/databooks/"
+Repository = "https://github.com/datarootsio/databooks/"
+
+[project.scripts]
 databooks = "databooks.cli:app"
 
-[tool.poetry.dependencies]
-python = "^3.10"
-typer = "^0.27.3"
-rich = "^15.0.0"
-pydantic = "^2.14.1"
-GitPython = "^3.2.1"
-tomli = "^2.5.0"
-typing-extensions = "^4.16.0"
+[dependency-groups]
+test = ["pytest>=9.1.1,<10", "pytest-cov>=7.1.0,<8"]
+dev = [
+    "codespell>=2.4.3,<3; python_version >= '3.11'",
+    "pre-commit>=4.7.0,<5; python_version >= '3.11'",
+    "cogapp>=3.6.0,<4; python_version >= '3.11'",
+    "mike>=2.2.0,<3; python_version >= '3.11'",
+    "mkdocstrings[python]>=1.0.7,<2; python_version >= '3.11'",
+    "mkdocs-material>=9.7.7,<10; python_version >= '3.11'",
+    "mkdocs-autorefs>=1.4.4,<2; python_version >= '3.11'",
+    "mkdocs-coverage>=2.0.1,<3; python_version >= '3.11'",
+    "pip-audit>=2.10.1,<3; python_version >= '3.11'",
+    "ruff>=0.17.1,<0.18; python_version >= '3.11'",
+    # ty is pre-1.0 and each release can change diagnostics, so pin it exactly.
+    "ty==0.0.89; python_version >= '3.11'",
+]
 
-
-[tool.poetry.group.test.dependencies]
-pytest = "^9.1.1"
-pytest-cov = "^7.1.0"
-
-[tool.poetry.group.dev.dependencies]
-black = { version = "^26.10.1", python = ">=3.11" }
-isort = { version = "^9.0.2", python = ">=3.11" }
-codespell = { version = "^2.4.3", python = ">=3.11" }
-pre-commit = { version = "^4.7.0", python = ">=3.11" }
-mypy = { version = "^2.4.0", python = ">=3.11" }
-cogapp = { version = "^3.6.0", python = ">=3.11" }
-mike = { version = "^2.2.0", python = ">=3.11" }
-mkdocstrings = { version = "^1.0.7", extras = ["python"], python = ">=3.11" }
-mkdocs-material = { version = "^9.7.7", python = ">=3.11" }
-mkdocs-autorefs = { version = "^1.4.4", python = ">=3.11" }
-mkdocs-coverage = { version = "^2.0.1", python = ">=3.11" }
-pip-audit = { version = "^2.10.1", python = ">=3.11" }
+[tool.uv]
+default-groups = ["test", "dev"]
+required-version = ">=0.13.1"
+# Pin the backend for uv-driven builds (CI release, uv sync) so a new hatchling
+# release cannot change the artifacts unnoticed; bump it deliberately.
+build-constraint-dependencies = ["hatchling==1.32.4"]
 
 [build-system]
-requires = ["poetry-core>=2.5.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+# Pure Python, so pip-driven source builds (pre-commit hook users, git installs)
+# work on noexec temp dirs and without a native binary. 1.27 is the first release
+# that writes PEP 639 license metadata (core metadata 2.4) by default.
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
 
-# Formatting and type checking configuration
-[tool.black]
-include = "(databooks/|tests/|scripts/)"
-extend-exclude = "tests/files/"
+[tool.hatch.build.targets.wheel]
+packages = ["databooks"]
+# 2.5 (hatchling 1.32's default) is rejected by twine < 7 and packaging < 26
+core-metadata-version = "2.4"
 
-[tool.mypy]
-plugins = ["pydantic.mypy"]
-files = ["databooks", "tests"]
-show_error_codes = true
-disallow_untyped_calls = true
-disallow_untyped_defs = true
-ignore_missing_imports = true
-warn_no_return = false
+[tool.hatch.build.targets.sdist]
+# Keep the sdist scope of the old Poetry builds: the package plus the metadata
+# files hatchling always adds (pyproject.toml, README.md, LICENSE, .gitignore).
+include = ["/databooks"]
+# Same as the wheel: 2.5 is rejected by twine < 7 and packaging < 26
+core-metadata-version = "2.4"
 
-[tool.isort]
-skip_glob = ["docs/*"]
-profile = "black"
+[tool.ty.src]
+include = ["databooks", "tests"]
+# Notebook fixtures, some of them deliberately broken
+exclude = ["tests/files"]
+
+[tool.ty.rules]
+# The models and tests still use pydantic's v1-style API (`parse_raw`, `.json()`,
+# `.dict()`, `__fields__`) that pydantic 2 only deprecates, and `ast.slice` stays in
+# the affirm allowlist. Migrating those is a separate change; re-enable this then.
+deprecated = "ignore"
+
+[tool.ruff]
+line-length = 88
+extend-exclude = ["tests/files"]
+# Keep the exclusion when a path is passed explicitly (e.g. by an editor hook)
+force-exclude = true
+
+[tool.ruff.lint]
+# The old flake8 + docstrings + print + isort coverage, plus ANN to keep
+# mypy's disallow_untyped_defs guarantee now that ty does the type checking
+select = ["E", "W", "F", "I", "D", "T20", "ANN"]
+ignore = ["ANN401"]  # mypy allowed explicit Any
+
+[tool.ruff.lint.flake8-annotations]
+mypy-init-return = true
+
+[tool.ruff.lint.pydocstyle]
+convention = "pep257"
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401", "D104"]
+"tests/*" = ["D100", "D104"]
+"databooks/version.py" = ["D100"]

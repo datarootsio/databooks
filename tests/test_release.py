@@ -9,6 +9,7 @@ from pathlib import Path
 import pytest
 
 HELPER = Path(__file__).resolve().parents[1] / "scripts" / "release.py"
+LOCK = b"# Fixture lock that version stamping must leave untouched.\n"
 
 
 def git(repo: Path, *args: str) -> str:
@@ -29,10 +30,14 @@ def git(repo: Path, *args: str) -> str:
 
 
 def release(
-    repo: Path, command: str, version: str, *args: str
+    repo: Path,
+    command: str,
+    version: str,
+    *args: str,
+    env: dict[str, str] | None = None,
 ) -> subprocess.CompletedProcess:
     """Run the public CLI, keeping errors available for assertions."""
-    env = dict(os.environ, VIRTUAL_ENV=sys.prefix)
+    env = dict(os.environ if env is None else env)
     env.update(
         GIT_AUTHOR_NAME="Release Test",
         GIT_AUTHOR_EMAIL="release@example.com",
@@ -54,9 +59,8 @@ def metadata(
     """Write independent, minimal package metadata."""
     (repo / "databooks").mkdir(exist_ok=True)
     (repo / "pyproject.toml").write_text(
-        '[tool.poetry]\nname = "release-fixture"\nversion = "' + package + '"\n'
-        'description = "test"\nauthors = ["Test <test@example.com>"]\n'
-        '[tool.poetry.dependencies]\npython = "^3.7"\n'
+        '[project]\nname = "release-fixture"\nversion = "' + package + '"\n'
+        'requires-python = ">=3.10"\n'
     )
     (repo / "databooks" / "version.py").write_text('__version__ = "' + runtime + '"\n')
 
@@ -78,6 +82,7 @@ def repo(tmp_path: Path) -> Path:
     work.mkdir()
     git(work, "init", "-b", "main")
     metadata(work)
+    (work / "uv.lock").write_bytes(LOCK)
     commit(work)
     git(work, "remote", "add", "origin", str(remote))
     git(work, "push", "-u", "origin", "main")
@@ -97,8 +102,31 @@ def test_prepare_updates_both_versions(repo: Path) -> None:
     assert result.returncode == 0, result.stderr
     assert 'version = "2.0.0"' in (repo / "pyproject.toml").read_text()
     assert '__version__ = "2.0.0"' in (repo / "databooks/version.py").read_text()
+    assert (repo / "uv.lock").read_bytes() == LOCK
+    status = git(repo, "status", "--porcelain", "--untracked-files=all")
+    assert sorted(line.split() for line in status.splitlines()) == [
+        ["M", "databooks/version.py"],
+        ["M", "pyproject.toml"],
+    ]
+    # uv ignores its own .venv in Git, so check for the directory itself.
+    assert not (repo / ".venv").exists()
     assert git(repo, "rev-parse", "HEAD") == before
     assert git(repo, "tag") == ""
+
+
+def test_prepare_needs_only_git_and_uv(repo: Path, tmp_path: Path) -> None:
+    """Preparation runs offline with nothing but Git and uv on the PATH."""
+    tools = tmp_path / "bin"
+    tools.mkdir()
+    for name in ["git", "uv"]:
+        found = shutil.which(name)
+        assert found is not None, name
+        (tools / name).symlink_to(os.path.realpath(found))
+    env = dict(os.environ, PATH=str(tools), UV_OFFLINE="1", UV_PYTHON_DOWNLOADS="never")
+    result = release(repo, "prepare", "2.0.0", env=env)
+    assert result.returncode == 0, result.stderr
+    assert 'version = "2.0.0"' in (repo / "pyproject.toml").read_text()
+    assert '__version__ = "2.0.0"' in (repo / "databooks/version.py").read_text()
 
 
 @pytest.mark.parametrize(
@@ -256,11 +284,11 @@ def test_just_passes_version_as_literal_argument(repo: Path) -> None:
     result = subprocess.run(
         ["just", "release-tag", '1.3.11"; touch INJECTED; echo "$(touch INJECTED)'],
         cwd=repo,
-        env=dict(os.environ, VIRTUAL_ENV=sys.prefix),
+        env=dict(os.environ, UV_PYTHON=sys.executable),
         text=True,
         capture_output=True,
     )
-    assert result.returncode != 0
+    assert_failed(result, "stable X.Y.Z")
     assert not (repo / "INJECTED").exists()
 
 

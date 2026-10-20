@@ -125,7 +125,8 @@ SyntaxError: invalid syntax
 
 def test_code_cell_df() -> None:
     """Prints code cell data frame and has print statement."""
-    assert render(nb.cells[6]) == ("""\
+    assert render(nb.cells[6]) == (
+        """\
 In [5]:
 ╭────────────────────────────────────────────────╮
 │ import pandas as pd                            │
@@ -151,7 +152,8 @@ Out [5]:
   8   0.708324   0.895195   0.769364  \n\
   9   0.860726   0.381919   0.329727  \n\
                                       \n\
-""")
+"""
+    )
 
 
 def test_md_cell() -> None:

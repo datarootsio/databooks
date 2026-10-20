@@ -44,8 +44,9 @@ class Cells(RootModel[Sequence[T]], BaseCells[T]):
 
     root: Sequence[T]
 
+    # `UserList.data` is a plain attribute; here it is derived from `root`
     @property
-    def data(self) -> List[T]:  # type: ignore
+    def data(self) -> List[T]:  # ty: ignore[invalid-property-type-override]
         """Define property `data` required for `collections.UserList` class."""
         return list(self.root)
 
@@ -78,13 +79,14 @@ class Cells(RootModel[Sequence[T]], BaseCells[T]):
                 " notebooks."
             )
 
+        # ty reads typeshed's `UserList.data` as a pydantic field of `Cells` and
+        # expects it in `__init__`, so constructing `Cells` needs this suppression
         return Cells[CellsPair](
             [
-                # https://github.com/python/mypy/issues/9459
-                tuple((self.data[i1:j1], other.data[i2:j2]))  # type: ignore
+                tuple((self.data[i1:j1], other.data[i2:j2]))
                 for _, i1, j1, i2, j2 in chain.from_iterable(diff_opcodes)
             ]
-        )
+        )  # ty: ignore[missing-argument]
 
     def __rich_console__(
         self, console: Console, options: ConsoleOptions
@@ -110,11 +112,12 @@ class Cells(RootModel[Sequence[T]], BaseCells[T]):
         """Get validators for custom class."""
         yield cls.validate
 
+    # pydantic v1 validator hook, narrower than `BaseModel.validate` on purpose
     @classmethod
-    def validate(cls, v: List[T]) -> Cells[T]:
+    def validate(cls, v: List[T]) -> Cells[T]:  # ty: ignore[invalid-method-override]
         """Ensure object is custom defined container."""
         if not isinstance(v, cls):
-            return cls(v)
+            return cls(v)  # ty: ignore[missing-argument]
         else:
             return v
 
@@ -153,7 +156,8 @@ class Cells(RootModel[Sequence[T]], BaseCells[T]):
             ),
         ]
 
-    def resolve(
+    # Only diff cells (Cells[CellsPair]) can be resolved: narrower self than BaseCells
+    def resolve(  # ty: ignore[invalid-method-override]
         self: Cells[CellsPair],
         *,
         keep_first_cells: Optional[bool] = None,
@@ -305,7 +309,8 @@ class JupyterNotebook(DatabooksBase, extra="forbid"):
                 for field, _ in self.metadata
                 if field not in notebook_metadata_keep
             )
-        self.metadata.remove_fields(notebook_metadata_remove)  # type: ignore
+        # Non-None here: exactly one of keep/remove is given and keep became remove
+        self.metadata.remove_fields(cast(Sequence[str], notebook_metadata_remove))
 
         if len(cell_kwargs) > 0:
             _clean_cells = deepcopy(self.cells)

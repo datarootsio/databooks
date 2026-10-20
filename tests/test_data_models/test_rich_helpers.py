@@ -93,7 +93,9 @@ def test_html_table() -> None:
         "</table>\n",
         "</div>",
     ]
-    assert render(HtmlTable("".join(html)).rich()) == """\
+    assert (
+        render(HtmlTable("".join(html)).rich())
+        == """\
                                       \n\
       col0       col1       col2      \n\
  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ \n\
@@ -109,3 +111,4 @@ def test_html_table() -> None:
   9   0.860726   0.381919   0.329727  \n\
                                       \n\
 """
+    )

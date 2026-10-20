@@ -15,7 +15,12 @@ Using databooks in python scripts is as simple as
 from databooks import JupyterNotebook
 
 notebook = JupyterNotebook.parse_file(path="path/to/your/notebook")
-assert list(dict(notebook).keys()) == ['nbformat', 'nbformat_minor', 'metadata', 'cells']
+assert list(dict(notebook).keys()) == [
+    "nbformat",
+    "nbformat_minor",
+    "metadata",
+    "cells",
+]
 ```
 
 For more information on the internal workings and what is implemented, see [how it works]().

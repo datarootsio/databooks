@@ -124,15 +124,18 @@ class TestCell:
 
     def test_cells_sub(self) -> None:
         """Get the diff from different `Cells`."""
-        dl1 = Cells[Cell]([self.cell])
-        dl2 = Cells[Cell]([self.cell] * 2)
+        # ty expects `UserList.data` in `Cells.__init__` (see `Cells.__sub__`)
+        dl1 = Cells[Cell]([self.cell])  # ty: ignore[missing-argument]
+        dl2 = Cells[Cell]([self.cell] * 2)  # ty: ignore[missing-argument]
 
         diff = dl1 - dl2
 
         assert type(dl1) is type(dl2) is Cells[Cell]
         assert type(diff) is Cells[Tuple[List[Cell], List[Cell]]]
 
-        expected = Cells[CellsPair]([([self.cell], [self.cell]), ([], [self.cell])])
+        expected = Cells[CellsPair](  # ty: ignore[missing-argument]
+            [([self.cell], [self.cell]), ([], [self.cell])]
+        )
 
         assert diff == expected
 
@@ -274,7 +277,7 @@ def test_parse_file() -> None:
         },
     )
 
-    expected_cells = Cells[Cell](
+    expected_cells = Cells[Cell](  # ty: ignore[missing-argument]
         [
             MarkdownCell(
                 metadata=CellMetadata(tags=[]),

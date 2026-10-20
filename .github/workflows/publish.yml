@@ -7,6 +7,10 @@ on:
 permissions:
   contents: read
 
+env:
+  # Only uv-managed interpreters: never fall back to the runner's system Python.
+  UV_MANAGED_PYTHON: "1"
+
 jobs:
   validate:
     if: github.event.created == true && github.event.deleted == false && github.event.forced == false
@@ -16,13 +20,17 @@ jobs:
         with:
           ref: ${{ github.sha }}
           fetch-depth: 0
-      - uses: actions/setup-python@v7.0.0
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884  # v10.3.0
         with:
+          version: "0.13.1"
+          # sha256 of uv-x86_64-unknown-linux-gnu.tar.gz for this uv version; bump it
+          # with `version` in every setup-uv step (setup-uv's table stops at 0.13.0)
+          checksum: "eadd9d27c134ab5ac1ffd4473b97a741407f3ea238288f03121fc4deddf90220"
           python-version: '3.11'
       - name: Validate exact version, event commit, and main ancestry
         env:
           RELEASE_VERSION: ${{ github.ref_name }}
-        run: python scripts/release.py validate "$RELEASE_VERSION" --commit "$GITHUB_SHA"
+        run: uv run --no-project scripts/release.py validate "$RELEASE_VERSION" --commit "$GITHUB_SHA"
 
   tests:
     needs: validate
@@ -38,25 +46,30 @@ jobs:
       - uses: actions/checkout@v7.0.1
         with:
           ref: ${{ github.sha }}
-      - uses: actions/setup-python@v7.0.0
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884  # v10.3.0
         with:
+          version: "0.13.1"
+          checksum: "eadd9d27c134ab5ac1ffd4473b97a741407f3ea238288f03121fc4deddf90220"
           python-version: '3.11'
-      - name: Install Poetry
-        run: python -m pip install poetry==2.5.1
       - name: Stamp package and runtime versions from the tag
         env:
           RELEASE_VERSION: ${{ github.ref_name }}
-        run: python scripts/release.py prepare "$RELEASE_VERSION"
+        run: uv run --no-project scripts/release.py prepare "$RELEASE_VERSION"
+      # hatchling and its own dependencies come hash-pinned from the constraints file
       - name: Build release packages
-        run: poetry build
-      - name: Publish to TestPyPI and PyPI
+        run: uv build --no-sources --build-constraints .github/build-constraints.txt --require-hashes
+      # Explicit upload URLs so committed uv config can't redirect the tokens.
+      # --check-url compares with what the index already has: identical files from
+      # an earlier partial run are skipped, and a same-named file that differs fails
+      # before upload.
+      - name: Publish to TestPyPI
         env:
-          POETRY_REPOSITORIES_TEST_PYPI_URL: https://test.pypi.org/legacy/
-          POETRY_PYPI_TOKEN_TEST_PYPI: ${{ secrets.TEST_PIPY_TOKEN }}
-          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PIPY_TOKEN }}
-        run: |
-          poetry publish --no-interaction -r test-pypi
-          poetry publish --no-interaction
+          UV_PUBLISH_TOKEN: ${{ secrets.TEST_PIPY_TOKEN }}
+        run: uv publish --publish-url https://test.pypi.org/legacy/ --check-url https://test.pypi.org/simple/
+      - name: Publish to PyPI
+        env:
+          UV_PUBLISH_TOKEN: ${{ secrets.PIPY_TOKEN }}
+        run: uv publish --publish-url https://upload.pypi.org/legacy/ --check-url https://pypi.org/simple/
 
   release:
     runs-on: ubuntu-24.04
@@ -87,26 +100,26 @@ jobs:
         with:
           ref: ${{ github.sha }}
           fetch-depth: 0
-      - uses: actions/setup-python@v7.0.0
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884  # v10.3.0
         with:
+          version: "0.13.1"
+          checksum: "eadd9d27c134ab5ac1ffd4473b97a741407f3ea238288f03121fc4deddf90220"
           python-version: '3.11'
       - name: Install dependencies
-        run: |
-          python -m pip install poetry==2.5.1
-          poetry install --no-interaction --no-ansi
+        run: uv sync --locked
       - name: Stamp docs version from the tag
         env:
           RELEASE_VERSION: ${{ github.ref_name }}
-        run: poetry run python scripts/release.py prepare "$RELEASE_VERSION"
+        run: uv run --no-project scripts/release.py prepare "$RELEASE_VERSION"
       - name: Configure git user
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
       - name: Create coverage report
-        run: poetry run pytest --cov-report html --cov=databooks tests/
+        run: uv run --no-sync pytest --cov-report html --cov=databooks tests/
       - name: Deploy versioned docs and update latest
         env:
           RELEASE_VERSION: ${{ github.ref_name }}
         run: |
-          poetry run mike deploy --update-aliases "$RELEASE_VERSION" latest
-          poetry run mike set-default --push latest
+          uv run --no-sync mike deploy --update-aliases "$RELEASE_VERSION" latest
+          uv run --no-sync mike set-default --push latest
